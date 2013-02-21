@@ -1,0 +1,60 @@
+# You will want to copy this file and change the following settings:
+# 1. log_name
+# 2. default_set (in OAI harvesting params section)
+#  2a. other OAI harvesting params
+# 3. blacklist or whitelist if you are using them
+
+# log_dir:  directory for log file  (default logs, relative to harvestdor gem path)
+log_dir: spec/test_logs  
+
+# log_name: name of log file  (default: harvestdor.log)
+log_name: ap-test.log
+
+# purl: url for the DOR purl server (used to get ContentMetadata, etc.)
+purl: http://purl.stanford.edu
+
+# ---------- White and Black list parameters -----
+
+# name of file containing druids that will NOT be processed even if they are harvested via OAI
+#  either give absolute path or path relative to where the command will be executed
+#blacklist: config/ap_blacklist.txt
+
+# name of file containing druids that WILL be processed (all others will be ignored)
+#  either give absolute path or path relative to where the command will be executed
+#whitelist: config/ap_whitelist.txt
+
+# ---------- OAI harvesting parameters -----------
+
+# oai_repository_url:  URL of the OAI data provider
+oai_repository_url: https://dor-oaiprovider-prod.stanford.edu/oai
+
+# default_set:  default set for harvest  (default: nil)
+#   can be overridden on calls to harvest_ids and harvest_records
+default_set: is_governed_by_hy787xj5878
+
+# default_metadata_prefix:  default metadata prefix to be used for harvesting  (default: mods)
+#   can be overridden on calls to harvest_ids and harvest_records
+
+# default_from_date:  default from date for harvest  (default: nil)
+#   can be overridden on calls to harvest_ids and harvest_records
+
+# default_until_date:  default until date for harvest  (default: nil)
+#   can be overridden on calls to harvest_ids and harvest_records
+
+# oai_client_debug:  true for OAI::Client debug mode  (default: false)
+
+# Additional options to pass to Faraday http client (https://github.com/technoweenie/faraday)
+http_options:
+  ssl:
+    verify: false
+  # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
+  timeout: 180
+  open_timeout: 180
+
+# ----------- SOLR index (that we're writing INTO) parameters ------------
+solr:
+  url: https://sul-solr-test.stanford.edu/solr/mods_profiler
+#  url: http://localhost:8080/solr/mods_profiler
+  # timeouts are in seconds;  read_timeout -> open/read, open_timeout -> connection open
+  read_timeout: 60
+  open_timeout: 60

@@ -1,0 +1,5 @@
+# blacklist containing druids that should NOT be processed.
+# druids should be in the form aa111bb2222
+
+oo111oo1111
+oo222oo2222
