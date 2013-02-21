@@ -87,6 +87,10 @@ describe Harvestdor::Indexer do
       @mods_xml = "<mods #{@ns_decl}><note>hi</note></mods>"
       @ng_mods_xml = Nokogiri::XML(@mods_xml)      
     end
+    it "should call mods method on harvestdor_client" do
+      @hdor_client.should_receive(:mods).with(@fake_druid).and_return(@ng_mods_xml)
+      @indexer.smods_rec(@fake_druid)
+    end
     it "should return Stanford::Mods::Record object" do
       @hdor_client.should_receive(:mods).with(@fake_druid).and_return(@ng_mods_xml)
       @indexer.smods_rec(@fake_druid).should be_an_instance_of(Stanford::Mods::Record)
