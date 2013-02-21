@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
 
   # sul-gems
   gem.add_dependency 'harvestdor'
+  gem.add_dependency 'stanford-mods'
   
   # Runtime dependencies
   # gem.add_runtime_dependency 'nokogiri'
