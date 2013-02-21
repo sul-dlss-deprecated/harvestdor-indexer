@@ -41,7 +41,7 @@ module Harvestdor
         whitelist.each { |druid| index druid }
       end
       solr_client.commit
-      logger.info("Finished processing: Solr commit returned.")
+      logger.info("Finished processing: final Solr commit returned.")
     end
 
     # return Array of druids contained in the OAI harvest indicated by OAI params in yml configuration file
@@ -51,7 +51,7 @@ module Harvestdor
     end
 
     # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
-    #  NOTE: don't forget to send commit to Solr, either once at end, or for each add, or ...
+    #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
     def index druid
       if blacklist.include?(druid)
         logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
@@ -73,6 +73,7 @@ module Harvestdor
     end
 
     # return the MODS for the druid as a Stanford::Mods::Record object
+    # @param [String] druid e.g. ab123cd4567
     # @return [Stanford::Mods::Record] created from the MODS xml for the druid
     def smods_rec druid
       ng_doc = @harvestdor_client.mods druid
