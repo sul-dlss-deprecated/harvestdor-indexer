@@ -18,9 +18,84 @@ Or install it yourself as:
 
 == Usage
 
-=== Configuration
+You must override the index method and provide configuration options.  It is recommended to write a script to run it, too - example below.
 
-TODO: Write usage instructions here
+=== Configuration / Set up
+
+Create a yml config file for your collection going to a Solr index.  
+
+See  spec/config/ap.yml for an example.
+
+You will want to copy that file and change the following settings:
+1. log_name
+2. default_set (in OAI harvesting params section)
+2a. other OAI harvesting params
+3. blacklist or whitelist if you are using them
+
+You can also pass in non-default configurations as a hash
+
+  indexer = Harvestdor::Indexer.new({:oai_repository_url => 'http://my_oai.org, :default_from_date => '2012-12-01'})
+
+=== Override the Harvestdor::Indexer.index method
+
+In your code, override this method from the Harvestdor::Indexer class
+
+# create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
+#  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
+def index druid
+  if blacklist.include?(druid)
+    logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
+  else
+    logger.error("You must override the index method to transform druids into Solr docs and add them to Solr")
+    
+    doc_hash = {}
+    doc_hash[:id] = druid
+    # doc_hash[:title_tsim] = smods_rec(druid).short_title
+
+    # you might add things from Indexer level class here
+    #  (e.g. things that are the same across all documents in the harvest)
+
+    solr_client.add(doc_hash)
+
+    # logger.info("Just created Solr doc for #{druid}")
+    # TODO: provide call to code to update DOR object's workflow datastream??
+  end
+end
+
+=== Run it
+
+(bundle install)
+
+I suggest you write a script to run the code.  Your script might look like this:
+
+	#!/usr/bin/env ruby
+
+	$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..'))
+	$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+
+	require 'rubygems'
+	begin
+	  require 'indexer'
+	rescue LoadError
+	  require 'bundler/setup'
+	  require 'indexer'
+	end
+
+	config_yml_path = ARGV.pop
+	if config_yml_path.nil?
+	  puts "** You must provide the full path to a config yml file **"
+	  exit
+	end
+  
+	indexer = Harvestdor::Indexer.new(config_yml_path, opts)
+	indexer.harvest_and_index
+
+Then you run the script like so:
+
+	 ./bin/indexer config/(your coll).yml
+
+I suggest you run your code on harvestdor-dev, as it is already set up to be able to harvest from the DOR OAI provider
+
 
 == Contributing
 
