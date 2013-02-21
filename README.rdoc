@@ -1,0 +1,36 @@
+= Harvestdor::Indexer
+
+A Gem to harvest meta/data from DOR and the skeleton code to index it and write to Solr.
+
+== Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'harvestdor-indexer'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install harvestdor-indexer
+
+== Usage
+
+=== Configuration
+
+TODO: Write usage instructions here
+
+== Contributing
+
+# Fork it
+# Create your feature branch (`git checkout -b my-new-feature`)
+# Write code and tests.
+# Commit your changes (`git commit -am 'Added some feature'`)
+# Push to the branch (`git push origin my-new-feature`)
+# Create new Pull Request
+
+== Releases
+
+* <b>0.0.1</b> initial commit

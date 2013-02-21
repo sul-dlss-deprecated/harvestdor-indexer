@@ -1,0 +1,3 @@
+--title 'Harvestdor-Indexer Gem Documentation'
+lib/**/*.rb -
+README.rdoc LICENSE.txt 
