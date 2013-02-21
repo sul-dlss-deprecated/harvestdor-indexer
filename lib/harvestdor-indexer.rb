@@ -1,7 +1,11 @@
 # external gems
 require 'confstruct'
-require 'harvestdor'
 require 'rsolr'
+
+# sul-dlss gems
+require 'harvestdor'
+require 'stanford-mods'
+
 # stdlib
 require 'logger'
 
@@ -46,17 +50,36 @@ module Harvestdor
       @druids ||= harvestdor_client.druids_via_oai
     end
 
-    # Create a Solr doc, as a Hash, to be added to the SearchWorks Solr index.  
-    # Solr doc contents are based on the MODS, contentMetadata, etc. for the druid
-    # @param [String] druid e.g. ab123cd4567
-    def solr_doc druid
-#      sdb = SolrDocBuilder.new(druid, harvestdor_client, logger)
-#      doc_hash = sdb.doc_hash
+    # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
+    #  NOTE: don't forget to send commit to Solr, either once at end, or for each add, or ...
+    def index druid
+      if blacklist.include?(druid)
+        logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
+      else
+        logger.error("You must override the index method to transform druids into Solr docs and add them to Solr")
+        
+        doc_hash = {}
+        doc_hash[:id] = druid
+        # doc_hash[:title_tsim] = smods_rec(druid).short_title
 
-      # add things from Indexer level class here
-      #  (e.g. things that are the same across all documents in the harvest)
+        # you might add things from Indexer level class here
+        #  (e.g. things that are the same across all documents in the harvest)
 
-      doc_hash
+        solr_client.add(doc_hash)
+
+        # logger.info("Just created Solr doc for #{druid}")
+        # TODO: provide call to code to update DOR object's workflow datastream??
+      end
+    end
+
+    # return the MODS for the druid as a Stanford::Mods::Record object
+    # @return [Stanford::Mods::Record] created from the MODS xml for the druid
+    def smods_rec druid
+      ng_doc = @harvestdor_client.mods druid
+      raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+      mods_rec = Stanford::Mods::Record.new
+      mods_rec.from_nk_node(ng_doc.root)
+      mods_rec
     end
 
     def solr_client
@@ -85,26 +108,6 @@ module Harvestdor
 
     def harvestdor_client
       @harvestdor_client ||= Harvestdor::Client.new({:config_yml_path => @yml_path})
-    end
-
-    # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
-    #  NOTE: no Solr commit performed
-    def index druid
-      if blacklist.include?(druid)
-        logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
-      else
-        solr_client.add(solr_doc(druid))
-        logger.info("Just created Solr doc for #{druid}")
-        # TODO: update DOR object's workflow datastream??
-      end
-    end
-
-    # Global, memoized, lazy initialized instance of a logger
-    # @param [String] log_dir directory for to get log file
-    # @param [String] log_name name of log file
-    def load_logger(log_dir, log_name)
-      Dir.mkdir(log_dir) unless File.directory?(log_dir) 
-      @logger ||= Logger.new(File.join(log_dir, log_name), 'daily')
     end
 
     # populate @blacklist as an Array of druids ('oo000oo0000') that will NOT be processed
@@ -136,7 +139,7 @@ module Harvestdor
       if path 
         list = []
         f = File.open(path).each_line { |line|
-          list << line.gsub(/\s+/, '') if !line.gsub(/\s+/, '').empty?
+          list << line.gsub(/\s+/, '') if !line.gsub(/\s+/, '').empty? && !line.strip.start_with?('#')
         }
         list
       end
@@ -146,5 +149,13 @@ module Harvestdor
       raise msg
     end
     
-  end
-end
+    # Global, memoized, lazy initialized instance of a logger
+    # @param [String] log_dir directory for to get log file
+    # @param [String] log_name name of log file
+    def load_logger(log_dir, log_name)
+      Dir.mkdir(log_dir) unless File.directory?(log_dir) 
+      @logger ||= Logger.new(File.join(log_dir, log_name), 'daily')
+    end
+
+  end # Indexer class
+end # Harvestdor module
