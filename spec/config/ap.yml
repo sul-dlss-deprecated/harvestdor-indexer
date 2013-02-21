@@ -1,8 +1,9 @@
 # You will want to copy this file and change the following settings:
-# 1. log_name
+# 1. log_dir, log_name
 # 2. default_set (in OAI harvesting params section)
 #  2a. other OAI harvesting params
 # 3. blacklist or whitelist if you are using them
+# 4. Solr baseurl
 
 # log_dir:  directory for log file  (default logs, relative to harvestdor gem path)
 log_dir: spec/test_logs  
@@ -22,6 +23,14 @@ purl: http://purl.stanford.edu
 # name of file containing druids that WILL be processed (all others will be ignored)
 #  either give absolute path or path relative to where the command will be executed
 #whitelist: config/ap_whitelist.txt
+
+# ----------- SOLR index (that we're writing INTO) parameters ------------
+solr:
+  url: https://sul-solr-test.stanford.edu/solr/mods_profiler
+#  url: http://localhost:8080/solr/mods_profiler
+  # timeouts are in seconds;  read_timeout -> open/read, open_timeout -> connection open
+  read_timeout: 60
+  open_timeout: 60
 
 # ---------- OAI harvesting parameters -----------
 
@@ -50,11 +59,3 @@ http_options:
   # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
   timeout: 180
   open_timeout: 180
-
-# ----------- SOLR index (that we're writing INTO) parameters ------------
-solr:
-  url: https://sul-solr-test.stanford.edu/solr/mods_profiler
-#  url: http://localhost:8080/solr/mods_profiler
-  # timeouts are in seconds;  read_timeout -> open/read, open_timeout -> connection open
-  read_timeout: 60
-  open_timeout: 60

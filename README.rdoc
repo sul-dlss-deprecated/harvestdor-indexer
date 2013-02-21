@@ -75,10 +75,10 @@ I suggest you write a script to run the code.  Your script might look like this:
 
 	require 'rubygems'
 	begin
-	  require 'indexer'
+	  require 'your_indexer'
 	rescue LoadError
 	  require 'bundler/setup'
-	  require 'indexer'
+	  require 'your_indexer'
 	end
 
 	config_yml_path = ARGV.pop
