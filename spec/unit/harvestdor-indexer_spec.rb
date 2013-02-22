@@ -57,7 +57,7 @@ describe Harvestdor::Indexer do
       indexer.solr_client.should_receive(:commit)
       indexer.harvest_and_index
     end
-    it "should not process druids if it is in both blacklist and whitelist" do
+    it "should not process druid if it is in both blacklist and whitelist" do
       indexer = Harvestdor::Indexer.new(@config_yml_path, {:blacklist => @blacklist_path, :whitelist => @whitelist_path})
       hdor_client = indexer.send(:harvestdor_client)
       hdor_client.should_not_receive(:druids_via_oai)
