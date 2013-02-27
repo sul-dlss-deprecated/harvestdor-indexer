@@ -56,19 +56,24 @@ module Harvestdor
       if blacklist.include?(druid)
         logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
       else
-        logger.error("You must override the index method to transform druids into Solr docs and add them to Solr")
-        
-        doc_hash = {}
-        doc_hash[:id] = druid
-        # doc_hash[:title_tsim] = smods_rec(druid).short_title
+        logger.fatal("You must override the index method to transform druids into Solr docs and add them to Solr")
 
-        # you might add things from Indexer level class here
-        #  (e.g. things that are the same across all documents in the harvest)
+        begin
+          #logger.debug "About to index #{druid}"
+          doc_hash = {}
+          doc_hash[:id] = druid
+          # doc_hash[:title_tsim] = smods_rec(druid).short_title
 
-        solr_client.add(doc_hash)
+          # you might add things from Indexer level class here
+          #  (e.g. things that are the same across all documents in the harvest)
 
-        # logger.info("Just created Solr doc for #{druid}")
-        # TODO: provide call to code to update DOR object's workflow datastream??
+          solr_client.add(doc_hash)
+
+          # logger.debug("Just created Solr doc for #{druid}")
+          # TODO: provide call to code to update DOR object's workflow datastream??
+        rescue => e
+          logger.error "Failed to index #{druid}: #{e.message}"
+        end
       end
     end
 

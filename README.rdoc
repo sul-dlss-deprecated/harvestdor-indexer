@@ -108,4 +108,5 @@ I suggest you run your code on harvestdor-dev, as it is already set up to be abl
 
 == Releases
 
+* <b>0.0.2</b> better model code for index method (thanks, Bess!)
 * <b>0.0.1</b> initial commit
