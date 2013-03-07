@@ -104,6 +104,69 @@ describe Harvestdor::Indexer do
     end
   end
   
+  context "public_xml related methods" do
+    before(:all) do
+      @id_md_xml = "<identityMetadata><objectId>druid:#{@fake_druid}</objectId></identityMetadata>"
+      @cntnt_md_xml = "<contentMetadata type='image' objectId='#{@fake_druid}'></contentMetadata>"
+      @pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}#{@cntnt_md_xml}</publicObject>"
+      @ng_pub_xml = Nokogiri::XML(@pub_xml)
+    end
+    context "#public_xml" do
+      it "should call public_xml method on harvestdor_client" do
+        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
+        @indexer.public_xml @fake_druid
+      end
+      it "retrieves entire public xml as a Nokogiri::XML::Document" do
+        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
+        px = @indexer.public_xml @fake_druid
+        px.should be_kind_of(Nokogiri::XML::Document)
+        px.root.name.should == 'publicObject'
+        px.root.attributes['id'].text.should == "druid:#{@fake_druid}"
+      end
+      it "raises exception if public xml for the druid is empty" do
+        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(Nokogiri::XML("<publicObject/>"))
+        expect { @indexer.public_xml(@fake_druid) }.to raise_error(RuntimeError, Regexp.new("^Empty public xml for #{@fake_druid}: <"))
+      end
+      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
+        expect { @indexer.public_xml(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
+      end
+      it "raises error if there is no public_xml page for the druid" do
+        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(nil)
+        expect { @indexer.public_xml(@fake_druid) }.to raise_error(RuntimeError, "No public xml for #{@fake_druid}")
+      end
+    end
+    context "#content_metadata" do
+      it "returns a Nokogiri::XML::Document derived from the public xml" do
+        pending "to be implemented"
+        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
+        @hdor_client.should_not_receive(:content_metadata)
+        cm = @indexer.content_metadata(@druid)
+        cm.should be_kind_of(Nokogiri::XML::Document)
+        cm.root.name.should == 'contentMetadata'
+        cm.root.attributes['objectId'].text.should == @druid
+      end
+      it "should raise exception if there is no contentMetadata in the public xml" do
+        pending "to be implemented"
+      end
+      it "should raise exception if the contentMetadata is empty" do
+        pending "to be implemented"
+      end
+    end
+    context "#identity_metadata" do
+      it "returns a Nokogiri::XML::Document derived from the public xml" do
+        pending "to be implemented"
+        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
+        @hdor_client.should_not_receive(:identity_metadata)
+        md = @indexer.identity_metadata(@druid)
+        md.should be_kind_of(Nokogiri::XML::Document)
+        md.root.name.should == 'identityMetadata'
+      end
+      it "needs to be refactored (BnfImages) in frda-indexer project" do
+        pending "to be implemented"
+      end
+    end
+  end
+  
   context "blacklist" do
     it "should be an Array with an entry for each non-empty line in the file" do
       @indexer.send(:load_blacklist, @blacklist_path)

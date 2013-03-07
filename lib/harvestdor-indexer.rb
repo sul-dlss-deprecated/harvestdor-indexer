@@ -81,13 +81,23 @@ module Harvestdor
     # @param [String] druid e.g. ab123cd4567
     # @return [Stanford::Mods::Record] created from the MODS xml for the druid
     def smods_rec druid
-      ng_doc = @harvestdor_client.mods druid
+      ng_doc = harvestdor_client.mods druid
       raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
       mods_rec = Stanford::Mods::Record.new
       mods_rec.from_nk_node(ng_doc.root)
       mods_rec
     end
 
+    # the public xml for this DOR object, from the purl page
+    # @param [String] druid e.g. ab123cd4567
+    # @return [Nokogiri::XML::Document] the public xml for the DOR object
+    def public_xml druid
+      ng_doc = harvestdor_client.public_xml druid
+      raise "No public xml for #{druid}" if !ng_doc
+      raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+      ng_doc
+    end
+    
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end
