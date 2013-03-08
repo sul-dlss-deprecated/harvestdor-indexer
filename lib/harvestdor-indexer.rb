@@ -107,6 +107,15 @@ module Harvestdor
       ng_doc
     end
     
+    # the identityMetadata for this DOR object, from the purl public xml
+    # @param [String] druid e.g. ab123cd4567
+    # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
+    def identity_metadata druid
+      ng_doc = harvestdor_client.identity_metadata druid
+      raise "No identityMetadata for #{druid}" if !ng_doc || !ng_doc.root
+      ng_doc
+    end
+
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end
