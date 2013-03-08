@@ -136,7 +136,6 @@ describe Harvestdor::Indexer do
       end
     end
     context "#content_metadata" do
-      require 'open-uri'
       it "returns a Nokogiri::XML::Document derived from the public xml" do
         Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
         cm = @indexer.content_metadata(@fake_druid)
