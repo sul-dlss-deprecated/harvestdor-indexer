@@ -116,6 +116,15 @@ module Harvestdor
       ng_doc
     end
 
+    # the rightsMetadata for this DOR object, from the purl public xml
+    # @param [String] druid e.g. ab123cd4567
+    # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
+    def rights_metadata druid
+      ng_doc = harvestdor_client.rights_metadata druid
+      raise "No rightsMetadata for #{druid}" if !ng_doc || !ng_doc.root
+      ng_doc
+    end
+
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end

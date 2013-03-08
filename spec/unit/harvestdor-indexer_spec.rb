@@ -108,7 +108,8 @@ describe Harvestdor::Indexer do
     before(:all) do
       @id_md_xml = "<identityMetadata><objectId>druid:#{@fake_druid}</objectId></identityMetadata>"
       @cntnt_md_xml = "<contentMetadata type='image' objectId='#{@fake_druid}'>foo</contentMetadata>"
-      @pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}#{@cntnt_md_xml}</publicObject>"
+      @rights_md_xml = "<rightsMetadata><access type=\"discover\"><machine><world>bar</world></machine></access></rightsMetadata>"
+      @pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}#{@cntnt_md_xml}#{@rights_md_xml}</publicObject>"
       @ng_pub_xml = Nokogiri::XML(@pub_xml)
     end
     context "#public_xml" do
@@ -186,6 +187,32 @@ describe Harvestdor::Indexer do
       it "raises MissingIdentityMetadata error if there is no identityMetadata in the public_xml for the druid" do
         URI::HTTP.any_instance.should_receive(:open)
         expect { @indexer.identity_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingIdentityMetadata)
+      end
+    end
+    context "#rights_metadata" do
+      it "returns a Nokogiri::XML::Document derived from the public xml" do
+        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
+        im = @indexer.rights_metadata(@fake_druid)
+        im.should be_kind_of(Nokogiri::XML::Document)
+        im.root.should_not == nil
+        im.root.name.should == 'rightsMetadata'
+        im.root.text.strip.should == "bar"
+      end
+      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
+        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
+      end
+      it "should raise exception if there is no rightsMetadata in the public xml" do
+        pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@cntnt_md_xml}</publicObject>"
+        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(Nokogiri::XML(pub_xml))
+        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(RuntimeError, "No rightsMetadata for #{@fake_druid}")
+      end
+      it "raises RuntimeError if nil is returned by Harvestdor::Client.rightsMetadata for the druid" do
+        @hdor_client.should_receive(:rights_metadata).with(@fake_druid).and_return(nil)
+        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(RuntimeError, "No rightsMetadata for #{@fake_druid}")
+      end
+      it "raises MissingrightsMetadata error if there is no rightsMetadata in the public_xml for the druid" do
+        URI::HTTP.any_instance.should_receive(:open)
+        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingRightsMetadata)
       end
     end
   end
