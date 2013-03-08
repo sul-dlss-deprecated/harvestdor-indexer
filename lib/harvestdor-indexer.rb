@@ -125,6 +125,15 @@ module Harvestdor
       ng_doc
     end
 
+    # the RDF for this DOR object, from the purl public xml
+    # @param [String] druid e.g. ab123cd4567
+    # @return [Nokogiri::XML::Document] the RDF for the DOR object
+    def rdf druid
+      ng_doc = harvestdor_client.rdf druid
+      raise "No RDF for #{druid}" if !ng_doc || !ng_doc.root
+      ng_doc
+    end
+
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end
