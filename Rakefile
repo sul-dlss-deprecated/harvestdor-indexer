@@ -19,7 +19,8 @@ rescue Bundler::BundlerError => e
 end
 
 desc "DO NOT USE! use dlss_release"
-task :release
+task :release do
+end
 
 task :default => :ci  
 
