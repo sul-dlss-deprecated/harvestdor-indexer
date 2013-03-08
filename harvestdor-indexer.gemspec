@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'stanford-mods'
   
   # Runtime dependencies
-  # gem.add_runtime_dependency 'nokogiri'
+  gem.add_runtime_dependency 'confstruct'
 
   # Development dependencies
   # Bundler will install these gems too if you've checked out solrmarc-wrapper source from git and run 'bundle install'
