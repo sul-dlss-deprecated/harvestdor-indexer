@@ -98,6 +98,15 @@ module Harvestdor
       ng_doc
     end
     
+    # the contentMetadata for this DOR object, from the purl public xml
+    # @param [String] druid e.g. ab123cd4567
+    # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
+    def content_metadata druid
+      ng_doc = harvestdor_client.content_metadata druid
+      raise "No contentMetadata for #{druid}" if !ng_doc || !ng_doc.root
+      ng_doc
+    end
+    
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end

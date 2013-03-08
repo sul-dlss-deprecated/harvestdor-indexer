@@ -106,8 +106,8 @@ describe Harvestdor::Indexer do
   
   context "public_xml related methods" do
     before(:all) do
-      @id_md_xml = "<identityMetadata><objectId>druid:#{@fake_druid}</objectId></identityMetadata>"
-      @cntnt_md_xml = "<contentMetadata type='image' objectId='#{@fake_druid}'></contentMetadata>"
+      @id_md_xml = "<identityMetadata><objectId>druid:#{@fake_druid}</objectId>bar</identityMetadata>"
+      @cntnt_md_xml = "<contentMetadata type='image' objectId='#{@fake_druid}'>foo</contentMetadata>"
       @pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}#{@cntnt_md_xml}</publicObject>"
       @ng_pub_xml = Nokogiri::XML(@pub_xml)
     end
@@ -136,20 +136,30 @@ describe Harvestdor::Indexer do
       end
     end
     context "#content_metadata" do
+      require 'open-uri'
       it "returns a Nokogiri::XML::Document derived from the public xml" do
-        pending "to be implemented"
-        @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
-        @hdor_client.should_not_receive(:content_metadata)
-        cm = @indexer.content_metadata(@druid)
+        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
+        cm = @indexer.content_metadata(@fake_druid)
         cm.should be_kind_of(Nokogiri::XML::Document)
+        cm.root.should_not == nil
         cm.root.name.should == 'contentMetadata'
-        cm.root.attributes['objectId'].text.should == @druid
+        cm.root.attributes['objectId'].text.should == @fake_druid
+      end
+      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
+        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
       end
       it "should raise exception if there is no contentMetadata in the public xml" do
-        pending "to be implemented"
+        pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}</publicObject>"
+        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(Nokogiri::XML(pub_xml))
+        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(RuntimeError, "No contentMetadata for #{@fake_druid}")
       end
-      it "should raise exception if the contentMetadata is empty" do
-        pending "to be implemented"
+      it "raises RuntimeError if nil is returned by Harvestdor::Client.contentMetadata for the druid" do
+        @hdor_client.should_receive(:content_metadata).with(@fake_druid).and_return(nil)
+        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(RuntimeError, "No contentMetadata for #{@fake_druid}")
+      end
+      it "raises MissingContentMetadata error if there is no contentMetadata in the public_xml for the druid" do
+        URI::HTTP.any_instance.should_receive(:open)
+        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingContentMetadata)
       end
     end
     context "#identity_metadata" do
