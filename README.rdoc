@@ -108,6 +108,7 @@ I suggest you run your code on harvestdor-dev, as it is already set up to be abl
 
 == Releases
 
+* <b>0.0.6</b> tweak error handling for public xml pieces
 * <b>0.0.5</b> make rake release a no-op
 * <b>0.0.4</b> add confstruct runtime dependency
 * <b>0.0.3</b> add methods for public_xml, content_metadata, identity_metadata ...

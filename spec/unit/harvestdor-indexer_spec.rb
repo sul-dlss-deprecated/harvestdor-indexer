@@ -129,16 +129,13 @@ describe Harvestdor::Indexer do
         @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(Nokogiri::XML("<publicObject/>"))
         expect { @indexer.public_xml(@fake_druid) }.to raise_error(RuntimeError, Regexp.new("^Empty public xml for #{@fake_druid}: <"))
       end
-      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
-        expect { @indexer.public_xml(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
-      end
       it "raises error if there is no public_xml page for the druid" do
         @hdor_client.should_receive(:public_xml).with(@fake_druid).and_return(nil)
         expect { @indexer.public_xml(@fake_druid) }.to raise_error(RuntimeError, "No public xml for #{@fake_druid}")
       end
     end
     context "#content_metadata" do
-      it "returns a Nokogiri::XML::Document derived from the public xml" do
+      it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
         Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
         cm = @indexer.content_metadata(@fake_druid)
         cm.should be_kind_of(Nokogiri::XML::Document)
@@ -147,25 +144,23 @@ describe Harvestdor::Indexer do
         cm.root.attributes['objectId'].text.should == @fake_druid
         cm.root.text.strip.should == 'foo'
       end
-      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
-        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
-      end
-      it "should raise exception if there is no contentMetadata in the public xml" do
-        pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}</publicObject>"
-        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(Nokogiri::XML(pub_xml))
-        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(RuntimeError, "No contentMetadata for #{@fake_druid}")
+      it "if passed a Nokogiri::XML::Document of the public xml, it does no fetch" do
+        URI::HTTP.any_instance.should_not_receive(:open)
+        @hdor_client.should_receive(:content_metadata).and_call_original
+        cm = @indexer.content_metadata(@ng_pub_xml)
+        cm.should be_kind_of(Nokogiri::XML::Document)
+        cm.root.should_not == nil
+        cm.root.name.should == 'contentMetadata'
+        cm.root.attributes['objectId'].text.should == @fake_druid
+        cm.root.text.strip.should == 'foo'
       end
       it "raises RuntimeError if nil is returned by Harvestdor::Client.contentMetadata for the druid" do
         @hdor_client.should_receive(:content_metadata).with(@fake_druid).and_return(nil)
-        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(RuntimeError, "No contentMetadata for #{@fake_druid}")
-      end
-      it "raises MissingContentMetadata error if there is no contentMetadata in the public_xml for the druid" do
-        URI::HTTP.any_instance.should_receive(:open)
-        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingContentMetadata)
+        expect { @indexer.content_metadata(@fake_druid) }.to raise_error(RuntimeError, "No contentMetadata for \"#{@fake_druid}\"")
       end
     end
     context "#identity_metadata" do
-      it "returns a Nokogiri::XML::Document derived from the public xml" do
+      it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
         Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
         im = @indexer.identity_metadata(@fake_druid)
         im.should be_kind_of(Nokogiri::XML::Document)
@@ -173,25 +168,22 @@ describe Harvestdor::Indexer do
         im.root.name.should == 'identityMetadata'
         im.root.text.strip.should == "druid:#{@fake_druid}"
       end
-      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
-        expect { @indexer.identity_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
-      end
-      it "should raise exception if there is no identityMetadata in the public xml" do
-        pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@cntnt_md_xml}</publicObject>"
-        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(Nokogiri::XML(pub_xml))
-        expect { @indexer.identity_metadata(@fake_druid) }.to raise_error(RuntimeError, "No identityMetadata for #{@fake_druid}")
+      it "if passed a Nokogiri::XML::Document of the public xml, it does no fetch" do
+        URI::HTTP.any_instance.should_not_receive(:open)
+        @hdor_client.should_receive(:identity_metadata).and_call_original
+        im = @indexer.identity_metadata(@ng_pub_xml)
+        im.should be_kind_of(Nokogiri::XML::Document)
+        im.root.should_not == nil
+        im.root.name.should == 'identityMetadata'
+        im.root.text.strip.should == "druid:#{@fake_druid}"
       end
       it "raises RuntimeError if nil is returned by Harvestdor::Client.identityMetadata for the druid" do
         @hdor_client.should_receive(:identity_metadata).with(@fake_druid).and_return(nil)
-        expect { @indexer.identity_metadata(@fake_druid) }.to raise_error(RuntimeError, "No identityMetadata for #{@fake_druid}")
-      end
-      it "raises MissingIdentityMetadata error if there is no identityMetadata in the public_xml for the druid" do
-        URI::HTTP.any_instance.should_receive(:open)
-        expect { @indexer.identity_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingIdentityMetadata)
+        expect { @indexer.identity_metadata(@fake_druid) }.to raise_error(RuntimeError, "No identityMetadata for \"#{@fake_druid}\"")
       end
     end
     context "#rights_metadata" do
-      it "returns a Nokogiri::XML::Document derived from the public xml" do
+      it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
         Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
         im = @indexer.rights_metadata(@fake_druid)
         im.should be_kind_of(Nokogiri::XML::Document)
@@ -199,25 +191,13 @@ describe Harvestdor::Indexer do
         im.root.name.should == 'rightsMetadata'
         im.root.text.strip.should == "bar"
       end
-      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
-        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
-      end
-      it "should raise exception if there is no rightsMetadata in the public xml" do
-        pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@cntnt_md_xml}</publicObject>"
-        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(Nokogiri::XML(pub_xml))
-        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(RuntimeError, "No rightsMetadata for #{@fake_druid}")
-      end
       it "raises RuntimeError if nil is returned by Harvestdor::Client.rightsMetadata for the druid" do
         @hdor_client.should_receive(:rights_metadata).with(@fake_druid).and_return(nil)
-        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(RuntimeError, "No rightsMetadata for #{@fake_druid}")
-      end
-      it "raises MissingRightsMetadata error if there is no rightsMetadata in the public_xml for the druid" do
-        URI::HTTP.any_instance.should_receive(:open)
-        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingRightsMetadata)
+        expect { @indexer.rights_metadata(@fake_druid) }.to raise_error(RuntimeError, "No rightsMetadata for \"#{@fake_druid}\"")
       end
     end
     context "#rdf" do
-      it "returns a Nokogiri::XML::Document derived from the public xml" do
+      it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
         Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
         im = @indexer.rdf(@fake_druid)
         im.should be_kind_of(Nokogiri::XML::Document)
@@ -225,23 +205,11 @@ describe Harvestdor::Indexer do
         im.root.name.should == 'RDF'
         im.root.text.strip.should == "relationship!"
       end
-      it "raises Harvestdor::Errors::MissingPurlPage if there is no purl page for the druid" do
-        expect { @indexer.rdf(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingPurlPage)
-      end
-      it "should raise exception if there is no rdf in the public xml" do
-        pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@cntnt_md_xml}</publicObject>"
-        Harvestdor.stub(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(Nokogiri::XML(pub_xml))
-        expect { @indexer.rdf(@fake_druid) }.to raise_error(RuntimeError, "No RDF for #{@fake_druid}")
-      end
       it "raises RuntimeError if nil is returned by Harvestdor::Client.rdf for the druid" do
         @hdor_client.should_receive(:rdf).with(@fake_druid).and_return(nil)
-        expect { @indexer.rdf(@fake_druid) }.to raise_error(RuntimeError, "No RDF for #{@fake_druid}")
+        expect { @indexer.rdf(@fake_druid) }.to raise_error(RuntimeError, "No RDF for \"#{@fake_druid}\"")
       end
-      it "raises MissingRDF error if there is no rdf in the public_xml for the druid" do
-        URI::HTTP.any_instance.should_receive(:open)
-        expect { @indexer.rdf(@fake_druid) }.to raise_error(Harvestdor::Errors::MissingRDF)
-      end
-    end
+    end    
   end
   
   context "blacklist" do

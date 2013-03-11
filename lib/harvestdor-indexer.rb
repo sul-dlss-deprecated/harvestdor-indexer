@@ -98,39 +98,43 @@ module Harvestdor
       ng_doc
     end
     
-    # the contentMetadata for this DOR object, from the purl public xml
-    # @param [String] druid e.g. ab123cd4567
+    # the contentMetadata for this DOR object, ultimately from the purl public xml
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
-    def content_metadata druid
-      ng_doc = harvestdor_client.content_metadata druid
-      raise "No contentMetadata for #{druid}" if !ng_doc || !ng_doc.root
+    def content_metadata object
+      ng_doc = harvestdor_client.content_metadata object
+      raise "No contentMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
     
-    # the identityMetadata for this DOR object, from the purl public xml
-    # @param [String] druid e.g. ab123cd4567
+    # the identityMetadata for this DOR object, ultimately from the purl public xml
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
-    def identity_metadata druid
-      ng_doc = harvestdor_client.identity_metadata druid
-      raise "No identityMetadata for #{druid}" if !ng_doc || !ng_doc.root
+    def identity_metadata object
+      ng_doc = harvestdor_client.identity_metadata object
+      raise "No identityMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
-    # the rightsMetadata for this DOR object, from the purl public xml
-    # @param [String] druid e.g. ab123cd4567
+    # the rightsMetadata for this DOR object, ultimately from the purl public xml
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
-    def rights_metadata druid
-      ng_doc = harvestdor_client.rights_metadata druid
-      raise "No rightsMetadata for #{druid}" if !ng_doc || !ng_doc.root
+    def rights_metadata object
+      ng_doc = harvestdor_client.rights_metadata object
+      raise "No rightsMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
-    # the RDF for this DOR object, from the purl public xml
-    # @param [String] druid e.g. ab123cd4567
+    # the RDF for this DOR object, ultimately from the purl public xml
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the RDF for the DOR object
-    def rdf druid
-      ng_doc = harvestdor_client.rdf druid
-      raise "No RDF for #{druid}" if !ng_doc || !ng_doc.root
+    def rdf object
+      ng_doc = harvestdor_client.rdf object
+      raise "No RDF for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
