@@ -16,10 +16,13 @@ module Harvestdor
   class Indexer
 
     attr_accessor :error_count, :success_count
+    attr_accessor :total_time_to_parse,:total_time_to_solr
     
     def initialize yml_path, options = {}
       @success_count=0
       @error_count=0
+      @total_time_to_solr=0
+      @total_time_to_parse=0
       @yml_path = yml_path
       config.configure(YAML.load_file(yml_path)) if yml_path    
       config.configure options 
@@ -47,11 +50,19 @@ module Harvestdor
         whitelist.each { |druid| index druid }
       end
       solr_client.commit
-      end_time=Time.now
-      elapsed_time=((end_time-start_time)/60.0).round(1)
-      logger.info("Finished harvest_and_index at #{end_time}: final Solr commit returned.  Elapsed time: #{elapsed_time} minutes")
+      total_time=elapsed_time(start_time)
+      total_objects=@success_count+@error_count
+      logger.info("Finished harvest_and_index at #{Time.now}: final Solr commit returned")
+      logger.info("Total elapsed time for harvest and index: #{(total_time/60.0)} minutes")
+      logger.info("Avg solr commit time per object (successful): #{@total_time_to_solr/@success_count} seconds") unless (@total_time_to_solr == 0 || @success_count == 0)
+      logger.info("Avg solr commit time per object (all): #{@total_time_to_solr/total_objects} seconds") unless (@total_time_to_solr == 0 || @error_count == 0 || total_objects == 0)
+      logger.info("Avg parse time per object (successful): #{@total_time_to_parse/@success_count} seconds") unless (@total_time_to_parse == 0 || @success_count == 0)
+      logger.info("Avg parse time per object (all): #{@total_time_to_parse/total_objects} seconds") unless (@total_time_to_parse == 0 || @error_count == 0 || total_objects == 0)
+      logger.info("Avg complete index time per object (successful): #{total_time/@success_count} seconds") unless (@success_count == 0)
+      logger.info("Avg complete index time per object (all): #{total_time/total_objects} seconds") unless (@error_count == 0 || total_object == 0)
       logger.info("Successful count: #{@success_count}")
       logger.info("Error count: #{@error_count}")
+      logger.info("Total records processed: #{total_objects}")
     end
 
     # return Array of druids contained in the OAI harvest indicated by OAI params in yml configuration file
@@ -61,9 +72,7 @@ module Harvestdor
         start_time=Time.now
         logger.info("Starting OAI harvest of druids at #{start_time}.")  
         @druids = harvestdor_client.druids_via_oai
-        end_time=Time.now
-        elapsed_time=((end_time-start_time)/60.0).round(1)
-        logger.info("Completed OAI harves of druids at #{end_time}.  Found #{@druids.size} druids.  Elapsed time = #{elapsed_time} minutes")  
+        logger.info("Completed OAI harves of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
       end
       return @druids
     end
@@ -77,6 +86,8 @@ module Harvestdor
         logger.fatal("You must override the index method to transform druids into Solr docs and add them to Solr")
 
         begin
+          start_time=Time.now
+          logger.info("About to index #{druid} at #{start_time}")
           #logger.debug "About to index #{druid}"
           doc_hash = {}
           doc_hash[:id] = druid
@@ -87,12 +98,12 @@ module Harvestdor
 
           solr_client.add(doc_hash)
 
-          logger.info("Solr doc created for #{druid}")
+          logger.info("Indexed #{druid} in #{elapsed_time(start_time)} seconds")
           @success_count+=1
           # TODO: provide call to code to update DOR object's workflow datastream??
         rescue => e
           @error_count+=1
-          logger.error "Failed to index #{druid}: #{e.message}"
+          logger.error "Failed to index #{druid} in #{elapsed_time(start_time)} seconds: #{e.message}"
         end
       end
     end
@@ -101,7 +112,9 @@ module Harvestdor
     # @param [String] druid e.g. ab123cd4567
     # @return [Stanford::Mods::Record] created from the MODS xml for the druid
     def smods_rec druid
+      start_time=Time.now
       ng_doc = harvestdor_client.mods druid
+      logger.info("Fetched MODs for #{druid} in #{elapsed_time(start_time)} seconds")
       raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
       mods_rec = Stanford::Mods::Record.new
       mods_rec.from_nk_node(ng_doc.root)
@@ -112,7 +125,9 @@ module Harvestdor
     # @param [String] druid e.g. ab123cd4567
     # @return [Nokogiri::XML::Document] the public xml for the DOR object
     def public_xml druid
+      start_time=Time.now
       ng_doc = harvestdor_client.public_xml druid
+      logger.info("Fetched public_xml for #{druid} in #{elapsed_time(start_time)} seconds")
       raise "No public xml for #{druid}" if !ng_doc
       raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
       ng_doc
@@ -123,7 +138,9 @@ module Harvestdor
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
     def content_metadata object
+      start_time=Time.now
       ng_doc = harvestdor_client.content_metadata object
+      logger.info("Fetched content_metadata in #{elapsed_time(start_time)} seconds")      
       raise "No contentMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
@@ -133,7 +150,9 @@ module Harvestdor
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
     def identity_metadata object
+      start_time=Time.now
       ng_doc = harvestdor_client.identity_metadata object
+      logger.info("Fetched identity_metadata in #{elapsed_time(start_time)} seconds")      
       raise "No identityMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
@@ -143,7 +162,9 @@ module Harvestdor
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
     def rights_metadata object
+      start_time=Time.now
       ng_doc = harvestdor_client.rights_metadata object
+      logger.info("Fetched rights_metadata in #{elapsed_time(start_time)} seconds")      
       raise "No rightsMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
@@ -153,7 +174,9 @@ module Harvestdor
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the RDF for the DOR object
     def rdf object
+      start_time=Time.now      
       ng_doc = harvestdor_client.rdf object
+      logger.info("Fetched rdf in #{elapsed_time(start_time)} seconds")      
       raise "No RDF for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
@@ -186,6 +209,20 @@ module Harvestdor
       @harvestdor_client ||= Harvestdor::Client.new({:config_yml_path => @yml_path})
     end
 
+    def elapsed_time(start_time,units=:seconds)
+      elapsed_seconds=Time.now-start_time
+      case units
+      when :seconds
+        return elapsed_seconds.round(2)
+      when :minutes
+        return (elapsed_seconds/60.0).round(1)
+      when :hours
+        return (elapsed_seconds/3600.0).round(2)
+      else
+        return elapsed_seconds
+      end 
+    end
+    
     # populate @blacklist as an Array of druids ('oo000oo0000') that will NOT be processed
     #  by reading the File at the indicated path
     # @param [String] path - path of file containing a list of druids
