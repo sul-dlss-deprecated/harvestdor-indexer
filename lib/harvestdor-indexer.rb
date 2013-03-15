@@ -15,7 +15,11 @@ module Harvestdor
   # Base class to harvest from DOR via harvestdor gem and then index
   class Indexer
 
+    attr_accessor :error_count, :success_count
+    
     def initialize yml_path, options = {}
+      @success_count=0
+      @error_count=0
       @yml_path = yml_path
       config.configure(YAML.load_file(yml_path)) if yml_path    
       config.configure options 
@@ -35,19 +39,33 @@ module Harvestdor
     #   create a Solr profiling document for each druid
     #   write the result to the Solr index
     def harvest_and_index
+      start_time=Time.now
+      logger.info("Started harvest_and_index at #{start_time}")
       if whitelist.empty?
         druids.each { |druid| index druid }
       else
         whitelist.each { |druid| index druid }
       end
       solr_client.commit
-      logger.info("Finished processing: final Solr commit returned.")
+      end_time=Time.now
+      elapsed_time=((end_time-start_time)/60.0).round(1)
+      logger.info("Finished harvest_and_index at #{end_time}: final Solr commit returned.  Elapsed time: #{elapsed_time} minutes")
+      logger.info("Successful count: #{@success_count}")
+      logger.info("Error count: #{@error_count}")
     end
 
     # return Array of druids contained in the OAI harvest indicated by OAI params in yml configuration file
     # @return [Array<String>] or enumeration over it, if block is given.  (strings are druids, e.g. ab123cd1234)
     def druids
-      @druids ||= harvestdor_client.druids_via_oai
+      if @druids.nil?
+        start_time=Time.now
+        logger.info("Starting OAI harvest of druids at #{start_time}.")  
+        @druids = harvestdor_client.druids_via_oai
+        end_time=Time.now
+        elapsed_time=((end_time-start_time)/60.0).round(1)
+        logger.info("Completed OAI harves of druids at #{end_time}.  Found #{@druids.size} druids.  Elapsed time = #{elapsed_time} minutes")  
+      end
+      return @druids
     end
 
     # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
@@ -69,9 +87,11 @@ module Harvestdor
 
           solr_client.add(doc_hash)
 
-          # logger.debug("Just created Solr doc for #{druid}")
+          logger.info("Solr doc created for #{druid}")
+          @success_count+=1
           # TODO: provide call to code to update DOR object's workflow datastream??
         rescue => e
+          @error_count+=1
           logger.error "Failed to index #{druid}: #{e.message}"
         end
       end

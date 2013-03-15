@@ -32,7 +32,7 @@ describe Harvestdor::Indexer do
       }
     end
     it "should call druids_via_oai and then call :add on rsolr connection" do
-      @hdor_client.should_receive(:druids_via_oai).and_return([@fake_druid])
+      @indexer.should_receive(:druids).and_return([@fake_druid])
       @indexer.solr_client.should_receive(:add).with(@doc_hash)
       @indexer.solr_client.should_receive(:commit)
       @indexer.harvest_and_index
@@ -76,7 +76,7 @@ describe Harvestdor::Indexer do
   end
   
   it "druids method should call druids_via_oai method on harvestdor_client" do
-    @hdor_client.should_receive(:druids_via_oai)
+    @hdor_client.should_receive(:druids_via_oai).and_return([@fake_druid])
     @indexer.druids
   end
   
