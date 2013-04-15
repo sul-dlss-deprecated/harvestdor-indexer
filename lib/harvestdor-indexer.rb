@@ -17,7 +17,7 @@ module Harvestdor
 
     attr_accessor :error_count, :success_count
     attr_accessor :total_time_to_parse,:total_time_to_solr
-    
+
     def initialize yml_path, options = {}
       @success_count=0
       @error_count=0
@@ -77,6 +77,28 @@ module Harvestdor
       return @druids
     end
 
+    #add the document to solr, retry if an error occurs
+    def solr_add(doc, id, do_retry=true)
+      #if do_retry is false, skip retrying 
+      tries=do_retry ? 0 : 999
+      begin
+        tries+=1
+        solr_client.add(doc)
+        #return if successful
+        return
+      rescue => e
+        if tries<3
+          @retries+=1
+          logger.warn "#{id}: #{e.message}, retrying"
+        else
+          @errors+=1
+          logger.error "Failed saving #{id}: #{e.message}"
+          logger.error e.backtrace
+          return
+        end
+      end
+    end
+
     # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
     def index druid
@@ -132,7 +154,7 @@ module Harvestdor
       raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
       ng_doc
     end
-    
+
     # the contentMetadata for this DOR object, ultimately from the purl public xml
     # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
     #  a Nokogiri::XML::Document containing the public_xml for an object
@@ -144,7 +166,7 @@ module Harvestdor
       raise "No contentMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
-    
+
     # the identityMetadata for this DOR object, ultimately from the purl public xml
     # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
     #  a Nokogiri::XML::Document containing the public_xml for an object
@@ -222,7 +244,7 @@ module Harvestdor
         return elapsed_seconds
       end 
     end
-    
+
     # populate @blacklist as an Array of druids ('oo000oo0000') that will NOT be processed
     #  by reading the File at the indicated path
     # @param [String] path - path of file containing a list of druids
@@ -261,7 +283,7 @@ module Harvestdor
       logger.fatal msg
       raise msg
     end
-    
+
     # Global, memoized, lazy initialized instance of a logger
     # @param [String] log_dir directory for to get log file
     # @param [String] log_name name of log file
