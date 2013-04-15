@@ -21,6 +21,7 @@ module Harvestdor
     def initialize yml_path, options = {}
       @success_count=0
       @error_count=0
+      @retry_count=0
       @total_time_to_solr=0
       @total_time_to_parse=0
       @yml_path = yml_path
