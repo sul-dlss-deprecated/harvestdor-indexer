@@ -81,6 +81,7 @@ module Harvestdor
     def solr_add(doc, id, do_retry=true)
       #if do_retry is false, skip retrying 
       tries=do_retry ? 0 : 999
+      while tries < 3
       begin
         tries+=1
         solr_client.add(doc)
@@ -96,6 +97,7 @@ module Harvestdor
           logger.error e.backtrace
           return
         end
+      end
       end
     end
 
