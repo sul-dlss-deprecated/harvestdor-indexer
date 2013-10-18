@@ -15,13 +15,13 @@ module Harvestdor
   # Base class to harvest from DOR via harvestdor gem and then index
   class Indexer
 
-    attr_accessor :error_count, :success_count
+    attr_accessor :error_count, :success_count, :max_retries
     attr_accessor :total_time_to_parse,:total_time_to_solr
 
     def initialize yml_path, options = {}
-      @success_count=0
-      @error_count=0
-      @retry_count=0
+      @success_count=0    # the number of objects successfully indexed
+      @error_count=0      # the number of objects that failed
+      @max_retries=5      # the number of times to retry an object 
       @total_time_to_solr=0
       @total_time_to_parse=0
       @yml_path = yml_path
@@ -82,18 +82,17 @@ module Harvestdor
     def solr_add(doc, id, do_retry=true)
       #if do_retry is false, skip retrying 
       tries=do_retry ? 0 : 999
-      while tries < 3
+      while tries < @max_retries
       begin
         tries+=1
         solr_client.add(doc)
         #return if successful
         return
       rescue => e
-        if tries<3
-          @retries+=1
+        if tries<@max_retries
           logger.warn "#{id}: #{e.message}, retrying"
         else
-          @errors+=1
+          @error_count+=1
           logger.error "Failed saving #{id}: #{e.message}"
           logger.error e.backtrace
           return

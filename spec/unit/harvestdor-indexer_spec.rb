@@ -13,13 +13,29 @@ describe Harvestdor::Indexer do
     @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
   end
   
+  describe "access methods" do
+    it "initializes success count" do
+      @indexer.success_count.should == 0
+    end
+    it "initializes error count" do
+      @indexer.error_count.should == 0
+    end
+    it "initializes max_retries" do
+      @indexer.max_retries.should == 5
+    end
+    it "allows overriding of max_retries" do
+      @indexer.max_retries=6
+      @indexer.max_retries.should == 6
+    end
+  end
+  
   describe "logging" do
     it "should write the log file to the directory indicated by log_dir" do
       @indexer.logger.info("indexer_spec logging test message")
       File.exists?(File.join(@yaml['log_dir'], @yaml['log_name'])).should == true
     end
   end
-
+  
   it "should initialize the harvestdor_client from the config" do
     @hdor_client.should be_an_instance_of(Harvestdor::Client)
     @hdor_client.config.default_set.should == @yaml['default_set']
