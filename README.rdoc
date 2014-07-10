@@ -29,13 +29,22 @@ You must override the index method and provide configuration options.  It is rec
 
 Create a yml config file for your collection going to a Solr index.  
 
-See  spec/config/ap.yml for an example.
+Note: Because of an update to underlying HTTP libraries, versions of this gem > 0.0.12 require an updated syntax. Errors like "unknown method timeout" might be because you're using an older version of a config file. The new configuration looks like this:
 
+  http_options:
+    ssl:
+      verify: false
+    # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
+    request:
+      timeout: 180
+      open_timeout: 180
+
+See  spec/config/ap.yml for an example.
 You will want to copy that file and change the following settings:
 1. log_name
 2. default_set (in OAI harvesting params section)
-2a. other OAI harvesting params
-3. blacklist or whitelist if you are using them
+3. other OAI harvesting params
+4. blacklist or whitelist if you are using them
 
 You can also pass in non-default configurations as a hash
 
@@ -73,27 +82,23 @@ end
 
 I suggest you write a script to run the code.  Your script might look like this:
 
-	#!/usr/bin/env ruby
-
-	$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..'))
-	$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-
-	require 'rubygems'
-	begin
-	  require 'your_indexer'
-	rescue LoadError
-	  require 'bundler/setup'
-	  require 'your_indexer'
-	end
-
-	config_yml_path = ARGV.pop
-	if config_yml_path.nil?
-	  puts "** You must provide the full path to a config yml file **"
-	  exit
-	end
-  
-	indexer = Harvestdor::Indexer.new(config_yml_path, opts)
-	indexer.harvest_and_index
+  #!/usr/bin/env ruby
+  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..'))
+  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+  require 'rubygems'
+    begin
+      require 'your_indexer'
+    rescue LoadError
+      require 'bundler/setup'
+      require 'your_indexer'
+    end
+  config_yml_path = ARGV.pop
+  if config_yml_path.nil?
+    puts "** You must provide the full path to a config yml file **"
+    exit
+  end
+  indexer = Harvestdor::Indexer.new(config_yml_path, opts)
+  indexer.harvest_and_index
 
 Then you run the script like so:
 
