@@ -94,6 +94,7 @@ module Harvestdor
       rescue => e
         if tries<max_tries
           logger.warn "#{id}: #{e.message}, retrying"
+          logger.warn "Letting #{id} rest for 10 seconds..."
           sleep 10 # If we fail the first time, sleep 10 seconds and try again
         else
           @error_count+=1
