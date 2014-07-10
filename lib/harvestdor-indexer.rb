@@ -78,7 +78,9 @@ module Harvestdor
       return @druids
     end
 
-    #add the document to solr, retry if an error occurs
+    # Add the document to solr, retry if an error occurs.
+    # @param [Hash] doc a Hash representation of the solr document
+    # @param [String] id the id of the document being sent, for logging
     def solr_add(doc, id, do_retry=true)
       #if do_retry is false, skip retrying 
       tries=do_retry ? 0 : 999

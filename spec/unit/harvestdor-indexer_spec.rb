@@ -13,6 +13,24 @@ describe Harvestdor::Indexer do
     @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
   end
   
+  # The method that sends the solr document to solr
+  describe "#solr_add" do
+    before(:each) do
+      doc_hash = {
+        :modsxml => 'whatever',
+        :title_display => 'title',
+        :pub_year_tisim => 'some year',
+        :author_person_display => 'author',
+        :format => 'Image',
+        :language => 'English'
+      }
+    end
+    it "sends an add request to the solr_client" do
+      expect(@indexer.solr_client).to receive(:add)
+      @indexer.solr_add(@doc_hash, "abc123")
+    end
+  end
+  
   describe "access methods" do
     it "initializes success count" do
       @indexer.success_count.should == 0
