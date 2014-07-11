@@ -89,7 +89,6 @@ module Harvestdor
       begin
         tries+=1
         solr_client.add(doc)
-        logger.info "Indexing try #{tries} for #{id}"
         #return if successful
         return
       rescue => e
