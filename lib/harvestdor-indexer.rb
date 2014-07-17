@@ -88,14 +88,14 @@ module Harvestdor
       while tries < max_tries
       begin
         tries+=1
+        logger.info "Try #{tries} for #{id}"
         solr_client.add(doc)
-        logger.warn "Try #{tries} for #{id}"
         #return if successful
         return
       rescue => e
         if tries<max_tries
           logger.warn "#{id}: #{e.message}, retrying"
-          logger.warn "Letting #{id} rest for 10 seconds..."
+          logger.warn "Letting #{id} rest for 20 seconds..."
           sleep 20 # If we fail the first time, sleep 20 seconds and try again
         else
           @error_count+=1
