@@ -84,18 +84,19 @@ module Harvestdor
     def solr_add(doc, id, do_retry=true)
       #if do_retry is false, skip retrying 
       tries=do_retry ? 0 : 999
-      max_tries=@max_retries ? @max_retries : 5 #if @max_retries isn't set, use 5
+      max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
       while tries < max_tries
       begin
         tries+=1
         solr_client.add(doc)
+        logger.warn "Try #{tries} for #{id}"
         #return if successful
         return
       rescue => e
         if tries<max_tries
           logger.warn "#{id}: #{e.message}, retrying"
           logger.warn "Letting #{id} rest for 10 seconds..."
-          sleep 10 # If we fail the first time, sleep 10 seconds and try again
+          sleep 20 # If we fail the first time, sleep 20 seconds and try again
         else
           @error_count+=1
           logger.error "Failed saving #{id}: #{e.message}"
