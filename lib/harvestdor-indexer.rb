@@ -95,8 +95,13 @@ module Harvestdor
       rescue => e
         if tries<max_tries
           logger.warn "#{id}: #{e.message}, retrying"
-          logger.warn "Letting #{id} rest for 20 seconds..."
-          sleep 20 # If we fail the first time, sleep 20 seconds and try again
+          # Instead of hard coding a length of time to wait before retrying, wait a random length of time.
+          # This should alleviate the problem where the threads are competing for the same resources.
+          # The "can not set IO blocking after select" errors we sometimes get are because threads are 
+          # attempting to grab the same socket. This should space things out.
+          retry_wait = Random.new.rand(10..25)
+          logger.warn "Letting #{id} rest for #{retry_wait} seconds..."
+          sleep retry_wait # If we fail the first time, sleep and try again
         else
           @error_count+=1
           logger.error "Failed saving #{id}: #{e.message}"
