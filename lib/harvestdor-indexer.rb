@@ -99,7 +99,7 @@ module Harvestdor
           # This should alleviate the problem where the threads are competing for the same resources.
           # The "can not set IO blocking after select" errors we sometimes get are because threads are 
           # attempting to grab the same socket. This should space things out.
-          retry_wait = Random.new.rand(10..25)
+          retry_wait = Random.new.rand(5..10)
           logger.warn "Letting #{id} rest for #{retry_wait} seconds..."
           sleep retry_wait # If we fail the first time, sleep and try again
         else
