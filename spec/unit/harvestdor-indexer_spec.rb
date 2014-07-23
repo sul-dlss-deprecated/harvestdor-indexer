@@ -13,6 +13,24 @@ describe Harvestdor::Indexer do
     @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
   end
   
+  # The method that sends the solr document to solr
+  describe "#solr_add" do
+    before(:each) do
+      doc_hash = {
+        :modsxml => 'whatever',
+        :title_display => 'title',
+        :pub_year_tisim => 'some year',
+        :author_person_display => 'author',
+        :format => 'Image',
+        :language => 'English'
+      }
+    end
+    it "sends an add request to the solr_client" do
+      expect(@indexer.solr_client).to receive(:add)
+      @indexer.solr_add(@doc_hash, "abc123")
+    end
+  end
+  
   describe "access methods" do
     it "initializes success count" do
       @indexer.success_count.should == 0
@@ -33,6 +51,19 @@ describe Harvestdor::Indexer do
     it "should write the log file to the directory indicated by log_dir" do
       @indexer.logger.info("indexer_spec logging test message")
       File.exists?(File.join(@yaml['log_dir'], @yaml['log_name'])).should == true
+    end
+    it "by default logs at INFO level" do
+      indexer = Harvestdor::Indexer.new(@config_yml_path)
+      expect(indexer.logger.level).to eql(Logger::INFO)
+    end
+    it "can set log levels easily" do
+      indexer = Harvestdor::Indexer.new(@config_yml_path)
+      indexer.set_log_level(Logger::WARN)
+      expect(indexer.logger.level).to eql(Logger::WARN)
+    end
+    it "can set log levels from a config" do
+      indexer = Harvestdor::Indexer.new(nil, Confstruct::Configuration.new(:log_level => Logger::FATAL, :log_dir => '/tmp/foo', :log_name => 'mylog'))
+      expect(indexer.logger.level).to eql(Logger::FATAL)
     end
   end
   
