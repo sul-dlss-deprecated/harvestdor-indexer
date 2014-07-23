@@ -91,7 +91,7 @@ module Harvestdor
         logger.info "Try #{tries} for #{id}"
         solr_client.add(doc)
         #return if successful
-        logger.info "Successfully indexed #{id} on try #{tries}"
+        logger.debug "Successfully indexed #{id} on try #{tries}"
         return
       rescue => e
         if tries<max_tries
