@@ -11,6 +11,10 @@ log_dir: spec/test_logs
 # log_name: name of log file  (default: harvestdor.log)
 log_name: ap-test.log
 
+# log_level: level of logging for this collection
+# possible values are 0 (Logger::DEBUG), 1 (Logger::INFO), 2 (Logger::WARN), 3 (Logger::ERROR)
+# log_level: 0
+
 # purl: url for the DOR purl server (used to get ContentMetadata, etc.)
 purl: http://purl.stanford.edu
 
