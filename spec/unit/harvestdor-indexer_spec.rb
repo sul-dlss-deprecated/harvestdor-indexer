@@ -52,19 +52,6 @@ describe Harvestdor::Indexer do
       @indexer.logger.info("indexer_spec logging test message")
       File.exists?(File.join(@yaml['log_dir'], @yaml['log_name'])).should == true
     end
-    it "by default logs at INFO level" do
-      indexer = Harvestdor::Indexer.new(@config_yml_path)
-      expect(indexer.logger.level).to eql(Logger::INFO)
-    end
-    it "can set log levels easily" do
-      indexer = Harvestdor::Indexer.new(@config_yml_path)
-      indexer.set_log_level(Logger::WARN)
-      expect(indexer.logger.level).to eql(Logger::WARN)
-    end
-    it "can set log levels from a config" do
-      indexer = Harvestdor::Indexer.new(nil, Confstruct::Configuration.new(:log_level => Logger::FATAL, :log_dir => '/tmp/foo', :log_name => 'mylog'))
-      expect(indexer.logger.level).to eql(Logger::FATAL)
-    end
   end
   
   it "should initialize the harvestdor_client from the config" do

@@ -17,7 +17,6 @@ module Harvestdor
 
     attr_accessor :error_count, :success_count, :max_retries
     attr_accessor :total_time_to_parse,:total_time_to_solr
-    attr_reader   :log_level
 
     def initialize yml_path, options = {}
       @success_count=0    # the number of objects successfully indexed
@@ -28,7 +27,6 @@ module Harvestdor
       @yml_path = yml_path
       config.configure(YAML.load_file(yml_path)) if yml_path    
       config.configure options 
-      @log_level = config.log_level ? config.log_level : Logger::INFO
       yield(config) if block_given?
     end
 
@@ -37,16 +35,7 @@ module Harvestdor
     end
 
     def logger
-      @logger ||= load_logger(config.log_dir, config.log_name, @log_level)
-    end
-    
-    
-    # Set the log level
-    # @param [Integer] level Valid values are Logger::DEBUG, Logger::INFO, Logger::WARN, Logger::FATAL
-    def set_log_level(level)
-      @logger = logger unless(@logger) # Initialize @logger if it hasn't happened yet
-      @log_level = level
-      @logger.level = level
+      @logger ||= load_logger(config.log_dir, config.log_name)
     end
 
     # per this Indexer's config options 
@@ -84,7 +73,7 @@ module Harvestdor
         start_time=Time.now
         logger.info("Starting OAI harvest of druids at #{start_time}.")  
         @druids = harvestdor_client.druids_via_oai
-        logger.info("Completed OAI harvest of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
+        logger.info("Completed OAI harves of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
       end
       return @druids
     end
@@ -92,7 +81,6 @@ module Harvestdor
     # Add the document to solr, retry if an error occurs.
     # @param [Hash] doc a Hash representation of the solr document
     # @param [String] id the id of the document being sent, for logging
-    # @param [Boolean] do_retry whether or not to attempt a re-try if an error is encountered
     def solr_add(doc, id, do_retry=true)
       #if do_retry is false, skip retrying 
       tries=do_retry ? 0 : 999
@@ -100,7 +88,7 @@ module Harvestdor
       while tries < max_tries
       begin
         tries+=1
-        logger.debug "Try #{tries} for #{id}"
+        logger.info "Try #{tries} for #{id}"
         solr_client.add(doc)
         #return if successful
         logger.info "Successfully indexed #{id} on try #{tries}"
@@ -113,7 +101,7 @@ module Harvestdor
           # The "can not set IO blocking after select" errors we sometimes get are because threads are 
           # attempting to grab the same socket. This should space things out.
           retry_wait = Random.new.rand(5..10)
-          logger.debug "Letting #{id} rest for #{retry_wait} seconds..."
+          logger.warn "Letting #{id} rest for #{retry_wait} seconds..."
           sleep retry_wait # If we fail the first time, sleep and try again
         else
           @error_count+=1
@@ -127,7 +115,6 @@ module Harvestdor
 
     # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
-    # @param [String] druid
     def index druid
       if blacklist.include?(druid)
         logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
@@ -314,18 +301,9 @@ module Harvestdor
     # Global, memoized, lazy initialized instance of a logger
     # @param [String] log_dir directory for to get log file
     # @param [String] log_name name of log file
-    # @param [Integer] log_level One of Logger::DEBUG, Logger::INFO, etc. See http://www.ruby-doc.org/stdlib-2.0/libdoc/logger/rdoc/Logger/Severity.html
-    def load_logger(log_dir, log_name, log_level=@log_level)
-      # Check for log_dir and log_name
-      throw "No log_dir value set" unless log_dir
-      throw "No log_name value set" unless log_name
+    def load_logger(log_dir, log_name)
       Dir.mkdir(log_dir) unless File.directory?(log_dir) 
-      @logger ||= 
-        begin
-          log = Logger.new(File.join(log_dir, log_name), 'daily')
-          log.level = log_level
-          log
-        end
+      @logger ||= Logger.new(File.join(log_dir, log_name), 'daily')
     end
 
   end # Indexer class
