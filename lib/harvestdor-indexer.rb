@@ -1,6 +1,7 @@
 # external gems
 require 'confstruct'
 require 'rsolr'
+require 'retries'
 
 # sul-dlss gems
 require 'harvestdor'
@@ -21,7 +22,7 @@ module Harvestdor
     def initialize yml_path, options = {}
       @success_count=0    # the number of objects successfully indexed
       @error_count=0      # the number of objects that failed
-      @max_retries=5      # the number of times to retry an object 
+      @max_retries=10      # the number of times to retry an object 
       @total_time_to_solr=0
       @total_time_to_parse=0
       @yml_path = yml_path
@@ -81,36 +82,45 @@ module Harvestdor
     # Add the document to solr, retry if an error occurs.
     # @param [Hash] doc a Hash representation of the solr document
     # @param [String] id the id of the document being sent, for logging
-    def solr_add(doc, id, do_retry=true)
-      #if do_retry is false, skip retrying 
-      tries=do_retry ? 0 : 999
+    def solr_add(doc, id)
       max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
-      while tries < max_tries
-      begin
-        tries+=1
-        logger.info "Try #{tries} for #{id}"
+      
+      with_retries(:max_tries => max_tries, :base_sleep_seconds => 1, :max_sleep_seconds => 5) do |attempt|
+        logger.debug "Attempt #{attempt} for #{id}"
         solr_client.add(doc)
-        #return if successful
-        logger.debug "Successfully indexed #{id} on try #{tries}"
-        return
-      rescue => e
-        if tries<max_tries
-          logger.warn "#{id}: #{e.message}, retrying"
-          # Instead of hard coding a length of time to wait before retrying, wait a random length of time.
-          # This should alleviate the problem where the threads are competing for the same resources.
-          # The "can not set IO blocking after select" errors we sometimes get are because threads are 
-          # attempting to grab the same socket. This should space things out.
-          retry_wait = Random.new.rand(5..10)
-          logger.warn "Letting #{id} rest for #{retry_wait} seconds..."
-          sleep retry_wait # If we fail the first time, sleep and try again
-        else
-          @error_count+=1
-          logger.error "Failed saving #{id}: #{e.message}"
-          logger.error e.backtrace
-          return
-        end
+        logger.info "Successfully indexed #{id} on attempt #{attempt}"
       end
-      end
+      rescue Exception => e
+        logger.warn "Encountered #{e.class} for #{id} on attempt #{attempt}"
+      #if do_retry is false, skip retrying 
+      # tries=do_retry ? 0 : 999
+      # max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
+      # while tries < max_tries
+      # begin
+      #   tries+=1
+      #   logger.info "Try #{tries} for #{id}"
+      #   solr_client.add(doc)
+      #   #return if successful
+      #   logger.debug "Successfully indexed #{id} on try #{tries}"
+      #   return
+      # rescue => e
+      #   if tries<max_tries
+      #     logger.warn "#{id}: #{e.message}, retrying"
+      #     # Instead of hard coding a length of time to wait before retrying, wait a random length of time.
+      #     # This should alleviate the problem where the threads are competing for the same resources.
+      #     # The "can not set IO blocking after select" errors we sometimes get are because threads are 
+      #     # attempting to grab the same socket. This should space things out.
+      #     retry_wait = Random.new.rand(5..10)
+      #     logger.warn "Letting #{id} rest for #{retry_wait} seconds..."
+      #     sleep retry_wait # If we fail the first time, sleep and try again
+      #   else
+      #     @error_count+=1
+      #     logger.error "Failed saving #{id}: #{e.message}"
+      #     logger.error e.backtrace
+      #     return
+      #   end
+      # end
+      # end
     end
 
     # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  

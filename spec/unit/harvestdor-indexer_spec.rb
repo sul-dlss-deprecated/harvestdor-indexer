@@ -39,7 +39,7 @@ describe Harvestdor::Indexer do
       @indexer.error_count.should == 0
     end
     it "initializes max_retries" do
-      @indexer.max_retries.should == 5
+      expect(@indexer.max_retries).to eql(10)
     end
     it "allows overriding of max_retries" do
       @indexer.max_retries=6

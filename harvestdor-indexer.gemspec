@@ -18,9 +18,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   
   gem.add_dependency 'rsolr'
-
-  # sul-gems
-  gem.add_dependency 'harvestdor'
+  gem.add_dependency 'retries'
+  gem.add_dependency 'harvestdor', "0.0.12"
   gem.add_dependency 'stanford-mods'
   
   # Runtime dependencies
