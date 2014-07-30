@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency 'rsolr'
   gem.add_dependency 'retries'
-  gem.add_dependency 'harvestdor', "0.0.12"
+  gem.add_dependency 'harvestdor', '>=0.0.14'
   gem.add_dependency 'stanford-mods'
   
   # Runtime dependencies
