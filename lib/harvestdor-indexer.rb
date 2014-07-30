@@ -87,7 +87,7 @@ module Harvestdor
       max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
       
       handler = Proc.new do |exception, attempt_number, total_delay|
-        logger.debug "#{exception.class} on retry attempt #{attempt_number} for #{id}"
+        logger.debug "#{exception.class} on attempt #{attempt_number} for #{id}"
         # logger.debug exception.backtrace
       end
       
