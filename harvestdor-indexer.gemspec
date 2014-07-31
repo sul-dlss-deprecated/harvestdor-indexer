@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency 'rsolr'
 
-  # sul-gems
+  # sul-dlss gems
   gem.add_dependency 'harvestdor'
   gem.add_dependency 'stanford-mods'
   
@@ -29,15 +29,13 @@ Gem::Specification.new do |gem|
   # Development dependencies
   # Bundler will install these gems too if you've checked out solrmarc-wrapper source from git and run 'bundle install'
   # It will not add these as dependencies if you require solrmarc-wrapper for other projects
-  gem.add_development_dependency "lyberteam-gems-devel", ">= 1.0"
   gem.add_development_dependency "rake"
   # docs
   gem.add_development_dependency "rdoc"
   gem.add_development_dependency "yard"
   # tests
 	gem.add_development_dependency 'rspec'
-	gem.add_development_dependency 'simplecov'
-	gem.add_development_dependency 'simplecov-rcov'
+	gem.add_development_dependency 'coveralls'
 	# gem.add_development_dependency 'ruby-debug19'
   
 end
