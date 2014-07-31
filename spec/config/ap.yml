@@ -57,5 +57,6 @@ http_options:
   ssl:
     verify: false
   # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
-  timeout: 180
-  open_timeout: 180
+  request:
+    timeout: 180
+    open_timeout: 180

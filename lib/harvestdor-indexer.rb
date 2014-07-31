@@ -1,6 +1,7 @@
 # external gems
 require 'confstruct'
 require 'rsolr'
+require 'retries'
 
 # sul-dlss gems
 require 'harvestdor'
@@ -21,7 +22,7 @@ module Harvestdor
     def initialize yml_path, options = {}
       @success_count=0    # the number of objects successfully indexed
       @error_count=0      # the number of objects that failed
-      @max_retries=5      # the number of times to retry an object 
+      @max_retries=10      # the number of times to retry an object 
       @total_time_to_solr=0
       @total_time_to_parse=0
       @yml_path = yml_path
@@ -78,27 +79,22 @@ module Harvestdor
       return @druids
     end
 
-    #add the document to solr, retry if an error occurs
-    def solr_add(doc, id, do_retry=true)
-      #if do_retry is false, skip retrying 
-      tries=do_retry ? 0 : 999
-      max_tries=@max_retries ? @max_retries : 5 #if @max_retries isn't set, use 5
-      while tries < max_tries
-      begin
-        tries+=1
-        solr_client.add(doc)
-        #return if successful
-        return
-      rescue => e
-        if tries<max_tries
-          logger.warn "#{id}: #{e.message}, retrying"
-        else
-          @error_count+=1
-          logger.error "Failed saving #{id}: #{e.message}"
-          logger.error e.backtrace
-          return
-        end
+    # Add the document to solr, retry if an error occurs.
+    # See https://github.com/ooyala/retries for docs on with_retries.
+    # @param [Hash] doc a Hash representation of the solr document
+    # @param [String] id the id of the document being sent, for logging
+    def solr_add(doc, id)
+      max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
+      
+      handler = Proc.new do |exception, attempt_number, total_delay|
+        logger.debug "#{exception.class} on attempt #{attempt_number} for #{id}"
+        # logger.debug exception.backtrace
       end
+      
+      with_retries(:max_tries => max_tries, :handler => handler, :base_sleep_seconds => 1, :max_sleep_seconds => 5) do |attempt|
+        logger.debug "Attempt #{attempt} for #{id}"
+        solr_client.add(doc)
+        logger.info "Successfully indexed #{id} on attempt #{attempt}"
       end
     end
 
