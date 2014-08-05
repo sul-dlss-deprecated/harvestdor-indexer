@@ -118,6 +118,7 @@ I suggest you run your code on harvestdor-dev, as it is already set up to be abl
 
 == Releases
 
+* <b>0.0.13</b> Upgrade to latest faraday HTTP client syntax; Use retries gem (https://github.com/ooyala/retries) to make retrying of index process more robust
 * <b>0.0.12</b> fix total_object nil error
 * <b>0.0.11</b> fix error_count and success_count, allow setting of max-tries (retry solr add if error)
 * <b>0.0.7</b> adding additional logging of error, success counts, and time to index and harvest
