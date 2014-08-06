@@ -1,6 +1,8 @@
 = Harvestdor::Indexer
 {<img src="https://travis-ci.org/sul-dlss/harvestdor-indexer.svg" alt="Build Status" />}[https://travis-ci.org/sul-dlss/harvestdor-indexer]
-{<img src="https://coveralls.io/repos/sul-dlss/harvestdor-indexer/badge.png" alt="Coverage Status" />}[https://coveralls.io/r/sul-dlss/harvestdor-indexer]{<img src="https://gemnasium.com/sul-dlss/harvestdor-indexer.svg" alt="Dependency Status" />}[https://gemnasium.com/sul-dlss/harvestdor-indexer]{<img src="https://badge.fury.io/rb/harvestdor-indexer.svg" alt="Gem Version" />}[http://badge.fury.io/rb/harvestdor-indexer]
+{<img src="https://coveralls.io/repos/sul-dlss/harvestdor-indexer/badge.png" alt="Coverage Status" />}[https://coveralls.io/r/sul-dlss/harvestdor-indexer]
+{<img src="https://gemnasium.com/sul-dlss/harvestdor-indexer.svg" alt="Dependency Status" />}[https://gemnasium.com/sul-dlss/harvestdor-indexer]
+{<img src="https://badge.fury.io/rb/harvestdor-indexer.svg" alt="Gem Version" />}[http://badge.fury.io/rb/harvestdor-indexer]
 
 
 
