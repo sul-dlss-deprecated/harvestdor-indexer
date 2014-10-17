@@ -114,6 +114,16 @@ describe Harvestdor::Indexer do
     @indexer.druids
   end
   
+  # Check for replacement of oai harvesting with dor-fetcher
+  it "has a dor-fetcher client" do
+    expect(@indexer.dor_fetcher_client).to be_an_instance_of(DorFetcher::Client)
+  end 
+
+  it "druids method should call druids_via_fetcher method" do
+    @fetcher_client.should_receive(:get_collection)
+    @indexer.druids
+  end
+
   context "smods_rec method" do
     before(:all) do
       @fake_druid = 'oo000oo0000'

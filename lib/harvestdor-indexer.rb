@@ -6,6 +6,7 @@ require 'retries'
 # sul-dlss gems
 require 'harvestdor'
 require 'stanford-mods'
+require 'dor-fetcher'
 
 # stdlib
 require 'logger'
@@ -18,6 +19,7 @@ module Harvestdor
 
     attr_accessor :error_count, :success_count, :max_retries
     attr_accessor :total_time_to_parse,:total_time_to_solr
+    attr_accessor :dor_fetcher_client
 
     def initialize yml_path, options = {}
       @success_count=0    # the number of objects successfully indexed
@@ -28,6 +30,7 @@ module Harvestdor
       @yml_path = yml_path
       config.configure(YAML.load_file(yml_path)) if yml_path    
       config.configure options 
+      @dor_fetcher_client=DorFetcher::Client.new()
       yield(config) if block_given?
     end
 
