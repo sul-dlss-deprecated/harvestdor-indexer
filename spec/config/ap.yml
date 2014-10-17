@@ -1,7 +1,6 @@
 # You will want to copy this file and change the following settings:
 # 1. log_dir, log_name
-# 2. default_set (in OAI harvesting params section)
-#  2a. other OAI harvesting params
+# 2. default_set
 # 3. blacklist or whitelist if you are using them
 # 4. Solr baseurl
 
@@ -16,8 +15,9 @@ purl: http://purl.stanford.edu
 
 # ---------- White and Black list parameters -----
 
-# name of file containing druids that will NOT be processed even if they are harvested via OAI
-#  either give absolute path or path relative to where the command will be executed
+# name of file containing druids that will NOT be processed even if they are harvested 
+#  via DorFetcher either give absolute path or path relative to where the command will 
+#  be executed
 #blacklist: config/ap_blacklist.txt
 
 # name of file containing druids that WILL be processed (all others will be ignored)
@@ -32,14 +32,9 @@ solr:
   read_timeout: 60
   open_timeout: 60
 
-# ---------- OAI harvesting parameters -----------
-
-# oai_repository_url:  URL of the OAI data provider
-oai_repository_url: https://dor-oaiprovider-prod.stanford.edu/oai
-
 # default_set:  default set for harvest  (default: nil)
 #   can be overridden on calls to harvest_ids and harvest_records
-default_set: is_governed_by_hy787xj5878
+default_set: is_governed_by_yg867hg1375
 
 # default_metadata_prefix:  default metadata prefix to be used for harvesting  (default: mods)
 #   can be overridden on calls to harvest_ids and harvest_records
@@ -49,8 +44,6 @@ default_set: is_governed_by_hy787xj5878
 
 # default_until_date:  default until date for harvest  (default: nil)
 #   can be overridden on calls to harvest_ids and harvest_records
-
-# oai_client_debug:  true for OAI::Client debug mode  (default: false)
 
 # Additional options to pass to Faraday http client (https://github.com/technoweenie/faraday)
 http_options:

@@ -6,5 +6,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'harvestdor-indexer'
 
-#RSpec.configure do |config|
-#end
+require 'vcr'
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
+  c.hook_into :webmock
+end
