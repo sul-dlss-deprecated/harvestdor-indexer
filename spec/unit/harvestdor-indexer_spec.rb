@@ -136,9 +136,7 @@ describe Harvestdor::Indexer do
       end
 
       it "druids method should call get_collection method on fetcher_client" do
-        puts @indexer.dor_fetcher_client.inspect
-        expect(@indexer.dor_fetcher_client).to receive(:druid_array)
-        @indexer.druids
+         expect(@indexer.druids).to eq(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
       end
 
   end # ending replacing OAI context

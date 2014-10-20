@@ -2,6 +2,7 @@
 require 'confstruct'
 require 'rsolr'
 require 'retries'
+require 'json'
 
 # sul-dlss gems
 require 'harvestdor'
@@ -30,7 +31,7 @@ module Harvestdor
       @yml_path = yml_path
       config.configure(YAML.load_file(yml_path)) if yml_path    
       config.configure options 
-      @dor_fetcher_client=DorFetcher::Client.new()
+      @dor_fetcher_client=DorFetcher::Client.new
       yield(config) if block_given?
     end
 
@@ -77,14 +78,7 @@ module Harvestdor
         start_time=Time.now
         logger.info("Starting OAI harvest of druids at #{start_time}.")  
         
-        puts "!!!!!!!!!!!!!!"
-        puts @dor_fetcher_client.get_collection(strip_default_set_string(), {})
-        puts "!!!!!!!!!!!!!!"
-        puts @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
-        puts "!!!!!!!!!!!!!!"
-        
-        @driuds = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
-        puts "WE GOT HERE"
+        @druids = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
         logger.info("Completed OAI harvest of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
       end
       return @druids
