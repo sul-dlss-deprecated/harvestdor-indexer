@@ -76,8 +76,16 @@ module Harvestdor
       if @druids.nil?
         start_time=Time.now
         logger.info("Starting OAI harvest of druids at #{start_time}.")  
-        @druids = harvestdor_client.druids_via_oai
-        logger.info("Completed OAI harves of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
+        
+        puts "!!!!!!!!!!!!!!"
+        puts @dor_fetcher_client.get_collection(strip_default_set_string(), {})
+        puts "!!!!!!!!!!!!!!"
+        puts @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
+        puts "!!!!!!!!!!!!!!"
+        
+        @driuds = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
+        puts "WE GOT HERE"
+        logger.info("Completed OAI harvest of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
       end
       return @druids
     end
@@ -225,6 +233,12 @@ module Harvestdor
         @whitelist = load_whitelist(config.whitelist) if config.whitelist
       end
       @whitelist ||= []
+    end
+
+    # Get only the druid from the end of the default_set string
+    # from the yml file
+    def strip_default_set_string()
+      @config.default_set.split('_').last
     end
 
     protected #---------------------------------------------------------------------

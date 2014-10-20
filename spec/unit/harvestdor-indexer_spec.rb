@@ -115,14 +115,33 @@ describe Harvestdor::Indexer do
   end
   
   # Check for replacement of oai harvesting with dor-fetcher
-  it "has a dor-fetcher client" do
-    expect(@indexer.dor_fetcher_client).to be_an_instance_of(DorFetcher::Client)
-  end 
+  context "replacing OAI harvesting with dor-fetcher" do
+      before(:each) do
+        @config_yml_path = File.join(File.dirname(__FILE__), "..", "config", "ap.yml")
+        @indexer = Harvestdor::Indexer.new(@config_yml_path)
+        require 'yaml'
+        @yaml = YAML.load_file(@config_yml_path)
+        @hdor_client = @indexer.send(:harvestdor_client)
+        @fake_druid = 'oo000oo0000'
+        @blacklist_path = File.join(File.dirname(__FILE__), "../config/ap_blacklist.txt")
+        @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
+      end
 
-  it "druids method should call druids_via_fetcher method" do
-    @fetcher_client.should_receive(:get_collection)
-    @indexer.druids
-  end
+      it "has a dor-fetcher client" do
+        expect(@indexer.dor_fetcher_client).to be_an_instance_of(DorFetcher::Client)
+      end 
+
+      it "should strip off is_member_of_collection_ and is_governed_by_ and return only the druid" do
+        expect(@indexer.strip_default_set_string()).to eql("yg867hg1375")
+      end
+
+      it "druids method should call get_collection method on fetcher_client" do
+        puts @indexer.dor_fetcher_client.inspect
+        expect(@indexer.dor_fetcher_client).to receive(:druid_array)
+        @indexer.druids
+      end
+
+  end # ending replacing OAI context
 
   context "smods_rec method" do
     before(:all) do
