@@ -39,7 +39,7 @@ oai_repository_url: https://dor-oaiprovider-prod.stanford.edu/oai
 
 # default_set:  default set for harvest  (default: nil)
 #   can be overridden on calls to harvest_ids and harvest_records
-default_set: is_governed_by_hy787xj5878
+default_set: is_governed_by_yg867hg1375
 
 # default_metadata_prefix:  default metadata prefix to be used for harvesting  (default: mods)
 #   can be overridden on calls to harvest_ids and harvest_records
