@@ -65,7 +65,7 @@ describe Harvestdor::Indexer do
         :id => @fake_druid
       }
     end
-    it "should call druids_via_oai and then call :add on rsolr connection" do
+    it "should call dor_fetcher_client.druid_array and then call :add on rsolr connection" do
       @indexer.should_receive(:druids).and_return([@fake_druid])
       @indexer.solr_client.should_receive(:add).with(@doc_hash)
       @indexer.solr_client.should_receive(:commit)
@@ -74,7 +74,7 @@ describe Harvestdor::Indexer do
     it "should not process druids in blacklist" do
       indexer = Harvestdor::Indexer.new(@config_yml_path, {:blacklist => @blacklist_path})
       hdor_client = indexer.send(:harvestdor_client)
-      hdor_client.should_receive(:druids_via_oai).and_return(['oo000oo0000', 'oo111oo1111', 'oo222oo2222', 'oo333oo3333'])
+      indexer.dor_fetcher_client.should_receive(:druid_array).and_return(['oo000oo0000', 'oo111oo1111', 'oo222oo2222', 'oo333oo3333'])
       indexer.solr_client.should_receive(:add).with(hash_including({:id => 'oo000oo0000'}))
       indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'oo111oo1111'}))
       indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'oo222oo2222'}))
@@ -85,7 +85,7 @@ describe Harvestdor::Indexer do
     it "should only process druids in whitelist if it exists" do
       indexer = Harvestdor::Indexer.new(@config_yml_path, {:whitelist => @whitelist_path})
       hdor_client = indexer.send(:harvestdor_client)
-      hdor_client.should_not_receive(:druids_via_oai)
+      indexer.dor_fetcher_client.should_not_receive(:druid_array)
       indexer.solr_client.should_receive(:add).with(hash_including({:id => 'oo000oo0000'}))
       indexer.solr_client.should_receive(:add).with(hash_including({:id => 'oo222oo2222'}))
       indexer.solr_client.should_receive(:commit)
@@ -94,7 +94,7 @@ describe Harvestdor::Indexer do
     it "should not process druid if it is in both blacklist and whitelist" do
       indexer = Harvestdor::Indexer.new(@config_yml_path, {:blacklist => @blacklist_path, :whitelist => @whitelist_path})
       hdor_client = indexer.send(:harvestdor_client)
-      hdor_client.should_not_receive(:druids_via_oai)
+      indexer.dor_fetcher_client.should_not_receive(:druid_array)
       indexer.solr_client.should_receive(:add).with(hash_including({:id => 'oo000oo0000'}))
       indexer.solr_client.should_receive(:commit)
       indexer.harvest_and_index
@@ -102,16 +102,11 @@ describe Harvestdor::Indexer do
     it "should only call :commit on rsolr connection once" do
       indexer = Harvestdor::Indexer.new(@config_yml_path)
       hdor_client = indexer.send(:harvestdor_client)
-      hdor_client.should_receive(:druids_via_oai).and_return(['1', '2', '3'])
+      indexer.dor_fetcher_client.should_receive(:druid_array).and_return(['1', '2', '3'])
       indexer.solr_client.should_receive(:add).exactly(3).times
       indexer.solr_client.should_receive(:commit).once
       indexer.harvest_and_index
     end
-  end
-  
-  it "druids method should call druids_via_oai method on harvestdor_client" do
-    @hdor_client.should_receive(:druids_via_oai).and_return([@fake_druid])
-    @indexer.druids
   end
   
   # Check for replacement of oai harvesting with dor-fetcher
@@ -290,7 +285,7 @@ describe Harvestdor::Indexer do
         indexer.should_not_receive(:load_blacklist)
 
         hdor_client = indexer.send(:harvestdor_client)
-        hdor_client.should_receive(:druids_via_oai).and_return([@fake_druid])
+        indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
         indexer.solr_client.should_receive(:add)
         indexer.solr_client.should_receive(:commit)
         indexer.harvest_and_index
@@ -327,7 +322,7 @@ describe Harvestdor::Indexer do
         indexer.should_not_receive(:load_whitelist)
 
         hdor_client = indexer.send(:harvestdor_client)
-        hdor_client.should_receive(:druids_via_oai).and_return([@fake_druid])
+        indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
         indexer.solr_client.should_receive(:add)
         indexer.solr_client.should_receive(:commit)
         indexer.harvest_and_index
