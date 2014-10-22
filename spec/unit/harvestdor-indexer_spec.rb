@@ -134,6 +134,11 @@ describe Harvestdor::Indexer do
          expect(@indexer.druids).to eq(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
       end
 
+      it "druids method should call druid_array method on dor_fetcher_client" do
+        @indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
+        @indexer.druids
+      end
+
   end # ending replacing OAI context
 
   context "smods_rec method" do
