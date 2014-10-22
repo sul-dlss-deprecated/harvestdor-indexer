@@ -77,7 +77,6 @@ module Harvestdor
       if @druids.nil?
         start_time=Time.now
         logger.info("Starting OAI harvest of druids at #{start_time}.")  
-        
         @druids = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
         logger.info("Completed OAI harvest of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
       end
