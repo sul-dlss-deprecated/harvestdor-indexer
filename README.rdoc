@@ -4,9 +4,6 @@
 {<img src="https://gemnasium.com/sul-dlss/harvestdor-indexer.svg" alt="Dependency Status" />}[https://gemnasium.com/sul-dlss/harvestdor-indexer]
 {<img src="https://badge.fury.io/rb/harvestdor-indexer.svg" alt="Gem Version" />}[http://badge.fury.io/rb/harvestdor-indexer]
 
-
-
-
 A Gem to harvest meta/data from DOR and the skeleton code to index it and write to Solr.
 
 == Installation
@@ -47,9 +44,7 @@ You will want to copy that file and change the following settings:
 2. default_set
 3. blacklist or whitelist if you are using them
 
-You can also pass in non-default configurations as a hash
-
-  indexer = Harvestdor::Indexer.new({:default_from_date => '2012-12-01'})
+Update the dor-fetcher-client.yml file in the config directory with the location of the URL of the dor-fetcher-service provider.  The defaulted value is the 3000 port for a localhost - dor_fetcher_service_url: http://127.0.0.1:3000
 
 === Override the Harvestdor::Indexer.index method
 
@@ -95,7 +90,11 @@ I suggest you write a script to run the code.  Your script might look like this:
     end
   config_yml_path = ARGV.pop
   if config_yml_path.nil?
-    puts "** You must provide the full path to a config yml file **"
+    puts "** You must provide the full path to a collection config yml file **"
+    exit
+  end
+  if client_config_path.nil?
+    puts "** You must provide the full path to dor-fetcher-client config yml file **"
     exit
   end
   indexer = Harvestdor::Indexer.new(config_yml_path, client_config_path, opts)
