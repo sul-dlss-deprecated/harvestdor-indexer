@@ -106,7 +106,7 @@ Then you run the script like so:
 
 	 ./bin/indexer config/(your coll).yml
 
-I suggest you run your code on harvestdor-dev, as it is already set up to be able to harvest from the DOR OAI provider
+I suggest you run your code on harvestdor-dev, as it is already set up to be able to harvest from the DorFetcher
 
 
 == Contributing

@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://127.0.0.1:3000/collection/yg867hg1375
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: 'OK '
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - '"682afec57f678e4d153a5841b21395dd"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 0954c447-9cb9-4eeb-8020-d87f13098f07
+      X-Runtime:
+      - '0.006736'
+      Server:
+      - WEBrick/1.3.1 (Ruby/2.1.2/2014-05-08)
+      Date:
+      - Wed, 22 Oct 2014 18:42:32 GMT
+      Content-Length:
+      - '1121'
+      Connection:
+      - Keep-Alive
+    body:
+      encoding: US-ASCII
+      string: '{"collection":[{"druid":"druid:yg867hg1375","latest_change":"2013-11-11T23:34:29Z","title":["Francis
+        E. Stafford photographs, 1909-1933"]}],"item":[{"druid":"druid:jf275fd6276","latest_change":"2013-11-11T23:34:29Z","title":["Album
+        A: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
+        social customs, and people."]},{"druid":"druid:nz353cp1092","latest_change":"2013-11-11T23:34:29Z","title":["Album
+        E: Photographs of the Seventh Day Adventist Church missionaries in China"]},{"druid":"druid:tc552kq0798","latest_change":"2013-11-11T23:34:29Z","title":["Album
+        D: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
+        social customs, and people."]},{"druid":"druid:th998nk0722","latest_change":"2013-11-11T23:34:29Z","title":["Album
+        C: Photographs of the Chinese Revolution of 1911 and the Shanghai Commercial
+        Press"]},{"druid":"druid:ww689vs6534","latest_change":"2013-11-11T23:34:29Z","title":["Album
+        B: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
+        social customs, and people."]}],"counts":[{"collection":1},{"item":5},{"total_count":6}]}'
+    http_version:
+  recorded_at: Wed, 22 Oct 2014 18:42:32 GMT
+recorded_with: VCR 2.9.3

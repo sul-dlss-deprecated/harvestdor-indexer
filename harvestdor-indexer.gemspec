@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'retries'
   gem.add_dependency 'harvestdor', '>=0.0.14'
   gem.add_dependency 'stanford-mods'
+  gem.add_dependency 'dor-fetcher', '>=1.0.0'
   
   # Runtime dependencies
   gem.add_runtime_dependency 'confstruct'
@@ -36,5 +37,7 @@ Gem::Specification.new do |gem|
 	gem.add_development_dependency 'rspec'
 	gem.add_development_dependency 'coveralls'
 	# gem.add_development_dependency 'ruby-debug19'
+  gem.add_development_dependency 'vcr'
+  gem.add_development_dependency 'webmock'
   
 end

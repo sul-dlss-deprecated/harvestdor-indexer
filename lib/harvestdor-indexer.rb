@@ -2,10 +2,12 @@
 require 'confstruct'
 require 'rsolr'
 require 'retries'
+require 'json'
 
 # sul-dlss gems
 require 'harvestdor'
 require 'stanford-mods'
+require 'dor-fetcher'
 
 # stdlib
 require 'logger'
@@ -18,8 +20,9 @@ module Harvestdor
 
     attr_accessor :error_count, :success_count, :max_retries
     attr_accessor :total_time_to_parse,:total_time_to_solr
+    attr_accessor :dor_fetcher_client, :client_config
 
-    def initialize yml_path, options = {}
+    def initialize yml_path, client_config_path, options = {}
       @success_count=0    # the number of objects successfully indexed
       @error_count=0      # the number of objects that failed
       @max_retries=10      # the number of times to retry an object 
@@ -27,8 +30,10 @@ module Harvestdor
       @total_time_to_parse=0
       @yml_path = yml_path
       config.configure(YAML.load_file(yml_path)) if yml_path    
-      config.configure options 
+      config.configure options
       yield(config) if block_given?
+      @client_config = YAML.load_file(client_config_path) if client_config_path && File.exists?(client_config_path)
+      @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"]})
     end
 
     def config
@@ -40,7 +45,7 @@ module Harvestdor
     end
 
     # per this Indexer's config options 
-    #  harvest the druids via OAI
+    #  harvest the druids via DorFetcher
     #   create a Solr profiling document for each druid
     #   write the result to the Solr index
     def harvest_and_index
@@ -67,14 +72,14 @@ module Harvestdor
       logger.info("Total records processed: #{total_objects}")
     end
 
-    # return Array of druids contained in the OAI harvest indicated by OAI params in yml configuration file
+    # return Array of druids contained in the DorFetcher pulling indicated by DorFetcher params
     # @return [Array<String>] or enumeration over it, if block is given.  (strings are druids, e.g. ab123cd1234)
     def druids
       if @druids.nil?
         start_time=Time.now
-        logger.info("Starting OAI harvest of druids at #{start_time}.")  
-        @druids = harvestdor_client.druids_via_oai
-        logger.info("Completed OAI harves of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for OAI harvest = #{elapsed_time(start_time,:minutes)} minutes")  
+        logger.info("Starting DorFetcher pulling of druids at #{start_time}.")  
+        @druids = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
+        logger.info("Completed DorFetcher pulling of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for DorFetcher pulling = #{elapsed_time(start_time,:minutes)} minutes")  
       end
       return @druids
     end
@@ -222,6 +227,12 @@ module Harvestdor
         @whitelist = load_whitelist(config.whitelist) if config.whitelist
       end
       @whitelist ||= []
+    end
+
+    # Get only the druid from the end of the default_set string
+    # from the yml file
+    def strip_default_set_string()
+      @config.default_set.split('_').last
     end
 
     protected #---------------------------------------------------------------------
