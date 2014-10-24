@@ -6,8 +6,8 @@ require 'harvestdor-indexer/version'
 Gem::Specification.new do |gem|
   gem.name          = "harvestdor-indexer"
   gem.version       = Harvestdor::Indexer::VERSION
-  gem.authors       = ["Naomi Dushay"]
-  gem.email         = ["ndushay@stanford.edu"]
+  gem.authors       = ["Naomi Dushay", "Bess Sadler", "Laney McGlohon"]
+  gem.email         = ["ndushay@stanford.edu", "bess@stanford.edu", "laneymcg@stanford.edu"]
   gem.description   = %q{Harvest DOR object metadata via a relationship (e.g. hydra:isGovernedBy rdf:resource="info:fedora/druid:hy787xj5878") and dates, plus code framework to write Solr docs to index}
   gem.summary       = %q{Harvest DOR object metadata and index it to Solr}
   gem.homepage      = "https://consul.stanford.edu/display/chimera/Chimera+project"

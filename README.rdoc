@@ -44,13 +44,12 @@ Note: Because of an update to underlying HTTP libraries, versions of this gem > 
 See  spec/config/ap.yml for an example.
 You will want to copy that file and change the following settings:
 1. log_name
-2. default_set (in OAI harvesting params section)
-3. other OAI harvesting params
-4. blacklist or whitelist if you are using them
+2. default_set
+3. blacklist or whitelist if you are using them
 
 You can also pass in non-default configurations as a hash
 
-  indexer = Harvestdor::Indexer.new({:oai_repository_url => 'http://my_oai.org, :default_from_date => '2012-12-01'})
+  indexer = Harvestdor::Indexer.new({:default_from_date => '2012-12-01'})
 
 === Override the Harvestdor::Indexer.index method
 
@@ -99,7 +98,7 @@ I suggest you write a script to run the code.  Your script might look like this:
     puts "** You must provide the full path to a config yml file **"
     exit
   end
-  indexer = Harvestdor::Indexer.new(config_yml_path, opts)
+  indexer = Harvestdor::Indexer.new(config_yml_path, client_config_path, opts)
   indexer.harvest_and_index
 
 Then you run the script like so:
@@ -120,6 +119,7 @@ I suggest you run your code on harvestdor-dev, as it is already set up to be abl
 
 == Releases
 
+* <b>1.0.0</b> Replaced OAI harvesting mechanism with dor-fetcher
 * <b>0.0.13</b> Upgrade to latest faraday HTTP client syntax; Use retries gem (https://github.com/ooyala/retries) to make retrying of index process more robust
 * <b>0.0.12</b> fix total_object nil error
 * <b>0.0.11</b> fix error_count and success_count, allow setting of max-tries (retry solr add if error)
