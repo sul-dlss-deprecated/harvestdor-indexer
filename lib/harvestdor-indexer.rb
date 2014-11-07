@@ -22,29 +22,37 @@ module Harvestdor
     attr_accessor :total_time_to_parse,:total_time_to_solr
     attr_accessor :dor_fetcher_client, :client_config
 
+    # Class level config variable
+    @@config ||= Confstruct::Configuration.new()
+
     def initialize yml_path, client_config_path, options = {}
       @success_count=0    # the number of objects successfully indexed
       @error_count=0      # the number of objects that failed
-      @max_retries=10      # the number of times to retry an object 
+      @max_retries=10      # the number of times to retry an object
       @total_time_to_solr=0
       @total_time_to_parse=0
       @yml_path = yml_path
-      config.configure(YAML.load_file(yml_path)) if yml_path    
+      config.configure(YAML.load_file(yml_path)) if yml_path
       config.configure options
       yield(config) if block_given?
       @client_config = YAML.load_file(client_config_path) if client_config_path && File.exists?(client_config_path)
       @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"]})
     end
 
+    # to allow class level access to config variables for record_merger and solr_doc_builder
+    #  (rather than passing a lot of params to constructor)
+    def self.config
+      @@config ||= Confstruct::Configuration.new()
+    end
     def config
-      @config ||= Confstruct::Configuration.new()
+      Indexer.config
     end
 
     def logger
       @logger ||= load_logger(config.log_dir, config.log_name)
     end
 
-    # per this Indexer's config options 
+    # per this Indexer's config options
     #  harvest the druids via DorFetcher
     #   create a Solr profiling document for each druid
     #   write the result to the Solr index
@@ -77,9 +85,9 @@ module Harvestdor
     def druids
       if @druids.nil?
         start_time=Time.now
-        logger.info("Starting DorFetcher pulling of druids at #{start_time}.")  
+        logger.info("Starting DorFetcher pulling of druids at #{start_time}.")
         @druids = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
-        logger.info("Completed DorFetcher pulling of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for DorFetcher pulling = #{elapsed_time(start_time,:minutes)} minutes")  
+        logger.info("Completed DorFetcher pulling of druids at #{Time.now}.  Found #{@druids.size} druids.  Total elapsed time for DorFetcher pulling = #{elapsed_time(start_time,:minutes)} minutes")
       end
       return @druids
     end
@@ -90,12 +98,12 @@ module Harvestdor
     # @param [String] id the id of the document being sent, for logging
     def solr_add(doc, id)
       max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
-      
+
       handler = Proc.new do |exception, attempt_number, total_delay|
         logger.debug "#{exception.class} on attempt #{attempt_number} for #{id}"
         # logger.debug exception.backtrace
       end
-      
+
       with_retries(:max_tries => max_tries, :handler => handler, :base_sleep_seconds => 1, :max_sleep_seconds => 5) do |attempt|
         logger.debug "Attempt #{attempt} for #{id}"
         solr_client.add(doc)
@@ -103,7 +111,7 @@ module Harvestdor
       end
     end
 
-    # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
+    # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
     def index druid
       if blacklist.include?(druid)
@@ -160,49 +168,49 @@ module Harvestdor
     end
 
     # the contentMetadata for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
     def content_metadata object
       start_time=Time.now
       ng_doc = harvestdor_client.content_metadata object
-      logger.info("Fetched content_metadata in #{elapsed_time(start_time)} seconds")      
+      logger.info("Fetched content_metadata in #{elapsed_time(start_time)} seconds")
       raise "No contentMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
     # the identityMetadata for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
     def identity_metadata object
       start_time=Time.now
       ng_doc = harvestdor_client.identity_metadata object
-      logger.info("Fetched identity_metadata in #{elapsed_time(start_time)} seconds")      
+      logger.info("Fetched identity_metadata in #{elapsed_time(start_time)} seconds")
       raise "No identityMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
     # the rightsMetadata for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
     def rights_metadata object
       start_time=Time.now
       ng_doc = harvestdor_client.rights_metadata object
-      logger.info("Fetched rights_metadata in #{elapsed_time(start_time)} seconds")      
+      logger.info("Fetched rights_metadata in #{elapsed_time(start_time)} seconds")
       raise "No rightsMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
     # the RDF for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
+    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or
     #  a Nokogiri::XML::Document containing the public_xml for an object
     # @return [Nokogiri::XML::Document] the RDF for the DOR object
     def rdf object
-      start_time=Time.now      
+      start_time=Time.now
       ng_doc = harvestdor_client.rdf object
-      logger.info("Fetched rdf in #{elapsed_time(start_time)} seconds")      
+      logger.info("Fetched rdf in #{elapsed_time(start_time)} seconds")
       raise "No RDF for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
@@ -232,7 +240,7 @@ module Harvestdor
     # Get only the druid from the end of the default_set string
     # from the yml file
     def strip_default_set_string()
-      @config.default_set.split('_').last
+      Indexer.config.default_set.split('_').last
     end
 
     protected #---------------------------------------------------------------------
@@ -252,7 +260,7 @@ module Harvestdor
         return (elapsed_seconds/3600.0).round(2)
       else
         return elapsed_seconds
-      end 
+      end
     end
 
     # populate @blacklist as an Array of druids ('oo000oo0000') that will NOT be processed
@@ -281,7 +289,7 @@ module Harvestdor
     # @param [String] path - path of file containing a list of druids
     # @return [Array<String>] an Array of druids
     def load_id_list path
-      if path 
+      if path
         list = []
         f = File.open(path).each_line { |line|
           list << line.gsub(/\s+/, '') if !line.gsub(/\s+/, '').empty? && !line.strip.start_with?('#')
@@ -298,7 +306,7 @@ module Harvestdor
     # @param [String] log_dir directory for to get log file
     # @param [String] log_name name of log file
     def load_logger(log_dir, log_name)
-      Dir.mkdir(log_dir) unless File.directory?(log_dir) 
+      Dir.mkdir(log_dir) unless File.directory?(log_dir)
       @logger ||= Logger.new(File.join(log_dir, log_name), 'daily')
     end
 
