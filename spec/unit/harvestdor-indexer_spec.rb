@@ -88,38 +88,44 @@ describe Harvestdor::Indexer do
 
     it "should not process druids in blacklist" do
       VCR.use_cassette('ignore_druids_in_blacklist_call') do
-        indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path})
-        hdor_client = indexer.send(:harvestdor_client)
-        indexer.dor_fetcher_client.should_receive(:druid_array).and_return(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
-        indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
-        indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-        indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'druid:tc552kq0798'}))
-        indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:th998nk0722'}))
-        indexer.solr_client.should_receive(:commit)
-        indexer.harvest_and_index
+        lambda{
+          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path})
+          hdor_client = indexer.send(:harvestdor_client)
+          indexer.dor_fetcher_client.should_receive(:druid_array).and_return(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
+          indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
+          indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
+          indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'druid:tc552kq0798'}))
+          indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:th998nk0722'}))
+          indexer.solr_client.should_receive(:commit)
+          indexer.harvest_and_index
+        }
       end
     end
     it "should not process druid if it is in both blacklist and whitelist" do
       VCR.use_cassette('ignore_druids_in_blacklist_and_whitelist_call') do
-        indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path, :whitelist => @whitelist_path})
-        hdor_client = indexer.send(:harvestdor_client)
-        indexer.dor_fetcher_client.should_not_receive(:druid_array)
-        indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
-        indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-        indexer.solr_client.should_receive(:commit)
-        indexer.harvest_and_index
+        lambda{
+          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path, :whitelist => @whitelist_path})
+          hdor_client = indexer.send(:harvestdor_client)
+          indexer.dor_fetcher_client.should_not_receive(:druid_array)
+          indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
+          indexer.solr_client.should_not_receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
+          indexer.solr_client.should_receive(:commit)
+          indexer.harvest_and_index
+        }
       end
     end
     it "should only process druids in whitelist if it exists" do
       VCR.use_cassette('process_druids_whitelist_call') do
-        indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => @whitelist_path})
-        hdor_client = indexer.send(:harvestdor_client)
-        indexer.dor_fetcher_client.should_not_receive(:druid_array)
-        indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
-        indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-        indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
-        indexer.solr_client.should_receive(:commit)
-        indexer.harvest_and_index
+        lambda{
+          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => @whitelist_path})
+          hdor_client = indexer.send(:harvestdor_client)
+          indexer.dor_fetcher_client.should_not_receive(:druid_array)
+          indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
+          indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
+          indexer.solr_client.should_receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
+          indexer.solr_client.should_receive(:commit)
+          indexer.harvest_and_index
+        }
       end
     end
 
@@ -290,21 +296,29 @@ describe Harvestdor::Indexer do
     it "should be empty Array if there was no blacklist config setting" do
       VCR.use_cassette('empty_array_no_blacklist_config_call') do
         indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
-        indexer.send(:blacklist).should == []
+        expect(indexer.blacklist).to eq([])
       end
     end
     context "load_blacklist" do
+      it "knows what is in the blacklist" do
+        VCR.use_cassette('know_what_is_in_blacklist_call') do
+          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path})
+          expect(indexer.blacklist).to eq(["druid:jf275fd6276", "druid:tc552kq0798"])
+        end
+      end
       it "should not be called if there was no blacklist config setting" do
         VCR.use_cassette('no_blacklist_config_call') do
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+          lambda{
+            indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
 
-          indexer.should_not_receive(:load_blacklist)
+            indexer.should_not_receive(:load_blacklist)
 
-          hdor_client = indexer.send(:harvestdor_client)
-          indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
-          indexer.solr_client.should_receive(:add)
-          indexer.solr_client.should_receive(:commit)
-          indexer.harvest_and_index
+            hdor_client = indexer.send(:harvestdor_client)
+            indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
+            indexer.solr_client.should_receive(:add)
+            indexer.solr_client.should_receive(:commit)
+            indexer.harvest_and_index
+          }
         end
       end
       it "should only try to load a blacklist once" do
@@ -327,6 +341,14 @@ describe Harvestdor::Indexer do
   end # blacklist
   
   context "whitelist" do
+    it "knows what is in the whitelist" do
+      VCR.use_cassette('know_what_is_in_whitelist_call') do
+        lambda{
+          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => @whitelist_path})
+          expect(indexer.whitelist).to eq(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092"])
+        }     
+      end
+    end
     it "should be an Array with an entry for each non-empty line in the file" do
       @indexer.send(:load_whitelist, @whitelist_path)
       @indexer.send(:whitelist).should be_an_instance_of(Array)
@@ -334,22 +356,26 @@ describe Harvestdor::Indexer do
     end
     it "should be empty Array if there was no whitelist config setting" do
       VCR.use_cassette('empty_array_no_whitelist_config_call') do
-        indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
-        indexer.send(:whitelist).should == []
+        lambda{
+          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+          expect(indexer.whitelist).to eq([])
+        }
       end
     end
     context "load_whitelist" do
       it "should not be called if there was no whitelist config setting" do
         VCR.use_cassette('no_whitelist_config_call') do
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+          lambda{
+            indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
 
-          indexer.should_not_receive(:load_whitelist)
+            indexer.should_not_receive(:load_whitelist)
 
-          hdor_client = indexer.send(:harvestdor_client)
-          indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
-          indexer.solr_client.should_receive(:add)
-          indexer.solr_client.should_receive(:commit)
-          indexer.harvest_and_index
+            hdor_client = indexer.send(:harvestdor_client)
+            indexer.dor_fetcher_client.should_receive(:druid_array).and_return([@fake_druid])
+            indexer.solr_client.should_receive(:add)
+            indexer.solr_client.should_receive(:commit)
+            indexer.harvest_and_index
+          }
         end
       end
       it "should only try to load a whitelist once" do

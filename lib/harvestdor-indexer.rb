@@ -22,6 +22,10 @@ module Harvestdor
     attr_accessor :total_time_to_parse,:total_time_to_solr
     attr_accessor :dor_fetcher_client, :client_config
 
+
+    # Class level config variable
+    @@config ||= Confstruct::Configuration.new()
+
     def initialize yml_path, client_config_path, options = {}
       @success_count=0    # the number of objects successfully indexed
       @error_count=0      # the number of objects that failed
@@ -36,8 +40,14 @@ module Harvestdor
       @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"]})
     end
 
+    # to allow class level access to config variables for record_merger and solr_doc_builder
+    #  (rather than passing a lot of params to constructor)
+    def self.config
+      @@config ||= Confstruct::Configuration.new()
+    end
+
     def config
-      @config ||= Confstruct::Configuration.new()
+      Indexer.config
     end
 
     def logger
@@ -232,7 +242,7 @@ module Harvestdor
     # Get only the druid from the end of the default_set string
     # from the yml file
     def strip_default_set_string()
-      @config.default_set.split('_').last
+      Indexer.config.default_set.split('_').last
     end
 
     protected #---------------------------------------------------------------------
