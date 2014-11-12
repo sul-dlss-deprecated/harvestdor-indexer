@@ -58,8 +58,8 @@ describe Harvestdor::Indexer do
   end
   
   it "should initialize the harvestdor_client from the config" do
-    @hdor_client.should be_an_instance_of(Harvestdor::Client)
-    @hdor_client.config.default_set.should == @yaml['default_set']
+    expect(@hdor_client).to be_an_instance_of(Harvestdor::Client)
+    expect(@hdor_client.config.default_set).to eq(@yaml['default_set'])
   end
   
   context "harvest_and_index" do
