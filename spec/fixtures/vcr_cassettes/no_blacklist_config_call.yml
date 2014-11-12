@@ -8,9 +8,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
-      Accept-Encoding:
-      - gzip, deflate
+      - '*/*'
       User-Agent:
       - Ruby
   response:
@@ -25,7 +23,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       Content-Type:
-      - application/xml; charset=utf-8
+      - text/html; charset=utf-8
       Etag:
       - '"444bcb3a3fcf8389296c49467f27e1d6"'
       Cache-Control:
@@ -33,9 +31,9 @@ http_interactions:
       X-Meta-Request-Version:
       - 0.3.4
       X-Request-Id:
-      - 0a1789f5-6f54-44bd-8b6a-1f2de9c5bf04
+      - db91305e-e0d6-4592-8c5e-53fcb059e835
       X-Runtime:
-      - '0.004213'
+      - '0.004390'
       Connection:
       - close
       Server:
@@ -44,18 +42,16 @@ http_interactions:
       encoding: US-ASCII
       string: ok
     http_version:
-  recorded_at: Wed, 12 Nov 2014 18:56:38 GMT
+  recorded_at: Wed, 12 Nov 2014 19:34:03 GMT
 - request:
     method: get
-    uri: http://127.0.0.1:3000/collections/yg867hg1375/
+    uri: http://127.0.0.1:3000/collections/yg867hg1375
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Accept:
-      - '*/*; q=0.5, application/xml'
-      Accept-Encoding:
-      - gzip, deflate
+      - '*/*'
       User-Agent:
       - Ruby
   response:
@@ -78,9 +74,9 @@ http_interactions:
       X-Meta-Request-Version:
       - 0.3.4
       X-Request-Id:
-      - 9bf0631e-999f-43f8-b76d-9d37bcaba1ba
+      - 0f35c477-8bf5-4c7d-859b-f87a9007e873
       X-Runtime:
-      - '0.010030'
+      - '0.010236'
       Connection:
       - close
       Server:
@@ -99,5 +95,5 @@ http_interactions:
         B: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
         social customs, and people."}],"counts":{"collections":1,"items":5,"total_count":6}}'
     http_version:
-  recorded_at: Wed, 12 Nov 2014 18:56:38 GMT
+  recorded_at: Wed, 12 Nov 2014 19:34:03 GMT
 recorded_with: VCR 2.9.3
