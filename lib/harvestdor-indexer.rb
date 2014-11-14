@@ -37,7 +37,8 @@ module Harvestdor
       config.configure options
       yield(config) if block_given?
       @client_config = YAML.load_file(client_config_path) if client_config_path && File.exists?(client_config_path)
-      @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"]})
+      # Adding skip_heartbeat param for easier testing
+      @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"], :skip_heartbeat => true})
     end
 
     # to allow class level access to config variables for record_merger and solr_doc_builder

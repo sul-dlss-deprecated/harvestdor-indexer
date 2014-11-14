@@ -404,5 +404,10 @@ describe Harvestdor::Indexer do
       indexer.solr_client
     end
   end
-    
+
+  context "skip heartbeat" do
+    it "allows me to use a fake url for dor-fetcher-client" do
+      expect {Harvestdor::Indexer.new(@config_yml_path, @client_config_path)}.not_to raise_error
+    end
+  end
 end
