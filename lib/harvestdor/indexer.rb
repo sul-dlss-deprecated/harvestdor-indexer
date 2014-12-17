@@ -22,9 +22,6 @@ module Harvestdor
   class Indexer
     include ActiveSupport::Benchmarkable
 
-    # Class level config variable
-    @@config ||= Confstruct::Configuration.new()
-    
     attr_accessor :max_retries, :metrics
     attr_accessor :dor_fetcher_client, :client_config
     
@@ -39,15 +36,9 @@ module Harvestdor
       # Adding skip_heartbeat param for easier testing
       @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"], :skip_heartbeat => true})
     end
-    
-    # to allow class level access to config variables for record_merger and solr_doc_builder
-    #  (rather than passing a lot of params to constructor)
-    def self.config
-      @@config ||= Confstruct::Configuration.new()
-    end
-    
+
     def config
-      Indexer.config
+      @config ||= Confstruct::Configuration.new
     end
     
     def logger
@@ -233,7 +224,7 @@ module Harvestdor
     # Get only the druid from the end of the default_set string
     # from the yml file
     def strip_default_set_string()
-      Indexer.config.default_set.split('_').last
+      config.default_set.split('_').last
     end
     
     protected #---------------------------------------------------------------------
