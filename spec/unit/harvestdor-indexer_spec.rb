@@ -11,7 +11,6 @@ describe Harvestdor::Indexer do
       @yaml = YAML.load_file(@config_yml_path)
       @hdor_client = @indexer.send(:harvestdor_client)
       @fake_druid = 'oo000oo0000'
-      @blacklist_path = File.join(File.dirname(__FILE__), "../config/ap_blacklist.txt")
       @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
     end
   end
@@ -86,34 +85,6 @@ describe Harvestdor::Indexer do
       end
     end
 
-    it "should not process druids in blacklist" do
-      VCR.use_cassette('ignore_druids_in_blacklist_call') do
-        lambda{
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path})
-          hdor_client = indexer.send(:harvestdor_client)
-          expect(indexer.dor_fetcher_client).to receive(:druid_array).and_return(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
-          expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
-          expect(indexer.solr_client).not_to receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-          expect(indexer.solr_client).not_to receive(:add).with(hash_including({:id => 'druid:tc552kq0798'}))
-          expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:th998nk0722'}))
-          expect(indexer.solr_client).to receive(:commit)
-          indexer.harvest_and_index
-        }
-      end
-    end
-    it "should not process druid if it is in both blacklist and whitelist" do
-      VCR.use_cassette('ignore_druids_in_blacklist_and_whitelist_call') do
-        lambda{
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path, :whitelist => @whitelist_path})
-          hdor_client = indexer.send(:harvestdor_client)
-          expect(indexer.dor_fetcher_client).not_to receive(:druid_array)
-          expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
-          expect(indexer.solr_client).not_to receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-          expect(indexer.solr_client).to receive(:commit)
-          indexer.harvest_and_index
-        }
-      end
-    end
     it "should only process druids in whitelist if it exists" do
       VCR.use_cassette('process_druids_whitelist_call') do
         lambda{
@@ -286,59 +257,6 @@ describe Harvestdor::Indexer do
       end
     end    
   end
-  
-  context "blacklist" do
-    it "should be an Array with an entry for each non-empty line in the file" do
-      @indexer.send(:load_blacklist, @blacklist_path)
-      expect(@indexer.send(:blacklist)).to be_an_instance_of(Array)
-      expect(@indexer.send(:blacklist).size).to eq(2)
-    end
-    it "should be empty Array if there was no blacklist config setting" do
-      VCR.use_cassette('empty_array_no_blacklist_config_call') do
-        indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
-        expect(indexer.blacklist).to eq([])
-      end
-    end
-    context "load_blacklist" do
-      it "knows what is in the blacklist" do
-        VCR.use_cassette('know_what_is_in_blacklist_call') do
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path})
-          expect(indexer.blacklist).to eq(["druid:jf275fd6276", "druid:tc552kq0798"])
-        end
-      end
-      it "should not be called if there was no blacklist config setting" do
-        VCR.use_cassette('no_blacklist_config_call') do
-          lambda{
-            indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
-
-            expect(indexer).not_to receive(:load_blacklist)
-
-            hdor_client = indexer.send(:harvestdor_client)
-            expect(indexer.dor_fetcher_client).to receive(:druid_array).and_return([@fake_druid])
-            expect(indexer.solr_client).to receive(:add)
-            expect(indexer.solr_client).to receive(:commit)
-            indexer.harvest_and_index
-          }
-        end
-      end
-      it "should only try to load a blacklist once" do
-        VCR.use_cassette('load_blacklist_once_call') do
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => @blacklist_path})
-          indexer.send(:blacklist)
-          expect_any_instance_of(File).not_to receive(:open)
-          indexer.send(:blacklist)
-        end
-      end
-      it "should log an error message and throw RuntimeError if it can't find the indicated blacklist file" do
-        VCR.use_cassette('no_blacklist_found_call') do
-          exp_msg = 'Unable to find list of druids at bad_path'
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:blacklist => 'bad_path'})
-          expect(indexer.logger).to receive(:fatal).with(exp_msg)
-          expect { indexer.send(:load_blacklist, 'bad_path') }.to raise_error(exp_msg)
-        end
-      end   
-    end
-  end # blacklist
   
   context "whitelist" do
     it "knows what is in the whitelist" do

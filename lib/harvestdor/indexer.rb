@@ -95,33 +95,28 @@ module Harvestdor
       end
     end
     
-    # create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
+    # create Solr doc for the druid and add it to Solr
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
     def index druid
-      if blacklist.include?(druid)
-        logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
-      else
-        logger.fatal("You must override the index method to transform druids into Solr docs and add them to Solr")
-      
-        benchmark "Indexing #{druid}" do
-          logger.debug "About to index #{druid}"
-          doc_hash = {}
-          doc_hash[:id] = druid
-          # doc_hash[:title_tsim] = smods_rec(druid).short_title
-          
-          # you might add things from Indexer level class here
-          #  (e.g. things that are the same across all documents in the harvest)
-          
-          begin
-            solr_client.add(doc_hash)
-            metrics.success!
+      logger.fatal("You must override the index method to transform druids into Solr docs and add them to Solr")
 
-            # TODO: provide call to code to update DOR object's workflow datastream??
-          rescue => e
-            metrics.error!
-            logger.error "Failed to index #{druid}: #{e.message}"
-          end
+      benchmark "Indexing #{druid}" do
+        logger.debug "About to index #{druid}"
+        doc_hash = {}
+        doc_hash[:id] = druid
+        # doc_hash[:title_tsim] = smods_rec(druid).short_title
 
+        # you might add things from Indexer level class here
+        #  (e.g. things that are the same across all documents in the harvest)
+
+        begin
+          solr_client.add(doc_hash)
+          metrics.success!
+
+          # TODO: provide call to code to update DOR object's workflow datastream??
+        rescue => e
+          metrics.error!
+          logger.error "Failed to index #{druid}: #{e.message}"
         end
       end
     end
@@ -202,15 +197,7 @@ module Harvestdor
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end
-    
-    # @return an Array of druids ('oo000oo0000') that should NOT be processed
-    def blacklist
-      # avoid trying to load the file multiple times
-      if !@blacklist && !@loaded_blacklist
-        @blacklist = load_blacklist(config.blacklist) if config.blacklist
-      end
-      @blacklist ||= []
-    end
+
     
     # @return an Array of druids ('oo000oo0000') that should be processed
     def whitelist
@@ -233,18 +220,7 @@ module Harvestdor
       @harvestdor_client ||= Harvestdor::Client.new({:config_yml_path => @yml_path})
     end
     
-    # populate @blacklist as an Array of druids ('oo000oo0000') that will NOT be processed
-    #  by reading the File at the indicated path
-    # @param [String] path - path of file containing a list of druids
-    def load_blacklist path
-      if path && !@loaded_blacklist
-        @loaded_blacklist = true
-        @blacklist = load_id_list path
-      end
-    end
-    
-    # populate @blacklist as an Array of druids ('oo000oo0000') that WILL be processed
-    #  (unless a druid is also on the blacklist)
+    # populate @whitelist as an Array of druids ('oo000oo0000') that WILL be processed
     #  by reading the File at the indicated path
     # @param [String] path - path of file containing a list of druids
     def load_whitelist path
