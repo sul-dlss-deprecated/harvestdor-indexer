@@ -14,6 +14,7 @@ require 'dor-fetcher'
 require 'logger'
 
 require "harvestdor/indexer/metrics"
+require "harvestdor/indexer/resource"
 require "harvestdor/indexer/version"
 
 require 'active_support/benchmarkable'
@@ -65,7 +66,7 @@ module Harvestdor
     #   write the result to the Solr index
     def harvest_and_index
       benchmark "Harvest and Indexing" do
-        druids.each { |druid| index druid }
+        druids.map { |x| Harvestdor::Indexer::Resource.new(self, x) }.each { |druid| index druid }
         solr_client.commit
       end
       total_objects=metrics.success_count+metrics.error_count
@@ -81,9 +82,7 @@ module Harvestdor
         whitelist
       else
         benchmark " DorFetcher pulling of druids" do
-          @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {})).tap do |druids|
-            logger.info("Found #{druids.size} druids.")
-          end
+          Harvestdor::Indexer::Resource.new(self, strip_default_set_string).items
         end
       end
     end
@@ -109,14 +108,13 @@ module Harvestdor
     
     # create Solr doc for the druid and add it to Solr
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
-    def index druid
+    def index resource
       logger.fatal("You must override the index method to transform druids into Solr docs and add them to Solr")
 
-      benchmark "Indexing #{druid}" do
-        logger.debug "About to index #{druid}"
+      benchmark "Indexing #{resource.druid}" do
+        logger.debug "About to index #{resource.druid}"
         doc_hash = {}
-        doc_hash[:id] = druid
-        # doc_hash[:title_tsim] = smods_rec(druid).short_title
+        doc_hash[:id] = resource.druid
 
         # you might add things from Indexer level class here
         #  (e.g. things that are the same across all documents in the harvest)
@@ -128,84 +126,11 @@ module Harvestdor
           # TODO: provide call to code to update DOR object's workflow datastream??
         rescue => e
           metrics.error!
-          logger.error "Failed to index #{druid}: #{e.message}"
+          logger.error "Failed to index #{resource.druid}: #{e.message}"
         end
       end
     end
-    
-    # return the MODS for the druid as a Stanford::Mods::Record object
-    # @param [String] druid e.g. ab123cd4567
-    # @return [Stanford::Mods::Record] created from the MODS xml for the druid
-    def smods_rec druid
-      ng_doc = benchmark "smods_rec(#{druid})", level: :debug do
-        harvestdor_client.mods druid
-      end
-      raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
-      mods_rec = Stanford::Mods::Record.new
-      mods_rec.from_nk_node(ng_doc.root)
-      mods_rec
-    end
-    
-    # the public xml for this DOR object, from the purl page
-    # @param [String] druid e.g. ab123cd4567
-    # @return [Nokogiri::XML::Document] the public xml for the DOR object
-    def public_xml druid
-      ng_doc = benchmark "public_xml(#{druid})", level: :debug do
-        harvestdor_client.public_xml druid
-      end
-      raise "No public xml for #{druid}" if !ng_doc
-      raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
-      ng_doc
-    end
-    
-    # the contentMetadata for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
-    #  a Nokogiri::XML::Document containing the public_xml for an object
-    # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
-    def content_metadata object
-      ng_doc = benchmark "content_metadata(#{object.inspect})", level: :debug do
-        harvestdor_client.content_metadata object
-      end
-      raise "No contentMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
-      ng_doc
-    end
-    
-    # the identityMetadata for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
-    #  a Nokogiri::XML::Document containing the public_xml for an object
-    # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
-    def identity_metadata object
-      ng_doc = benchmark "identity_metadata(#{object.inspect})", level: :debug do
-        harvestdor_client.identity_metadata object
-      end
-      raise "No identityMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
-      ng_doc
-    end
-    
-    # the rightsMetadata for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
-    #  a Nokogiri::XML::Document containing the public_xml for an object
-    # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
-    def rights_metadata object
-      ng_doc = benchmark "rights_metadata(#{object.inspect})", level: :debug do
-        harvestdor_client.rights_metadata object
-      end
-      raise "No rightsMetadata for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
-      ng_doc
-    end
-    
-    # the RDF for this DOR object, ultimately from the purl public xml
-    # @param [Object] object a String containing a druid (e.g. ab123cd4567), or 
-    #  a Nokogiri::XML::Document containing the public_xml for an object
-    # @return [Nokogiri::XML::Document] the RDF for the DOR object
-    def rdf object
-      ng_doc = benchmark "rdf(#{object.inspect})", level: :debug do
-        harvestdor_client.rdf object
-      end
-      raise "No RDF for #{object.inspect}" if !ng_doc || ng_doc.children.empty?
-      ng_doc
-    end
-    
+
     def solr_client
       @solr_client ||= RSolr.connect(config.solr.to_hash)
     end
@@ -227,11 +152,11 @@ module Harvestdor
       config.default_set.split('_').last
     end
     
-    protected #---------------------------------------------------------------------
-    
     def harvestdor_client
       @harvestdor_client ||= Harvestdor::Client.new(config)
     end
+
+    protected #---------------------------------------------------------------------
     
     # populate @whitelist as an Array of druids ('oo000oo0000') that WILL be processed
     #  by reading the File at the indicated path
