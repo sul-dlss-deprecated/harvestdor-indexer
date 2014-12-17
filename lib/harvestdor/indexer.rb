@@ -15,6 +15,7 @@ require 'logger'
 
 require "harvestdor/indexer/metrics"
 require "harvestdor/indexer/resource"
+require "harvestdor/indexer/solr"
 require "harvestdor/indexer/version"
 
 require 'active_support/benchmarkable'
@@ -67,7 +68,7 @@ module Harvestdor
     def harvest_and_index
       benchmark "Harvest and Indexing" do
         druids.map { |x| Harvestdor::Indexer::Resource.new(self, x) }.each { |druid| index druid }
-        solr_client.commit
+        solr.commit!
       end
       total_objects=metrics.success_count+metrics.error_count
       logger.info("Successful count: #{metrics.success_count}")
@@ -86,26 +87,7 @@ module Harvestdor
         end
       end
     end
-    
-    # Add the document to solr, retry if an error occurs.
-    # See https://github.com/ooyala/retries for docs on with_retries.
-    # @param [Hash] doc a Hash representation of the solr document
-    # @param [String] id the id of the document being sent, for logging
-    def solr_add(doc, id)
-      max_tries=@max_retries ? @max_retries : 10 #if @max_retries isn't set, use 10
-      
-      handler = Proc.new do |exception, attempt_number, total_delay|
-        logger.debug "#{exception.class} on attempt #{attempt_number} for #{id}"
-        # logger.debug exception.backtrace
-      end
-      
-      with_retries(:max_tries => max_tries, :handler => handler, :base_sleep_seconds => 1, :max_sleep_seconds => 5) do |attempt|
-        logger.debug "Attempt #{attempt} for #{id}"
-        solr_client.add(doc)
-        logger.info "Successfully indexed #{id} on attempt #{attempt}"
-      end
-    end
-    
+
     # create Solr doc for the druid and add it to Solr
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
     def index resource
@@ -120,7 +102,7 @@ module Harvestdor
         #  (e.g. things that are the same across all documents in the harvest)
 
         begin
-          solr_client.add(doc_hash)
+          solr.add doc_hash
           metrics.success!
 
           # TODO: provide call to code to update DOR object's workflow datastream??
@@ -130,11 +112,6 @@ module Harvestdor
         end
       end
     end
-
-    def solr_client
-      @solr_client ||= RSolr.connect(config.solr.to_hash)
-    end
-
     
     # @return an Array of druids ('oo000oo0000') that should be processed
     def whitelist
@@ -154,6 +131,10 @@ module Harvestdor
     
     def harvestdor_client
       @harvestdor_client ||= Harvestdor::Client.new(config)
+    end
+
+    def solr
+      @solr ||= Harvestdor::Indexer::Solr.new self, config.solr.to_hash
     end
 
     protected #---------------------------------------------------------------------

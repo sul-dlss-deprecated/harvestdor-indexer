@@ -16,25 +16,7 @@ describe Harvestdor::Indexer do
       @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
     end
   end
-  
-  # The method that sends the solr document to solr
-  describe "#solr_add" do
-    before(:each) do
-      doc_hash = {
-        :modsxml => 'whatever',
-        :title_display => 'title',
-        :pub_year_tisim => 'some year',
-        :author_person_display => 'author',
-        :format => 'Image',
-        :language => 'English'
-      }
-    end
-    it "sends an add request to the solr_client" do
-      expect(@indexer.solr_client).to receive(:add)
-      @indexer.solr_add(@doc_hash, "abc123")
-    end
-  end
-  
+
   describe "access methods" do
     it "initializes success count" do
       expect(@indexer.metrics.success_count).to eq(0)
@@ -71,8 +53,8 @@ describe Harvestdor::Indexer do
     end
     it "should call dor_fetcher_client.druid_array and then call :add on rsolr connection" do
       expect(@indexer).to receive(:druids).and_return([@fake_druid])
-      expect(@indexer.solr_client).to receive(:add).with(@doc_hash)
-      expect(@indexer.solr_client).to receive(:commit)
+      expect(@indexer.solr).to receive(:add).with(@doc_hash)
+      expect(@indexer.solr).to receive(:commit!)
       @indexer.harvest_and_index
     end
 
@@ -81,24 +63,22 @@ describe Harvestdor::Indexer do
         indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config)
         hdor_client = indexer.send(:harvestdor_client)
         expect(indexer.dor_fetcher_client).to receive(:druid_array).and_return(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
-        expect(indexer.solr_client).to receive(:add).exactly(6).times
-        expect(indexer.solr_client).to receive(:commit).once
+        expect(indexer.solr).to receive(:add).exactly(6).times
+        expect(indexer.solr).to receive(:commit!).once
         indexer.harvest_and_index
       end
     end
 
     it "should only process druids in whitelist if it exists" do
       VCR.use_cassette('process_druids_whitelist_call') do
-        lambda{
-          indexer = Harvestdor::Indexer.new(@dor_fetcher_client, {:whitelist => @whitelist_path})
-          hdor_client = indexer.send(:harvestdor_client)
-          expect(indexer.dor_fetcher_client).not_to receive(:druid_array)
-          expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
-          expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-          expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
-          expect(indexer.solr_client).to receive(:commit)
-          indexer.harvest_and_index
-        }
+        indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config.merge(:whitelist => @whitelist_path))
+        hdor_client = indexer.send(:harvestdor_client)
+        expect(indexer.dor_fetcher_client).not_to receive(:druid_array)
+        expect(indexer.solr).to receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
+        expect(indexer.solr).to receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
+        expect(indexer.solr).to receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
+        expect(indexer.solr).to receive(:commit!)
+        indexer.harvest_and_index
       end
     end
 
@@ -187,7 +167,7 @@ describe Harvestdor::Indexer do
     VCR.use_cassette('rsolr_client_config_call') do
       indexer = Harvestdor::Indexer.new(@dor_fetcher_client, Confstruct::Configuration.new(:solr => { :url => 'http://localhost:2345', :a => 1 }) )
       expect(RSolr).to receive(:connect).with(hash_including(:a => 1, :url => 'http://localhost:2345')).and_return('foo')
-      indexer.solr_client
+      indexer.solr
     end
   end
 
