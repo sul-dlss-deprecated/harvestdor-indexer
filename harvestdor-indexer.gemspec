@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'harvestdor', '>=0.0.14'
   gem.add_dependency 'stanford-mods'
   gem.add_dependency 'dor-fetcher', '=1.0.5'
+  gem.add_dependency "activesupport"
   
   # Runtime dependencies
   gem.add_runtime_dependency 'confstruct'

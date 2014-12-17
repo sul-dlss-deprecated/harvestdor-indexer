@@ -36,10 +36,10 @@ describe Harvestdor::Indexer do
   
   describe "access methods" do
     it "initializes success count" do
-      @indexer.success_count.should == 0
+      @indexer.metrics.success_count.should == 0
     end
     it "initializes error count" do
-      @indexer.error_count.should == 0
+      @indexer.metrics.error_count.should == 0
     end
     it "initializes max_retries" do
       expect(@indexer.max_retries).to eql(10)
