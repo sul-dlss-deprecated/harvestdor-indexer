@@ -65,11 +65,7 @@ module Harvestdor
     #   write the result to the Solr index
     def harvest_and_index
       benchmark "Harvest and Indexing" do
-        if whitelist.empty?
-          druids.each { |druid| index druid }
-        else
-          whitelist.each { |druid| index druid }
-        end
+        druids.each { |druid| index druid }
         solr_client.commit
       end
       total_objects=metrics.success_count+metrics.error_count
@@ -81,13 +77,15 @@ module Harvestdor
     # return Array of druids contained in the DorFetcher pulling indicated by DorFetcher params
     # @return [Array<String>] or enumeration over it, if block is given.  (strings are druids, e.g. ab123cd1234)
     def druids
-      if @druids.nil?
+      @druids ||= if whitelist?
+        whitelist
+      else
         benchmark " DorFetcher pulling of druids" do
-          @druids = @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {}))
-          logger.info("Found #{@druids.size} druids.")  
+          @dor_fetcher_client.druid_array(@dor_fetcher_client.get_collection(strip_default_set_string(), {})).tap do |druids|
+            logger.info("Found #{druids.size} druids.")
+          end
         end
       end
-      return @druids
     end
     
     # Add the document to solr, retry if an error occurs.
@@ -215,11 +213,12 @@ module Harvestdor
     
     # @return an Array of druids ('oo000oo0000') that should be processed
     def whitelist
-      # avoid trying to load the file multiple times
-      if !@whitelist && !@loaded_whitelist
-        @whitelist = load_whitelist(config.whitelist) if config.whitelist
-      end
+      @whitelist ||= load_whitelist(config.whitelist) if config.whitelist
       @whitelist ||= []
+    end
+
+    def whitelist?
+      whitelist.any?
     end
     
     # Get only the druid from the end of the default_set string
@@ -238,10 +237,7 @@ module Harvestdor
     #  by reading the File at the indicated path
     # @param [String] path - path of file containing a list of druids
     def load_whitelist path
-      if path && !@loaded_whitelist
-        @loaded_whitelist = true
-        @whitelist = load_id_list path
-      end
+      @whitelist = load_id_list path
     end
     
     # return an Array of druids ('oo000oo0000')
@@ -249,13 +245,10 @@ module Harvestdor
     # @param [String] path - path of file containing a list of druids
     # @return [Array<String>] an Array of druids
     def load_id_list path
-      if path 
-        list = []
-        f = File.open(path).each_line { |line|
-          list << line.gsub(/\s+/, '') if !line.gsub(/\s+/, '').empty? && !line.strip.start_with?('#')
-        }
-        list
-      end
+      list = File.open(path).each_line
+              .map { |line| line.strip }
+              .reject { |line| line.strip.start_with?('#') }
+              .reject { |line| line.empty? }
     rescue
       msg = "Unable to find list of druids at " + path
       logger.fatal msg
