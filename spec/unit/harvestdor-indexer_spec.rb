@@ -6,9 +6,11 @@ describe Harvestdor::Indexer do
     VCR.use_cassette('before_all_call') do
       @config_yml_path = File.join(File.dirname(__FILE__), "..", "config", "ap.yml")
       @client_config_path = File.join(File.dirname(__FILE__), "../..", "config", "dor-fetcher-client.yml")
-      @indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+      @dor_fetcher_client = Harvestdor::Indexer.dor_fetcher_client(@client_config_path)
       require 'yaml'
-      @yaml = YAML.load_file(@config_yml_path)
+      @config = YAML.load_file(@config_yml_path)
+
+      @indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config)
       @hdor_client = @indexer.send(:harvestdor_client)
       @fake_druid = 'oo000oo0000'
       @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
@@ -52,13 +54,13 @@ describe Harvestdor::Indexer do
   describe "logging" do
     it "should write the log file to the directory indicated by log_dir" do
       @indexer.logger.info("indexer_spec logging test message")
-      expect(File.exists?(File.join(@yaml['log_dir'], @yaml['log_name']))).to eq(true)
+      expect(File.exists?(File.join(@config['log_dir'], @config['log_name']))).to eq(true)
     end
   end
   
   it "should initialize the harvestdor_client from the config" do
     expect(@hdor_client).to be_an_instance_of(Harvestdor::Client)
-    expect(@hdor_client.config.default_set).to eq(@yaml['default_set'])
+    expect(@hdor_client.config.default_set).to eq(@config['default_set'])
   end
   
   context "harvest_and_index" do
@@ -76,7 +78,7 @@ describe Harvestdor::Indexer do
 
     it "should only call :commit on rsolr connection once" do
       VCR.use_cassette('single_rsolr_connection_call') do
-        indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+        indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config)
         hdor_client = indexer.send(:harvestdor_client)
         expect(indexer.dor_fetcher_client).to receive(:druid_array).and_return(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
         expect(indexer.solr_client).to receive(:add).exactly(6).times
@@ -88,7 +90,7 @@ describe Harvestdor::Indexer do
     it "should only process druids in whitelist if it exists" do
       VCR.use_cassette('process_druids_whitelist_call') do
         lambda{
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => @whitelist_path})
+          indexer = Harvestdor::Indexer.new(@dor_fetcher_client, {:whitelist => @whitelist_path})
           hdor_client = indexer.send(:harvestdor_client)
           expect(indexer.dor_fetcher_client).not_to receive(:druid_array)
           expect(indexer.solr_client).to receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
@@ -119,7 +121,7 @@ describe Harvestdor::Indexer do
       end
 
       it "should get the configuration of the dor-fetcher client from included yml file" do
-        expect(@indexer.dor_fetcher_client.service_url).to eq(@indexer.client_config["dor_fetcher_service_url"])
+        expect(@indexer.dor_fetcher_client.service_url).to eq("http://127.0.0.1:3000")
       end
 
   end # ending replacing OAI context
@@ -262,7 +264,7 @@ describe Harvestdor::Indexer do
     it "knows what is in the whitelist" do
       VCR.use_cassette('know_what_is_in_whitelist_call') do
         lambda{
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => @whitelist_path})
+          indexer = Harvestdor::Indexer.new(@dor_fetcher_client, {:whitelist => @whitelist_path})
           expect(indexer.whitelist).to eq(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092"])
         }     
       end
@@ -275,7 +277,7 @@ describe Harvestdor::Indexer do
     it "should be empty Array if there was no whitelist config setting" do
       VCR.use_cassette('empty_array_no_whitelist_config_call') do
         lambda{
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+          indexer = Harvestdor::Indexer.new(@dor_fetcher_client)
           expect(indexer.whitelist).to eq([])
         }
       end
@@ -284,7 +286,7 @@ describe Harvestdor::Indexer do
       it "should not be called if there was no whitelist config setting" do
         VCR.use_cassette('no_whitelist_config_call') do
           lambda{
-            indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path)
+            indexer = Harvestdor::Indexer.new(@dor_fetcher_client)
 
             expect(indexer).not_to receive(:load_whitelist)
 
@@ -298,7 +300,7 @@ describe Harvestdor::Indexer do
       end
       it "should only try to load a whitelist once" do
         VCR.use_cassette('load_whitelist_once_call') do
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => @whitelist_path})
+          indexer = Harvestdor::Indexer.new(@dor_fetcher_client, {:whitelist => @whitelist_path})
           indexer.send(:whitelist)
           expect_any_instance_of(File).not_to receive(:open)
           indexer.send(:whitelist)
@@ -307,7 +309,7 @@ describe Harvestdor::Indexer do
       it "should log an error message and throw RuntimeError if it can't find the indicated whitelist file" do
         VCR.use_cassette('cant_find_whitelist_call') do
           exp_msg = 'Unable to find list of druids at bad_path'
-          indexer = Harvestdor::Indexer.new(@config_yml_path, @client_config_path, {:whitelist => 'bad_path'})
+          indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config.merge(:whitelist => 'bad_path'))
           expect(indexer.logger).to receive(:fatal).with(exp_msg)
           expect { indexer.send(:load_whitelist, 'bad_path') }.to raise_error(exp_msg)
         end
@@ -317,7 +319,7 @@ describe Harvestdor::Indexer do
   
   it "solr_client should initialize the rsolr client using the options from the config" do
     VCR.use_cassette('rsolr_client_config_call') do
-      indexer = Harvestdor::Indexer.new(nil, @client_config_path, Confstruct::Configuration.new(:solr => { :url => 'http://localhost:2345', :a => 1 }) )
+      indexer = Harvestdor::Indexer.new(@dor_fetcher_client, Confstruct::Configuration.new(:solr => { :url => 'http://localhost:2345', :a => 1 }) )
       expect(RSolr).to receive(:connect).with(hash_including(:a => 1, :url => 'http://localhost:2345')).and_return('foo')
       indexer.solr_client
     end
@@ -325,7 +327,7 @@ describe Harvestdor::Indexer do
 
   context "skip heartbeat" do
     it "allows me to use a fake url for dor-fetcher-client" do
-      expect {Harvestdor::Indexer.new(@config_yml_path, @client_config_path)}.not_to raise_error
+      expect {Harvestdor::Indexer.new(@dor_fetcher_client)}.not_to raise_error
     end
   end
 end

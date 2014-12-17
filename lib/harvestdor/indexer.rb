@@ -22,19 +22,30 @@ module Harvestdor
   class Indexer
     include ActiveSupport::Benchmarkable
 
-    attr_accessor :max_retries, :metrics
-    attr_accessor :dor_fetcher_client, :client_config
+    attr_accessor :max_retries, :metrics, :logger
+    attr_accessor :dor_fetcher_client
+
+    def self.dor_fetcher_client yaml_or_hash
+
+      data = case yaml_or_hash
+        when Hash
+          yaml_or_hash
+        else
+          YAML.load_file(yaml_or_hash)
+      end
+
+      config = Confstruct::Configuration.new data
+
+      # Adding skip_heartbeat param for easier testing
+      DorFetcher::Client.new(config.dor_fetcher)
+    end
     
-    def initialize yml_path, client_config_path, options = {}
+    def initialize dor_fetcher_client, options = {}
       @metrics = Harvestdor::Indexer::Metrics.new
       @max_retries=10      # the number of times to retry an object 
-      @yml_path = yml_path
-      config.configure(YAML.load_file(yml_path)) if yml_path    
-      config.configure options
+      config.configure(options)
       yield(config) if block_given?
-      @client_config = YAML.load_file(client_config_path) if client_config_path && File.exists?(client_config_path)
-      # Adding skip_heartbeat param for easier testing
-      @dor_fetcher_client=DorFetcher::Client.new({:service_url => client_config["dor_fetcher_service_url"], :skip_heartbeat => true})
+      @dor_fetcher_client=dor_fetcher_client
     end
 
     def config
@@ -42,7 +53,10 @@ module Harvestdor
     end
     
     def logger
-      @logger ||= load_logger(config.log_dir, config.log_name)
+      @logger ||= begin
+        Dir.mkdir(config.log_dir) unless File.directory?(config.log_dir)
+        Logger.new(File.join(config.log_dir, config.log_name), 'daily')
+      end
     end
     
     # per this Indexer's config options 
@@ -210,14 +224,14 @@ module Harvestdor
     
     # Get only the druid from the end of the default_set string
     # from the yml file
-    def strip_default_set_string()
+    def strip_default_set_string
       config.default_set.split('_').last
     end
     
     protected #---------------------------------------------------------------------
     
     def harvestdor_client
-      @harvestdor_client ||= Harvestdor::Client.new({:config_yml_path => @yml_path})
+      @harvestdor_client ||= Harvestdor::Client.new(config)
     end
     
     # populate @whitelist as an Array of druids ('oo000oo0000') that WILL be processed
@@ -247,14 +261,5 @@ module Harvestdor
       logger.fatal msg
       raise msg
     end
-    
-    # Global, memoized, lazy initialized instance of a logger
-    # @param [String] log_dir directory for to get log file
-    # @param [String] log_name name of log file
-    def load_logger(log_dir, log_name)
-      Dir.mkdir(log_dir) unless File.directory?(log_dir) 
-      @logger ||= Logger.new(File.join(log_dir, log_name), 'daily')
-    end
-    
   end # Indexer class
 end # Harvestdor module

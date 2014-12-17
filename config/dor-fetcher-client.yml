@@ -1,4 +1,6 @@
 # ---------- DorFetcher Client parameters -----------
 
 # dor_fetcher_service_url:  URL of the dor-fetcher-service provider
-dor_fetcher_service_url: http://127.0.0.1:3000
+dor_fetcher:
+  service_url: http://127.0.0.1:3000
+  skip_heartbeat: true
