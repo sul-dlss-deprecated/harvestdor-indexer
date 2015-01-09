@@ -67,13 +67,24 @@ module Harvestdor
     #   write the result to the Solr index
     def harvest_and_index
       benchmark "Harvest and Indexing" do
-        druids.map { |x| Harvestdor::Indexer::Resource.new(self, x) }.each { |druid| index druid }
+        resources.each do |druid|
+          index druid
+        end
+
         solr.commit!
       end
       total_objects=metrics.success_count+metrics.error_count
       logger.info("Successful count: #{metrics.success_count}")
       logger.info("Error count: #{metrics.error_count}")
       logger.info("Total records processed: #{total_objects}")
+    end
+
+    def resources
+      druids.map do |x|
+        Harvestdor::Indexer::Resource.new(self, x)
+      end.map do |x|
+        [x, (x.items if x.collection?)]
+      end.flatten.uniq.compact
     end
     
     # return Array of druids contained in the DorFetcher pulling indicated by DorFetcher params
@@ -83,7 +94,7 @@ module Harvestdor
         whitelist
       else
         benchmark " DorFetcher pulling of druids" do
-          Harvestdor::Indexer::Resource.new(self, strip_default_set_string).items
+          [strip_default_set_string]
         end
       end
     end
@@ -126,7 +137,7 @@ module Harvestdor
     # Get only the druid from the end of the default_set string
     # from the yml file
     def strip_default_set_string
-      config.default_set.split('_').last
+      "druid:#{config.default_set.split('_').last}"
     end
     
     def harvestdor_client

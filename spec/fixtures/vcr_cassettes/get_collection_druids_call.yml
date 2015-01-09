@@ -53,4 +53,100 @@ http_interactions:
         social customs, and people."}],"counts":{"collections":1,"items":5,"total_count":6}}'
     http_version:
   recorded_at: Wed, 12 Nov 2014 19:34:03 GMT
+- request:
+    method: get
+    uri: http://purl.stanford.edu/yg867hg1375.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 17 Dec 2014 19:39:37 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      Etag:
+      - '"67aa6d1481ba1537ae63af5aaf493f84"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - f2e753d56bf896cde6e941be0f51d05a
+      X-Runtime:
+      - '0.007983'
+      X-Rack-Cache:
+      - miss
+      Status:
+      - '200'
+      Content-Length:
+      - '2180'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: |
+        <publicObject id="druid:yg867hg1375" published="2013-11-11T15:34:32-08:00">
+          <identityMetadata>
+            <objectId>druid:yg867hg1375</objectId>
+            <objectCreator>DOR</objectCreator>
+            <objectLabel>Francis E. Stafford photographs, 1909-1933</objectLabel>
+            <objectType>collection</objectType>
+            <adminPolicy>druid:vb546ms7107</adminPolicy>
+            <otherId name="catkey">9615156</otherId>
+            <otherId name="uuid">8f1feb20-4b29-11e3-8e31-0050569b3c3c</otherId>
+            <tag>Remediated By : 3.25.3</tag>
+          </identityMetadata>
+          <xml/>
+          <rightsMetadata>
+            <access type="discover">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <use>
+              <human type="useAndReproduction"/>
+              <human type="creativeCommons"/>
+              <machine type="creativeCommons"/>
+            </use>
+            <copyright>
+              <human/>
+            </copyright>
+          </rightsMetadata>
+          <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="info:fedora/druid:yg867hg1375">
+            </rdf:Description>
+          </rdf:RDF>
+          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            <dc:title>Francis E. Stafford photographs, 1909-1933</dc:title>
+            <dc:contributor>Stafford, Francis E., 1884-1938</dc:contributor>
+            <dc:type>Collection</dc:type>
+            <dc:date>1909-1933</dc:date>
+            <dc:language>und</dc:language>
+            <dc:format>3 oversize boxes.</dc:format>
+            <dc:description>Photographs of scenes in China, mainly between 1909 and 1915.</dc:description>
+            <dc:rights>Closed. Digital use copies available.</dc:rights>
+            <dc:description type="biographical/historical">American missionary in China, 1909-1915 and 1932-1933.</dc:description>
+            <dc:coverage>China</dc:coverage>
+          </oai_dc:dc>
+        </publicObject>
+    http_version: 
+  recorded_at: Wed, 17 Dec 2014 19:39:38 GMT
 recorded_with: VCR 2.9.3

@@ -2,47 +2,1525 @@
 http_interactions:
 - request:
     method: get
-    uri: http://127.0.0.1:3000/
+    uri: http://purl.stanford.edu/yg867hg1375.xml
     body:
       encoding: US-ASCII
       string: ''
     headers:
-      Accept:
-      - '*/*; q=0.5, application/xml'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
       User-Agent:
       - Ruby
   response:
     status:
       code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 17 Dec 2014 19:44:13 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      Etag:
+      - '"67aa6d1481ba1537ae63af5aaf493f84"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 9f69d4e83469df5a28bbb9b393a02328
+      X-Runtime:
+      - '0.008355'
+      X-Rack-Cache:
+      - miss
+      Status:
+      - '200'
+      Content-Length:
+      - '2180'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: |
+        <publicObject id="druid:yg867hg1375" published="2013-11-11T15:34:32-08:00">
+          <identityMetadata>
+            <objectId>druid:yg867hg1375</objectId>
+            <objectCreator>DOR</objectCreator>
+            <objectLabel>Francis E. Stafford photographs, 1909-1933</objectLabel>
+            <objectType>collection</objectType>
+            <adminPolicy>druid:vb546ms7107</adminPolicy>
+            <otherId name="catkey">9615156</otherId>
+            <otherId name="uuid">8f1feb20-4b29-11e3-8e31-0050569b3c3c</otherId>
+            <tag>Remediated By : 3.25.3</tag>
+          </identityMetadata>
+          <xml/>
+          <rightsMetadata>
+            <access type="discover">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <use>
+              <human type="useAndReproduction"/>
+              <human type="creativeCommons"/>
+              <machine type="creativeCommons"/>
+            </use>
+            <copyright>
+              <human/>
+            </copyright>
+          </rightsMetadata>
+          <rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="info:fedora/druid:yg867hg1375">
+            </rdf:Description>
+          </rdf:RDF>
+          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            <dc:title>Francis E. Stafford photographs, 1909-1933</dc:title>
+            <dc:contributor>Stafford, Francis E., 1884-1938</dc:contributor>
+            <dc:type>Collection</dc:type>
+            <dc:date>1909-1933</dc:date>
+            <dc:language>und</dc:language>
+            <dc:format>3 oversize boxes.</dc:format>
+            <dc:description>Photographs of scenes in China, mainly between 1909 and 1915.</dc:description>
+            <dc:rights>Closed. Digital use copies available.</dc:rights>
+            <dc:description type="biographical/historical">American missionary in China, 1909-1915 and 1932-1933.</dc:description>
+            <dc:coverage>China</dc:coverage>
+          </oai_dc:dc>
+        </publicObject>
+    http_version: 
+  recorded_at: Wed, 17 Dec 2014 19:44:13 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:3000/collections/yg867hg1375
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - 127.0.0.1:3000
+  response:
+    status:
+      code: 200
       message: OK
     headers:
+      Date:
+      - Wed, 17 Dec 2014 19:44:13 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
       X-Frame-Options:
       - SAMEORIGIN
       X-Xss-Protection:
       - 1; mode=block
       X-Content-Type-Options:
       - nosniff
-      Content-Type:
-      - application/xml; charset=utf-8
       Etag:
-      - '"444bcb3a3fcf8389296c49467f27e1d6"'
+      - '"a2dbdae1877cffb1ed626587e91dbced"'
       Cache-Control:
       - max-age=0, private, must-revalidate
-      X-Meta-Request-Version:
-      - 0.3.4
       X-Request-Id:
-      - 3f57f369-8d39-43dc-b15e-dc7a7f37d25e
+      - 5c1e15b4-ea83-4ae0-bc5a-624b6a298441
       X-Runtime:
-      - '0.003776'
-      Connection:
-      - close
-      Server:
-      - thin 1.6.2 codename Doc Brown
+      - '0.546275'
+      X-Powered-By:
+      - Phusion Passenger 4.0.49
+      Status:
+      - 200 OK
+      Transfer-Encoding:
+      - chunked
+      Content-Type:
+      - application/json; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: '{"collections":[{"druid":"druid:yg867hg1375","latest_change":"2013-11-11T23:34:33Z","title":"Francis
+        E. Stafford photographs, 1909-1933"}],"items":[{"druid":"druid:nz353cp1092","latest_change":"2013-11-27T08:34:02Z","title":"Album
+        E: Photographs of the Seventh Day Adventist Church missionaries in China"},{"druid":"druid:th998nk0722","latest_change":"2013-12-04T10:26:34Z","title":"Album
+        C: Photographs of the Chinese Revolution of 1911 and the Shanghai Commercial
+        Press"},{"druid":"druid:ww689vs6534","latest_change":"2013-11-30T20:51:35Z","title":"Album
+        B: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
+        social customs, and people."},{"druid":"druid:tc552kq0798","latest_change":"2013-11-28T14:15:09Z","title":"Album
+        D: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
+        social customs, and people."},{"druid":"druid:jf275fd6276","latest_change":"2013-11-26T00:11:17Z","title":"Album
+        A: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
+        social customs, and people."}],"counts":{"collections":1,"items":5,"total_count":6}}'
+    http_version: 
+  recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
+- request:
+    method: get
+    uri: http://purl.stanford.edu/jf275fd6276.xml
     body:
       encoding: US-ASCII
-      string: ok
-    http_version:
-  recorded_at: Wed, 12 Nov 2014 18:46:07 GMT
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 17 Dec 2014 19:44:13 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      Etag:
+      - '"22502398c6e7447b1cd27010cb75ec4b"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 425ff67e1b095619c537072709221b1d
+      X-Runtime:
+      - '0.143835'
+      X-Rack-Cache:
+      - miss
+      Status:
+      - '200'
+      Content-Length:
+      - '25815'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: |
+        <publicObject id="druid:jf275fd6276" published="2014-04-02T16:57:04-07:00">
+          <identityMetadata>
+            <sourceId source="hoover">2012c34_3_a</sourceId>
+            <objectId>druid:jf275fd6276</objectId>
+            <objectCreator>DOR</objectCreator>
+            <objectLabel>Album A:  Photographs of China's natural landscapes, urban scenes, cultural landmarks, social customs, and people.</objectLabel>
+            <objectType>item</objectType>
+            <adminPolicy>druid:vb546ms7107</adminPolicy>
+            <otherId name="label"/>
+            <otherId name="uuid">080ac28c-5159-11e3-815a-0050569b3c3c</otherId>
+            <tag>Process : Content Type : Image</tag>
+            <tag>Project : Stafford Photographs</tag>
+            <tag>Registered By : blalbrit</tag>
+            <tag>Remediated By : 3.25.3</tag>
+          </identityMetadata>
+          <contentMetadata objectId="jf275fd6276" type="image">
+            <resource id="jf275fd6276_1" sequence="1" type="image">
+              <label>Image 1</label>
+              <file id="a24.jp2" mimetype="image/jp2" size="3674159">
+                <imageData width="5334" height="3660"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_2" sequence="2" type="image">
+              <label>Image 2</label>
+              <file id="a25.jp2" mimetype="image/jp2" size="3706126">
+                <imageData width="5508" height="3576"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_3" sequence="3" type="image">
+              <label>Image 3</label>
+              <file id="a26.jp2" mimetype="image/jp2" size="2543862">
+                <imageData width="3450" height="3918"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_4" sequence="4" type="image">
+              <label>Image 4</label>
+              <file id="a27.jp2" mimetype="image/jp2" size="3370403">
+                <imageData width="4950" height="3618"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_5" sequence="5" type="image">
+              <label>Image 5</label>
+              <file id="a28.jp2" mimetype="image/jp2" size="3471135">
+                <imageData width="4950" height="3726"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_6" sequence="6" type="image">
+              <label>Image 6</label>
+              <file id="a29.jp2" mimetype="image/jp2" size="3392995">
+                <imageData width="4926" height="3660"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_7" sequence="7" type="image">
+              <label>Image 7</label>
+              <file id="a30.jp2" mimetype="image/jp2" size="3347235">
+                <imageData width="4860" height="3660"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_8" sequence="8" type="image">
+              <label>Image 8</label>
+              <file id="a32.jp2" mimetype="image/jp2" size="3217616">
+                <imageData width="4560" height="3750"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_9" sequence="9" type="image">
+              <label>Image 9</label>
+              <file id="a33.jp2" mimetype="image/jp2" size="3103284">
+                <imageData width="4476" height="3684"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_10" sequence="10" type="image">
+              <label>Image 10</label>
+              <file id="a34.jp2" mimetype="image/jp2" size="3500264">
+                <imageData width="4992" height="3726"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_11" sequence="11" type="image">
+              <label>Image 11</label>
+              <file id="a35.jp2" mimetype="image/jp2" size="3437523">
+                <imageData width="4926" height="3708"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_12" sequence="12" type="image">
+              <label>Image 12</label>
+              <file id="a36.jp2" mimetype="image/jp2" size="3437430">
+                <imageData width="4926" height="3708"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_13" sequence="13" type="image">
+              <label>Image 13</label>
+              <file id="a37.jp2" mimetype="image/jp2" size="3437620">
+                <imageData width="4926" height="3708"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_15" sequence="15" type="image">
+              <label>Image 15</label>
+              <file id="a39.jp2" mimetype="image/jp2" size="3325901">
+                <imageData width="4884" height="3618"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_16" sequence="16" type="image">
+              <label>Image 16</label>
+              <file id="a40.jp2" mimetype="image/jp2" size="3638901">
+                <imageData width="5100" height="3792"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_17" sequence="17" type="image">
+              <label>Image 17</label>
+              <file id="a41.jp2" mimetype="image/jp2" size="3522972">
+                <imageData width="4992" height="3750"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_18" sequence="18" type="image">
+              <label>Image 18</label>
+              <file id="a42.jp2" mimetype="image/jp2" size="3448514">
+                <imageData width="4950" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_19" sequence="19" type="image">
+              <label>Image 19</label>
+              <file id="a43.jp2" mimetype="image/jp2" size="3448541">
+                <imageData width="4950" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_20" sequence="20" type="image">
+              <label>Image 20</label>
+              <file id="a44.jp2" mimetype="image/jp2" size="2643023">
+                <imageData width="4458" height="3150"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_21" sequence="21" type="image">
+              <label>Image 21</label>
+              <file id="a45.jp2" mimetype="image/jp2" size="2639420">
+                <imageData width="4452" height="3150"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_22" sequence="22" type="image">
+              <label>Image 22</label>
+              <file id="a46.jp2" mimetype="image/jp2" size="2232418">
+                <imageData width="4326" height="2742"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_23" sequence="23" type="image">
+              <label>Image 23</label>
+              <file id="a47.jp2" mimetype="image/jp2" size="2159325">
+                <imageData width="4326" height="2652"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_24" sequence="24" type="image">
+              <label>Image 24</label>
+              <file id="a48.jp2" mimetype="image/jp2" size="3579028">
+                <imageData width="4992" height="3810"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_25" sequence="25" type="image">
+              <label>Image 25</label>
+              <file id="a49.jp2" mimetype="image/jp2" size="3415328">
+                <imageData width="4926" height="3684"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_26" sequence="26" type="image">
+              <label>Image 26</label>
+              <file id="a50.jp2" mimetype="image/jp2" size="2599104">
+                <imageData width="4302" height="3210"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_27" sequence="27" type="image">
+              <label>Image 27</label>
+              <file id="a51.jp2" mimetype="image/jp2" size="2598770">
+                <imageData width="4302" height="3210"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_28" sequence="28" type="image">
+              <label>Image 28</label>
+              <file id="a52.jp2" mimetype="image/jp2" size="2404662">
+                <imageData width="4176" height="3060"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_29" sequence="29" type="image">
+              <label>Image 29</label>
+              <file id="a53.jp2" mimetype="image/jp2" size="2146592">
+                <imageData width="4002" height="2850"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_30" sequence="30" type="image">
+              <label>Image 30</label>
+              <file id="a54.jp2" mimetype="image/jp2" size="2250371">
+                <imageData width="4134" height="2892"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_31" sequence="31" type="image">
+              <label>Image 31</label>
+              <file id="a55.jp2" mimetype="image/jp2" size="2213863">
+                <imageData width="4068" height="2892"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_32" sequence="32" type="image">
+              <label>Image 32</label>
+              <file id="a56a.jp2" mimetype="image/jp2" size="2225348">
+                <imageData width="3084" height="3834"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_33" sequence="33" type="image">
+              <label>Image 33</label>
+              <file id="a56b.jp2" mimetype="image/jp2" size="1991419">
+                <imageData width="2760" height="3834"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_34" sequence="34" type="image">
+              <label>Image 34</label>
+              <file id="a57a.jp2" mimetype="image/jp2" size="1923106">
+                <imageData width="2760" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_35" sequence="35" type="image">
+              <label>Image 35</label>
+              <file id="a57b.jp2" mimetype="image/jp2" size="1860028">
+                <imageData width="2700" height="3660"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_36" sequence="36" type="image">
+              <label>Image 36</label>
+              <file id="a58.jp2" mimetype="image/jp2" size="2191177">
+                <imageData width="4026" height="2892"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_37" sequence="37" type="image">
+              <label>Image 37</label>
+              <file id="a59.jp2" mimetype="image/jp2" size="2191045">
+                <imageData width="4026" height="2892"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_38" sequence="38" type="image">
+              <label>Image 38</label>
+              <file id="a60.jp2" mimetype="image/jp2" size="2743704">
+                <imageData width="3600" height="4050"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_39" sequence="39" type="image">
+              <label>Image 39</label>
+              <file id="a61.jp2" mimetype="image/jp2" size="2788160">
+                <imageData width="3642" height="4068"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_40" sequence="40" type="image">
+              <label>Image 40</label>
+              <file id="a62.jp2" mimetype="image/jp2" size="2539768">
+                <imageData width="3318" height="4068"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_41" sequence="41" type="image">
+              <label>Image 41</label>
+              <file id="a63a.jp2" mimetype="image/jp2" size="1880154">
+                <imageData width="2604" height="3836"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_42" sequence="42" type="image">
+              <label>Image 42</label>
+              <file id="a63b.jp2" mimetype="image/jp2" size="2249696">
+                <imageData width="2952" height="4050"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_43" sequence="43" type="image">
+              <label>Image 43</label>
+              <file id="a64.jp2" mimetype="image/jp2" size="3402863">
+                <imageData width="4884" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_44" sequence="44" type="image">
+              <label>Image 44</label>
+              <file id="a65.jp2" mimetype="image/jp2" size="3402896">
+                <imageData width="4884" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_45" sequence="45" type="image">
+              <label>Image 45</label>
+              <file id="a66.jp2" mimetype="image/jp2" size="3354311">
+                <imageData width="4926" height="3618"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_46" sequence="46" type="image">
+              <label>Image 46</label>
+              <file id="a67a.jp2" mimetype="image/jp2" size="1449330">
+                <imageData width="4992" height="1542"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_47" sequence="47" type="image">
+              <label>Image 47</label>
+              <file id="a67b.jp2" mimetype="image/jp2" size="1449270">
+                <imageData width="4992" height="1542"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_48" sequence="48" type="image">
+              <label>Image 48</label>
+              <file id="a68a.jp2" mimetype="image/jp2" size="1789621">
+                <imageData width="2568" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_49" sequence="49" type="image">
+              <label>Image 49</label>
+              <file id="a68b.jp2" mimetype="image/jp2" size="1821941">
+                <imageData width="2610" height="3708"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_50" sequence="50" type="image">
+              <label>Image 50</label>
+              <file id="a69.jp2" mimetype="image/jp2" size="3448431">
+                <imageData width="4950" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_51" sequence="51" type="image">
+              <label>Image 51</label>
+              <file id="a70a.jp2" mimetype="image/jp2" size="1864784">
+                <imageData width="2676" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_52" sequence="52" type="image">
+              <label>Image 52</label>
+              <file id="a70b.jp2" mimetype="image/jp2" size="1864825">
+                <imageData width="2676" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_53" sequence="53" type="image">
+              <label>Image 53</label>
+              <file id="a71a.jp2" mimetype="image/jp2" size="1939770">
+                <imageData width="2784" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_54" sequence="54" type="image">
+              <label>Image 54</label>
+              <file id="a71b.jp2" mimetype="image/jp2" size="1881479">
+                <imageData width="2700" height="3702"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_55" sequence="55" type="image">
+              <label>Image 55</label>
+              <file id="a72a.jp2" mimetype="image/jp2" size="2234148">
+                <imageData width="3150" height="3768"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_56" sequence="56" type="image">
+              <label>Image 56</label>
+              <file id="a72b.jp2" mimetype="image/jp2" size="908865">
+                <imageData width="2376" height="2034"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_57" sequence="57" type="image">
+              <label>Image 57</label>
+              <file id="a73a.jp2" mimetype="image/jp2" size="1065110">
+                <imageData width="2592" height="2184"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_58" sequence="58" type="image">
+              <label>Image 58</label>
+              <file id="a73b.jp2" mimetype="image/jp2" size="2331780">
+                <imageData width="3252" height="3810"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_59" sequence="59" type="image">
+              <label>Image 59</label>
+              <file id="a74.jp2" mimetype="image/jp2" size="2743927">
+                <imageData width="3600" height="4050"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_60" sequence="60" type="image">
+              <label>Image 60</label>
+              <file id="a75.jp2" mimetype="image/jp2" size="3073199">
+                <imageData width="4860" height="3360"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_61" sequence="61" type="image">
+              <label>Image 61</label>
+              <file id="a76.jp2" mimetype="image/jp2" size="3155284">
+                <imageData width="4860" height="3450"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_62" sequence="62" type="image">
+              <label>Image 62</label>
+              <file id="a77.jp2" mimetype="image/jp2" size="4185429">
+                <imageData width="5802" height="3834"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_63" sequence="63" type="image">
+              <label>Image 63</label>
+              <file id="a78a.jp2" mimetype="image/jp2" size="1753945">
+                <imageData width="5010" height="1860"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_64" sequence="64" type="image">
+              <label>Image 64</label>
+              <file id="a78b.jp2" mimetype="image/jp2" size="1801114">
+                <imageData width="4908" height="1950"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_65" sequence="65" type="image">
+              <label>Image 65</label>
+              <file id="a79a.jp2" mimetype="image/jp2" size="1761454">
+                <imageData width="4800" height="1950"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_66" sequence="66" type="image">
+              <label>Image 66</label>
+              <file id="a79b.jp2" mimetype="image/jp2" size="1761529">
+                <imageData width="4800" height="1950"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_67" sequence="67" type="image">
+              <label>Image 67</label>
+              <file id="a80a.jp2" mimetype="image/jp2" size="1228816">
+                <imageData width="2934" height="2226"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_68" sequence="68" type="image">
+              <label>Image 68</label>
+              <file id="a80b.jp2" mimetype="image/jp2" size="1228828">
+                <imageData width="2934" height="2226"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_69" sequence="69" type="image">
+              <label>Image 69</label>
+              <file id="a81a.jp2" mimetype="image/jp2" size="1311604">
+                <imageData width="2934" height="2376"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_70" sequence="70" type="image">
+              <label>Image 70</label>
+              <file id="a81b.jp2" mimetype="image/jp2" size="1251870">
+                <imageData width="2934" height="2268"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_71" sequence="71" type="image">
+              <label>Image 71</label>
+              <file id="a82a.jp2" mimetype="image/jp2" size="1628721">
+                <imageData width="2526" height="3426"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_72" sequence="72" type="image">
+              <label>Image 72</label>
+              <file id="a82b.jp2" mimetype="image/jp2" size="1628600">
+                <imageData width="2526" height="3426"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_73" sequence="73" type="image">
+              <label>Image 73</label>
+              <file id="a83a.jp2" mimetype="image/jp2" size="1736081">
+                <imageData width="2610" height="3534"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_74" sequence="74" type="image">
+              <label>Image 74</label>
+              <file id="a83b.jp2" mimetype="image/jp2" size="1708309">
+                <imageData width="2568" height="3534"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_75" sequence="75" type="image">
+              <label>Image 75</label>
+              <file id="a84a.jp2" mimetype="image/jp2" size="1231903">
+                <imageData width="2250" height="2910"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_76" sequence="76" type="image">
+              <label>Image 76</label>
+              <file id="a84b.jp2" mimetype="image/jp2" size="1231879">
+                <imageData width="2250" height="2910"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_77" sequence="77" type="image">
+              <label>Image 77</label>
+              <file id="a85a.jp2" mimetype="image/jp2" size="1346748">
+                <imageData width="2460" height="2910"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_78" sequence="78" type="image">
+              <label>Image 78</label>
+              <file id="a85b.jp2" mimetype="image/jp2" size="1246899">
+                <imageData width="2292" height="2892"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_79" sequence="79" type="image">
+              <label>Image 79</label>
+              <file id="a86a.jp2" mimetype="image/jp2" size="1479457">
+                <imageData width="2352" height="3342"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_80" sequence="80" type="image">
+              <label>Image 80</label>
+              <file id="a86b.jp2" mimetype="image/jp2" size="1483135">
+                <imageData width="2358" height="3342"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_81" sequence="81" type="image">
+              <label>Image 81</label>
+              <file id="a87.jp2" mimetype="image/jp2" size="1926251">
+                <imageData width="4092" height="2502"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_82" sequence="82" type="image">
+              <label>Image 82</label>
+              <file id="a88a.jp2" mimetype="image/jp2" size="1407839">
+                <imageData width="3360" height="2226"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_83" sequence="83" type="image">
+              <label>Image 83</label>
+              <file id="a88b.jp2" mimetype="image/jp2" size="1408033">
+                <imageData width="3360" height="2226"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_84" sequence="84" type="image">
+              <label>Image 84</label>
+              <file id="a89a.jp2" mimetype="image/jp2" size="1263758">
+                <imageData width="3018" height="2226"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_85" sequence="85" type="image">
+              <label>Image 85</label>
+              <file id="a89b.jp2" mimetype="image/jp2" size="1263798">
+                <imageData width="3018" height="2226"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_86" sequence="86" type="image">
+              <label>Image 86</label>
+              <file id="a90a.jp2" mimetype="image/jp2" size="1458080">
+                <imageData width="3018" height="2568"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_87" sequence="87" type="image">
+              <label>Image 87</label>
+              <file id="a90b.jp2" mimetype="image/jp2" size="1386344">
+                <imageData width="3018" height="2442"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_88" sequence="88" type="image">
+              <label>Image 88</label>
+              <file id="a91a.jp2" mimetype="image/jp2" size="1456242">
+                <imageData width="3168" height="2442"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_89" sequence="89" type="image">
+              <label>Image 89</label>
+              <file id="a91b.jp2" mimetype="image/jp2" size="1357352">
+                <imageData width="3060" height="2358"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_90" sequence="90" type="image">
+              <label>Image 90</label>
+              <file id="a92a.jp2" mimetype="image/jp2" size="1319290">
+                <imageData width="3060" height="2292"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_91" sequence="91" type="image">
+              <label>Image 91</label>
+              <file id="a92b.jp2" mimetype="image/jp2" size="1272518">
+                <imageData width="2952" height="2292"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_92" sequence="92" type="image">
+              <label>Image 92</label>
+              <file id="a93a.jp2" mimetype="image/jp2" size="1509710">
+                <imageData width="3342" height="2400"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_93" sequence="93" type="image">
+              <label>Image 93</label>
+              <file id="a93b.jp2" mimetype="image/jp2" size="1471787">
+                <imageData width="3258" height="2400"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_94" sequence="94" type="image">
+              <label>Image 94</label>
+              <file id="a94a.jp2" mimetype="image/jp2" size="1180830">
+                <imageData width="2850" height="2202"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_95" sequence="95" type="image">
+              <label>Image 95</label>
+              <file id="a94b.jp2" mimetype="image/jp2" size="1206525">
+                <imageData width="2850" height="2250"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_96" sequence="96" type="image">
+              <label>Image 96</label>
+              <file id="a95a.jp2" mimetype="image/jp2" size="1401749">
+                <imageData width="3000" height="2484"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_97" sequence="97" type="image">
+              <label>Image 97</label>
+              <file id="a95b.jp2" mimetype="image/jp2" size="1516785">
+                <imageData width="2460" height="3276"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_98" sequence="98" type="image">
+              <label>Image 98</label>
+              <file id="a96.jp2" mimetype="image/jp2" size="1784884">
+                <imageData width="3600" height="2634"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_99" sequence="99" type="image">
+              <label>Image 99</label>
+              <file id="a97.jp2" mimetype="image/jp2" size="1801203">
+                <imageData width="3726" height="2568"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_100" sequence="100" type="image">
+              <label>Image 100</label>
+              <file id="a98.jp2" mimetype="image/jp2" size="2865708">
+                <imageData width="3384" height="4500"/>
+              </file>
+            </resource>
+            <resource id="jf275fd6276_101" sequence="101" type="image">
+              <label>Image 101</label>
+              <file id="a99.jp2" mimetype="image/jp2" size="2865712">
+                <imageData width="3384" height="4500"/>
+              </file>
+            </resource>
+          </contentMetadata>
+          <rightsMetadata>
+            <access type="discover">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <use>
+              <human type="useAndReproduction"/>
+              <human type="creativeCommons"/>
+              <machine type="creativeCommons"/>
+            </use>
+            <copyright>
+              <human>For copyright status, please contact the Hoover Institution Archives at archives@hoover.stanford.edu.</human>
+            </copyright>
+          </rightsMetadata>
+          <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="info:fedora/druid:jf275fd6276">
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:yg867hg1375"/>
+              <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:yg867hg1375"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            <dc:title>Album A:  Photographs of China's natural landscapes, urban scenes, cultural landmarks, social customs, and people.</dc:title>
+            <dc:contributor>Stafford, Francis E., 1884-1938. (photographer)</dc:contributor>
+            <dc:type>StillImage</dc:type>
+            <dc:date>1909-1915</dc:date>
+            <dc:relation type="collection">Francis E. Stafford photographs, 1909-1933</dc:relation>
+          </oai_dc:dc>
+        </publicObject>
+    http_version: 
+  recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
+- request:
+    method: get
+    uri: http://purl.stanford.edu/nz353cp1092.xml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: ''
+    headers:
+      Date:
+      - Wed, 17 Dec 2014 19:44:13 GMT
+      Server:
+      - Apache/2.2.15 (Red Hat)
+      X-Powered-By:
+      - Phusion Passenger (mod_rails/mod_rack) 3.0.19
+      X-Ua-Compatible:
+      - IE=Edge,chrome=1
+      Etag:
+      - '"039360e05e6fe66d61535ea53fa505cc"'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 3fad8930232c1b4b44de95bd98a3065a
+      X-Runtime:
+      - '0.082025'
+      X-Rack-Cache:
+      - miss
+      Status:
+      - '200'
+      Content-Length:
+      - '24565'
+      Content-Type:
+      - application/xml; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: |
+        <publicObject id="druid:nz353cp1092" published="2014-04-02T16:57:01-07:00">
+          <identityMetadata>
+            <sourceId source="hoover">2012c34_3_3</sourceId>
+            <objectId>druid:nz353cp1092</objectId>
+            <objectCreator>DOR</objectCreator>
+            <objectLabel>Album E:  Photographs of the Seventh Day Adventist Church missionaries in China</objectLabel>
+            <objectType>item</objectType>
+            <adminPolicy>druid:vb546ms7107</adminPolicy>
+            <otherId name="label"/>
+            <otherId name="uuid">08088bfc-5159-11e3-ae56-0050569b3c3c</otherId>
+            <tag>Process : Content Type : Image</tag>
+            <tag>Project : Stafford Photographs</tag>
+            <tag>Registered By : blalbrit</tag>
+            <tag>Remediated By : 3.25.3</tag>
+          </identityMetadata>
+          <contentMetadata objectId="nz353cp1092" type="image">
+            <resource id="nz353cp1092_1" sequence="1" type="image">
+              <label>Image 1</label>
+              <file id="e1.jp2" mimetype="image/jp2" size="3297022">
+                <imageData height="3510" width="4992"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_2" sequence="2" type="image">
+              <label>Image 2</label>
+              <file id="e2.jp2" mimetype="image/jp2" size="3496566">
+                <imageData height="3600" width="5160"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_3" sequence="3" type="image">
+              <label>Image 3</label>
+              <file id="e3.jp2" mimetype="image/jp2" size="3297198">
+                <imageData height="3510" width="4992"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_4" sequence="4" type="image">
+              <label>Image 4</label>
+              <file id="e4a.jp2" mimetype="image/jp2" size="935107">
+                <imageData height="1968" width="2526"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_5" sequence="5" type="image">
+              <label>Image 5</label>
+              <file id="e4b.jp2" mimetype="image/jp2" size="935069">
+                <imageData height="1968" width="2526"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_6" sequence="6" type="image">
+              <label>Image 6</label>
+              <file id="e5.jp2" mimetype="image/jp2" size="3309021">
+                <imageData height="3510" width="5010"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_7" sequence="7" type="image">
+              <label>Image 7</label>
+              <file id="e6a.jp2" mimetype="image/jp2" size="939272">
+                <imageData height="1926" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_8" sequence="8" type="image">
+              <label>Image 8</label>
+              <file id="e6b.jp2" mimetype="image/jp2" size="939441">
+                <imageData height="1926" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_9" sequence="9" type="image">
+              <label>Image 9</label>
+              <file id="e6c.jp2" mimetype="image/jp2" size="939429">
+                <imageData height="1926" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_10" sequence="10" type="image">
+              <label>Image 10</label>
+              <file id="e6d.jp2" mimetype="image/jp2" size="939379">
+                <imageData height="1926" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_11" sequence="11" type="image">
+              <label>Image 11</label>
+              <file id="e7a.jp2" mimetype="image/jp2" size="880359">
+                <imageData height="1902" width="2460"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_12" sequence="12" type="image">
+              <label>Image 12</label>
+              <file id="e7b.jp2" mimetype="image/jp2" size="880363">
+                <imageData height="1902" width="2460"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_13" sequence="13" type="image">
+              <label>Image 13</label>
+              <file id="e7c.jp2" mimetype="image/jp2" size="921950">
+                <imageData height="1908" width="2568"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_14" sequence="14" type="image">
+              <label>Image 14</label>
+              <file id="e7d.jp2" mimetype="image/jp2" size="880353">
+                <imageData height="1902" width="2460"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_15" sequence="15" type="image">
+              <label>Image 15</label>
+              <file id="e8a.jp2" mimetype="image/jp2" size="737527">
+                <imageData height="1710" width="2292"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_16" sequence="16" type="image">
+              <label>Image 16</label>
+              <file id="e8b.jp2" mimetype="image/jp2" size="895340">
+                <imageData height="1902" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_17" sequence="17" type="image">
+              <label>Image 17</label>
+              <file id="e9a.jp2" mimetype="image/jp2" size="898088">
+                <imageData height="1908" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_18" sequence="18" type="image">
+              <label>Image 18</label>
+              <file id="e9b.jp2" mimetype="image/jp2" size="895212">
+                <imageData height="1902" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_19" sequence="19" type="image">
+              <label>Image 19</label>
+              <file id="e10a.jp2" mimetype="image/jp2" size="991737">
+                <imageData height="2052" width="2568"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_20" sequence="20" type="image">
+              <label>Image 20</label>
+              <file id="e10b.jp2" mimetype="image/jp2" size="1150002">
+                <imageData height="2100" width="2910"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_21" sequence="21" type="image">
+              <label>Image 21</label>
+              <file id="e10c.jp2" mimetype="image/jp2" size="1254874">
+                <imageData height="2292" width="2910"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_22" sequence="22" type="image">
+              <label>Image 22</label>
+              <file id="e11a.jp2" mimetype="image/jp2" size="950782">
+                <imageData height="1968" width="2568"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_23" sequence="23" type="image">
+              <label>Image 23</label>
+              <file id="e11b.jp2" mimetype="image/jp2" size="1187921">
+                <imageData height="2268" width="2784"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_24" sequence="24" type="image">
+              <label>Image 24</label>
+              <file id="e11c.jp2" mimetype="image/jp2" size="1109638">
+                <imageData height="2184" width="2700"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_25" sequence="25" type="image">
+              <label>Image 25</label>
+              <file id="e12a.jp2" mimetype="image/jp2" size="1187924">
+                <imageData height="2268" width="2784"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_26" sequence="26" type="image">
+              <label>Image 26</label>
+              <file id="e12b.jp2" mimetype="image/jp2" size="1187963">
+                <imageData height="2268" width="2784"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_27" sequence="27" type="image">
+              <label>Image 27</label>
+              <file id="e12c.jp2" mimetype="image/jp2" size="886457">
+                <imageData height="1884" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_28" sequence="28" type="image">
+              <label>Image 28</label>
+              <file id="e13a.jp2" mimetype="image/jp2" size="1213513">
+                <imageData height="2352" width="2742"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_29" sequence="29" type="image">
+              <label>Image 29</label>
+              <file id="e13b.jp2" mimetype="image/jp2" size="1213420">
+                <imageData height="2352" width="2742"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_30" sequence="30" type="image">
+              <label>Image 30</label>
+              <file id="e13c.jp2" mimetype="image/jp2" size="923958">
+                <imageData height="1926" width="2550"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_31" sequence="31" type="image">
+              <label>Image 31</label>
+              <file id="e14a.jp2" mimetype="image/jp2" size="1210004">
+                <imageData height="2310" width="2784"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_32" sequence="32" type="image">
+              <label>Image 32</label>
+              <file id="e14b.jp2" mimetype="image/jp2" size="1088442">
+                <imageData height="2142" width="2700"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_33" sequence="33" type="image">
+              <label>Image 33</label>
+              <file id="e14c.jp2" mimetype="image/jp2" size="935104">
+                <imageData height="2526" width="1968"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_34" sequence="34" type="image">
+              <label>Image 34</label>
+              <file id="e15a.jp2" mimetype="image/jp2" size="1191881">
+                <imageData height="2310" width="2742"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_35" sequence="35" type="image">
+              <label>Image 35</label>
+              <file id="e15b.jp2" mimetype="image/jp2" size="1069089">
+                <imageData height="2142" width="2652"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_36" sequence="36" type="image">
+              <label>Image 36</label>
+              <file id="e15c.jp2" mimetype="image/jp2" size="980258">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_37" sequence="37" type="image">
+              <label>Image 37</label>
+              <file id="e15d.jp2" mimetype="image/jp2" size="1069064">
+                <imageData height="2142" width="2652"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_38" sequence="38" type="image">
+              <label>Image 38</label>
+              <file id="e16a.jp2" mimetype="image/jp2" size="980164">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_39" sequence="39" type="image">
+              <label>Image 39</label>
+              <file id="e16b.jp2" mimetype="image/jp2" size="980292">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_40" sequence="40" type="image">
+              <label>Image 40</label>
+              <file id="e16c.jp2" mimetype="image/jp2" size="980156">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_41" sequence="41" type="image">
+              <label>Image 41</label>
+              <file id="e16d.jp2" mimetype="image/jp2" size="980247">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_42" sequence="42" type="image">
+              <label>Image 42</label>
+              <file id="e17a.jp2" mimetype="image/jp2" size="980230">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_43" sequence="43" type="image">
+              <label>Image 43</label>
+              <file id="e17b.jp2" mimetype="image/jp2" size="980191">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_44" sequence="44" type="image">
+              <label>Image 44</label>
+              <file id="e17c.jp2" mimetype="image/jp2" size="980207">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_45" sequence="45" type="image">
+              <label>Image 45</label>
+              <file id="e17d.jp2" mimetype="image/jp2" size="980274">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_46" sequence="46" type="image">
+              <label>Image 46</label>
+              <file id="e18a.jp2" mimetype="image/jp2" size="980275">
+                <imageData height="2010" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_47" sequence="47" type="image">
+              <label>Image 47</label>
+              <file id="e18b.jp2" mimetype="image/jp2" size="1024609">
+                <imageData height="2100" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_48" sequence="48" type="image">
+              <label>Image 48</label>
+              <file id="e18c.jp2" mimetype="image/jp2" size="1130784">
+                <imageData height="2226" width="2700"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_49" sequence="49" type="image">
+              <label>Image 49</label>
+              <file id="e19a.jp2" mimetype="image/jp2" size="917448">
+                <imageData height="1950" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_50" sequence="50" type="image">
+              <label>Image 50</label>
+              <file id="e19b.jp2" mimetype="image/jp2" size="1182343">
+                <imageData height="2292" width="2742"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_51" sequence="51" type="image">
+              <label>Image 51</label>
+              <file id="e19c.jp2" mimetype="image/jp2" size="1182292">
+                <imageData height="2292" width="2742"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_52" sequence="52" type="image">
+              <label>Image 52</label>
+              <file id="e20a.jp2" mimetype="image/jp2" size="917722">
+                <imageData height="1950" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_53" sequence="53" type="image">
+              <label>Image 53</label>
+              <file id="e20b.jp2" mimetype="image/jp2" size="917691">
+                <imageData height="1950" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_54" sequence="54" type="image">
+              <label>Image 54</label>
+              <file id="e21a.jp2" mimetype="image/jp2" size="917731">
+                <imageData height="1950" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_55" sequence="55" type="image">
+              <label>Image 55</label>
+              <file id="e21b.jp2" mimetype="image/jp2" size="917644">
+                <imageData height="1950" width="2502"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_56" sequence="56" type="image">
+              <label>Image 56</label>
+              <file id="e22a.jp2" mimetype="image/jp2" size="1148722">
+                <imageData height="2160" width="2826"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_57" sequence="57" type="image">
+              <label>Image 57</label>
+              <file id="e22b.jp2" mimetype="image/jp2" size="1148693">
+                <imageData height="2160" width="2826"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_58" sequence="58" type="image">
+              <label>Image 58</label>
+              <file id="e23a.jp2" mimetype="image/jp2" size="1148706">
+                <imageData height="2160" width="2826"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_59" sequence="59" type="image">
+              <label>Image 59</label>
+              <file id="e23b.jp2" mimetype="image/jp2" size="1148673">
+                <imageData height="2160" width="2826"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_60" sequence="60" type="image">
+              <label>Image 60</label>
+              <file id="e24a.jp2" mimetype="image/jp2" size="1323847">
+                <imageData height="2418" width="2910"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_61" sequence="61" type="image">
+              <label>Image 61</label>
+              <file id="e24b.jp2" mimetype="image/jp2" size="1386332">
+                <imageData height="3018" width="2442"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_62" sequence="62" type="image">
+              <label>Image 62</label>
+              <file id="e25a.jp2" mimetype="image/jp2" size="1298371">
+                <imageData height="2352" width="2934"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_63" sequence="63" type="image">
+              <label>Image 63</label>
+              <file id="e25b.jp2" mimetype="image/jp2" size="1298348">
+                <imageData height="2352" width="2934"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_64" sequence="64" type="image">
+              <label>Image 64</label>
+              <file id="e26a.jp2" mimetype="image/jp2" size="1372739">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_65" sequence="65" type="image">
+              <label>Image 65</label>
+              <file id="e26b.jp2" mimetype="image/jp2" size="1372549">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_66" sequence="66" type="image">
+              <label>Image 66</label>
+              <file id="e27a.jp2" mimetype="image/jp2" size="1372669">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_67" sequence="67" type="image">
+              <label>Image 67</label>
+              <file id="e27b.jp2" mimetype="image/jp2" size="1372850">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_68" sequence="68" type="image">
+              <label>Image 68</label>
+              <file id="e28a.jp2" mimetype="image/jp2" size="1372304">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_69" sequence="69" type="image">
+              <label>Image 69</label>
+              <file id="e28b.jp2" mimetype="image/jp2" size="1372502">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_70" sequence="70" type="image">
+              <label>Image 70</label>
+              <file id="e29a.jp2" mimetype="image/jp2" size="1372679">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_71" sequence="71" type="image">
+              <label>Image 71</label>
+              <file id="e29b.jp2" mimetype="image/jp2" size="1372652">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_72" sequence="72" type="image">
+              <label>Image 72</label>
+              <file id="e30a.jp2" mimetype="image/jp2" size="1372811">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_73" sequence="73" type="image">
+              <label>Image 73</label>
+              <file id="e30b.jp2" mimetype="image/jp2" size="1372638">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_74" sequence="74" type="image">
+              <label>Image 74</label>
+              <file id="e31a.jp2" mimetype="image/jp2" size="1372325">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_75" sequence="75" type="image">
+              <label>Image 75</label>
+              <file id="e31b.jp2" mimetype="image/jp2" size="1372522">
+                <imageData height="2418" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_76" sequence="76" type="image">
+              <label>Image 76</label>
+              <file id="e32a.jp2" mimetype="image/jp2" size="1405554">
+                <imageData height="2442" width="3060"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_77" sequence="77" type="image">
+              <label>Image 77</label>
+              <file id="e32b.jp2" mimetype="image/jp2" size="1405667">
+                <imageData height="2442" width="3060"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_78" sequence="78" type="image">
+              <label>Image 78</label>
+              <file id="e32c.jp2" mimetype="image/jp2" size="1405650">
+                <imageData height="2442" width="3060"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_79" sequence="79" type="image">
+              <label>Image 79</label>
+              <file id="e32d.jp2" mimetype="image/jp2" size="1386385">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_80" sequence="80" type="image">
+              <label>Image 80</label>
+              <file id="e33a.jp2" mimetype="image/jp2" size="1386038">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_81" sequence="81" type="image">
+              <label>Image 81</label>
+              <file id="e33b.jp2" mimetype="image/jp2" size="1386290">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_82" sequence="82" type="image">
+              <label>Image 82</label>
+              <file id="e33c.jp2" mimetype="image/jp2" size="1386341">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_83" sequence="83" type="image">
+              <label>Image 83</label>
+              <file id="e33d.jp2" mimetype="image/jp2" size="1386184">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_84" sequence="84" type="image">
+              <label>Image 84</label>
+              <file id="e34a.jp2" mimetype="image/jp2" size="1386459">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_85" sequence="85" type="image">
+              <label>Image 85</label>
+              <file id="e34b.jp2" mimetype="image/jp2" size="1386242">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_86" sequence="86" type="image">
+              <label>Image 86</label>
+              <file id="e34c.jp2" mimetype="image/jp2" size="1386248">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_87" sequence="87" type="image">
+              <label>Image 87</label>
+              <file id="e34d.jp2" mimetype="image/jp2" size="1386291">
+                <imageData height="2442" width="3018"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_88" sequence="88" type="image">
+              <label>Image 88</label>
+              <file id="e35.jp2" mimetype="image/jp2" size="3659046">
+                <imageData height="3768" width="5160"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_89" sequence="89" type="image">
+              <label>Image 89</label>
+              <file id="e36.jp2" mimetype="image/jp2" size="3659319">
+                <imageData height="3768" width="5160"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_90" sequence="90" type="image">
+              <label>Image 90</label>
+              <file id="e37a.jp2" mimetype="image/jp2" size="1838087">
+                <imageData height="3768" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_91" sequence="91" type="image">
+              <label>Image 91</label>
+              <file id="e37b.jp2" mimetype="image/jp2" size="1838254">
+                <imageData height="3768" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_92" sequence="92" type="image">
+              <label>Image 92</label>
+              <file id="e38a.jp2" mimetype="image/jp2" size="1838504">
+                <imageData height="3768" width="2592"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_93" sequence="93" type="image">
+              <label>Image 93</label>
+              <file id="e38b.jp2" mimetype="image/jp2" size="1288461">
+                <imageData height="2334" width="2934"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_94" sequence="94" type="image">
+              <label>Image 94</label>
+              <file id="e39a.jp2" mimetype="image/jp2" size="1288234">
+                <imageData height="2334" width="2934"/>
+              </file>
+            </resource>
+            <resource id="nz353cp1092_95" sequence="95" type="image">
+              <label>Image 95</label>
+              <file id="e39b.jp2" mimetype="image/jp2" size="1838448">
+                <imageData height="3768" width="2592"/>
+              </file>
+            </resource>
+          </contentMetadata>
+          <rightsMetadata>
+            <access type="discover">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <access type="read">
+              <machine>
+                <world/>
+              </machine>
+            </access>
+            <use>
+              <human type="useAndReproduction"/>
+              <human type="creativeCommons"/>
+              <machine type="creativeCommons"/>
+            </use>
+            <copyright>
+              <human>For copyright status, please contact the Hoover Institution Archives at archives@hoover.stanford.edu.</human>
+            </copyright>
+          </rightsMetadata>
+          <rdf:RDF xmlns:fedora="info:fedora/fedora-system:def/relations-external#" xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:hydra="http://projecthydra.org/ns/relations#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="info:fedora/druid:nz353cp1092">
+              <fedora:isMemberOf rdf:resource="info:fedora/druid:yg867hg1375"/>
+              <fedora:isMemberOfCollection rdf:resource="info:fedora/druid:yg867hg1375"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:srw_dc="info:srw/schema/1/dc-schema" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            <dc:title>Album E:  Photographs of the Seventh Day Adventist Church missionaries in China</dc:title>
+            <dc:contributor>Stafford, Francis E., 1884-1938. (photographer)</dc:contributor>
+            <dc:type>StillImage</dc:type>
+            <dc:date>1932-1933</dc:date>
+            <dc:relation type="collection">Francis E. Stafford photographs, 1909-1933</dc:relation>
+          </oai_dc:dc>
+        </publicObject>
+    http_version: 
+  recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 recorded_with: VCR 2.9.3

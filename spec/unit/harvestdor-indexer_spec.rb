@@ -12,7 +12,7 @@ describe Harvestdor::Indexer do
 
       @indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config)
       @hdor_client = @indexer.send(:harvestdor_client)
-      @fake_druid = 'oo000oo0000'
+      @fake_druid = 'druid:oo000oo0000'
       @whitelist_path = File.join(File.dirname(__FILE__), "../config/ap_whitelist.txt")
     end
   end
@@ -52,6 +52,7 @@ describe Harvestdor::Indexer do
       }
     end
     it "should call dor_fetcher_client.druid_array and then call :add on rsolr connection" do
+      allow_any_instance_of(Harvestdor::Indexer::Resource).to receive(:collection?).and_return(false)
       expect(@indexer).to receive(:druids).and_return([@fake_druid])
       expect(@indexer.solr).to receive(:add).with(@doc_hash)
       expect(@indexer.solr).to receive(:commit!)
@@ -73,12 +74,13 @@ describe Harvestdor::Indexer do
       VCR.use_cassette('process_druids_whitelist_call') do
         indexer = Harvestdor::Indexer.new(@dor_fetcher_client, @config.merge(:whitelist => @whitelist_path))
         hdor_client = indexer.send(:harvestdor_client)
-        expect(indexer.dor_fetcher_client).not_to receive(:druid_array)
-        expect(indexer.solr).to receive(:add).with(hash_including({:id => 'druid:yg867hg1375'}))
-        expect(indexer.solr).to receive(:add).with(hash_including({:id => 'druid:jf275fd6276'}))
-        expect(indexer.solr).to receive(:add).with(hash_including({:id => 'druid:nz353cp1092'}))
+        added = []
+        allow(indexer.solr).to receive(:add) { |hash|
+          added << hash[:id]
+        }
         expect(indexer.solr).to receive(:commit!)
         indexer.harvest_and_index
+        expect(added).to match_array ["druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534", "druid:yg867hg1375", 'druid:jf275fd6276', 'druid:nz353cp1092']
       end
     end
 
@@ -91,12 +93,12 @@ describe Harvestdor::Indexer do
       end 
 
       it "should strip off is_member_of_collection_ and is_governed_by_ and return only the druid" do
-        expect(@indexer.strip_default_set_string()).to eq("yg867hg1375")
+        expect(@indexer.strip_default_set_string()).to eq("druid:yg867hg1375")
       end
 
       it "druids method should call druid_array and get_collection methods on fetcher_client" do
         VCR.use_cassette('get_collection_druids_call') do
-          expect(@indexer.druids).to eq(["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"])
+          expect(@indexer.resources.map(&:druid)).to match_array ["druid:yg867hg1375", "druid:jf275fd6276", "druid:nz353cp1092", "druid:tc552kq0798", "druid:th998nk0722", "druid:ww689vs6534"]
         end
       end
 
