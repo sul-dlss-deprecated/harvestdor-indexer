@@ -56,8 +56,12 @@ module Harvestdor
     
     def logger
       @logger ||= begin
-        Dir.mkdir(config.log_dir) unless File.directory?(config.log_dir)
-        Logger.new(File.join(config.log_dir, config.log_name), 'daily')
+        if config.harvestdor
+          Dir.mkdir(config.harvestdor.log_dir) unless File.directory?(config.harvestdor.log_dir)
+          Logger.new(File.join(config.harvestdor.log_dir, config.harvestdor.log_name), 'daily')
+        else
+          Logger.new STDERR
+        end
       end
     end
     

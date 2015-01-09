@@ -1,28 +1,6 @@
-# You will want to copy this file and change the following settings:
-# 1. log_dir, log_name
-# 2. default_set
-# 3. blacklist or whitelist if you are using them
-# 4. Solr baseurl
-
-# log_dir:  directory for log file  (default logs, relative to harvestdor gem path)
-log_dir: spec/test_logs  
-
-# log_name: name of log file  (default: harvestdor.log)
-log_name: ap-test.log
-
-# purl: url for the DOR purl server (used to get ContentMetadata, etc.)
-purl: http://purl.stanford.edu
-
-# ---------- White and Black list parameters -----
-
-# name of file containing druids that will NOT be processed even if they are harvested 
-#  via DorFetcher either give absolute path or path relative to where the command will 
-#  be executed
-#blacklist: config/ap_blacklist.txt
-
-# name of file containing druids that WILL be processed (all others will be ignored)
-#  either give absolute path or path relative to where the command will be executed
-#whitelist: config/ap_whitelist.txt
+dor_fetcher:
+  service_url: http://127.0.0.1:3000
+  skip_heartbeat: true
 
 # ----------- SOLR index (that we're writing INTO) parameters ------------
 solr:
@@ -31,25 +9,35 @@ solr:
   # timeouts are in seconds;  read_timeout -> open/read, open_timeout -> connection open
   read_timeout: 60
   open_timeout: 60
+  max_retries: 10
 
-# default_set:  default set for harvest  (default: nil)
-#   can be overridden on calls to harvest_ids and harvest_records
-default_set: is_governed_by_yg867hg1375
+# ---------- White and Black list parameters -----
 
-# default_metadata_prefix:  default metadata prefix to be used for harvesting  (default: mods)
-#   can be overridden on calls to harvest_ids and harvest_records
+# name of file containing druids that WILL be processed (all others will be ignored)
+#  either give absolute path or path relative to where the command will be executed
+#whitelist: config/ap_whitelist.txt
 
-# default_from_date:  default from date for harvest  (default: nil)
-#   can be overridden on calls to harvest_ids and harvest_records
+harvestdor:
+  # You will want to copy this file and change the following settings:
+  # 1. log_dir, log_name
+  # 2. default_set
+  # 3. blacklist or whitelist if you are using them
+  # 4. Solr baseurl
 
-# default_until_date:  default until date for harvest  (default: nil)
-#   can be overridden on calls to harvest_ids and harvest_records
+  # log_dir:  directory for log file  (default logs, relative to harvestdor gem path)
+  log_dir: spec/test_logs  
 
-# Additional options to pass to Faraday http client (https://github.com/technoweenie/faraday)
-http_options:
-  ssl:
-    verify: false
-  # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
-  request:
-    timeout: 180
-    open_timeout: 180
+  # log_name: name of log file  (default: harvestdor.log)
+  log_name: ap-test.log
+
+  # purl: url for the DOR purl server (used to get ContentMetadata, etc.)
+  purl: http://purl.stanford.edu
+
+  # Additional options to pass to Faraday http client (https://github.com/technoweenie/faraday)
+  http_options:
+    ssl:
+      verify: false
+    # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
+    request:
+      timeout: 180
+      open_timeout: 180

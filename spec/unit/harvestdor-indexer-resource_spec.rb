@@ -76,7 +76,7 @@ describe Harvestdor::Indexer::Resource do
     end
     context "#content_metadata" do
       it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
-        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
+        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         cm = resource.content_metadata
         expect(cm).to be_kind_of(Nokogiri::XML::Document)
         expect(cm.root).not_to eq(nil)
@@ -91,7 +91,7 @@ describe Harvestdor::Indexer::Resource do
     end
     context "#identity_metadata" do
       it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
-        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
+        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         im = resource.identity_metadata
         expect(im).to be_kind_of(Nokogiri::XML::Document)
         expect(im.root).not_to eq(nil)
@@ -105,7 +105,7 @@ describe Harvestdor::Indexer::Resource do
     end
     context "#rights_metadata" do
       it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
-        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
+        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         im = resource.rights_metadata
         expect(im).to be_kind_of(Nokogiri::XML::Document)
         expect(im.root).not_to eq(nil)
@@ -119,7 +119,7 @@ describe Harvestdor::Indexer::Resource do
     end
     context "#rdf" do
       it "returns a Nokogiri::XML::Document derived from the public xml if a druid is passed" do
-        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.purl).and_return(@ng_pub_xml)
+        allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         im = resource.rdf
         expect(im).to be_kind_of(Nokogiri::XML::Document)
         expect(im.root).not_to eq(nil)

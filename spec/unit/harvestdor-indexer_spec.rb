@@ -36,13 +36,13 @@ describe Harvestdor::Indexer do
   describe "logging" do
     it "should write the log file to the directory indicated by log_dir" do
       @indexer.logger.info("indexer_spec logging test message")
-      expect(File.exists?(File.join(@config['log_dir'], @config['log_name']))).to eq(true)
+      expect(File.exists?(File.join(@config['harvestdor']['log_dir'], @config['harvestdor']['log_name']))).to eq(true)
     end
   end
   
   it "should initialize the harvestdor_client from the config" do
     expect(@hdor_client).to be_an_instance_of(Harvestdor::Client)
-    expect(@hdor_client.config.default_set).to eq(@config['default_set'])
+    expect(@hdor_client.config.default_set).to eq(@config['harvestdor']['default_set'])
   end
   
   context "harvest_and_index" do
