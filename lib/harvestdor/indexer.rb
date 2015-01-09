@@ -3,6 +3,7 @@
 require 'confstruct'
 require 'rsolr'
 require 'retries'
+require 'parallel'
 require 'json'
 
 # sul-dlss gems
@@ -13,41 +14,24 @@ require 'dor-fetcher'
 # stdlib
 require 'logger'
 
-require "harvestdor/indexer/metrics"
-require "harvestdor/indexer/resource"
-require "harvestdor/indexer/solr"
 require "harvestdor/indexer/version"
 
 require 'active_support/benchmarkable'
 module Harvestdor
   # Base class to harvest from DOR via harvestdor gem and then index
   class Indexer
+    require "harvestdor/indexer/metrics"
+    require "harvestdor/indexer/resource"
+    require "harvestdor/indexer/solr"
+
     include ActiveSupport::Benchmarkable
 
-    attr_accessor :max_retries, :metrics, :logger
-    attr_accessor :dor_fetcher_client
+    attr_accessor :metrics, :logger
 
-    def self.dor_fetcher_client yaml_or_hash
-
-      data = case yaml_or_hash
-        when Hash
-          yaml_or_hash
-        else
-          YAML.load_file(yaml_or_hash)
-      end
-
-      config = Confstruct::Configuration.new data
-
-      # Adding skip_heartbeat param for easier testing
-      DorFetcher::Client.new(config.dor_fetcher)
-    end
-    
-    def initialize dor_fetcher_client, options = {}
-      @metrics = Harvestdor::Indexer::Metrics.new
-      @max_retries=10      # the number of times to retry an object 
+    def initialize options = {}
       config.configure(options)
       yield(config) if block_given?
-      @dor_fetcher_client=dor_fetcher_client
+      @metrics = Harvestdor::Indexer::Metrics.new logger: logger
     end
 
     def config
@@ -69,18 +53,14 @@ module Harvestdor
     #  harvest the druids via DorFetcher
     #   create a Solr profiling document for each druid
     #   write the result to the Solr index
-    def harvest_and_index
+    def harvest_and_index each_options = {in_threads: 4}
       benchmark "Harvest and Indexing" do
-        resources.each do |druid|
-          index druid
+        each_resource(each_options) do |resource|
+          index resource
         end
 
         solr.commit!
       end
-      total_objects=metrics.success_count+metrics.error_count
-      logger.info("Successful count: #{metrics.success_count}")
-      logger.info("Error count: #{metrics.error_count}")
-      logger.info("Total records processed: #{total_objects}")
     end
 
     def resources
@@ -90,17 +70,31 @@ module Harvestdor
         [x, (x.items if x.collection?)]
       end.flatten.uniq.compact
     end
+
+    def each_resource options = {}, &block
+      benchmark "" do
+        Parallel.each(resources, options) do |resource|
+          metrics.tally on_error: method(:resource_error) do
+            yield resource
+          end
+        end
+      end
+      
+      logger.info("Successful count: #{metrics.success_count}")
+      logger.info("Error count: #{metrics.error_count}")
+      logger.info("Total records processed: #{metrics.total}")
+    end
+
+    def resource_error e
+      if e.instance_of? Parallel::Break or e.instance_of? Parallel::Kill
+        raise e
+      end
+    end
     
     # return Array of druids contained in the DorFetcher pulling indicated by DorFetcher params
     # @return [Array<String>] or enumeration over it, if block is given.  (strings are druids, e.g. ab123cd1234)
     def druids
-      @druids ||= if whitelist?
-        whitelist
-      else
-        benchmark " DorFetcher pulling of druids" do
-          [strip_default_set_string]
-        end
-      end
+      @druids ||= whitelist
     end
 
     # create Solr doc for the druid and add it to Solr
@@ -115,37 +109,24 @@ module Harvestdor
 
         # you might add things from Indexer level class here
         #  (e.g. things that are the same across all documents in the harvest)
-
-        begin
-          solr.add doc_hash
-          metrics.success!
-
-          # TODO: provide call to code to update DOR object's workflow datastream??
-        rescue => e
-          metrics.error!
-          logger.error "Failed to index #{resource.druid}: #{e.message}"
-        end
+        solr.add doc_hash
+        # TODO: provide call to code to update DOR object's workflow datastream??
       end
     end
     
     # @return an Array of druids ('oo000oo0000') that should be processed
     def whitelist
+      @whitelist ||= config.whitelist if config.whitelist.is_a? Array
       @whitelist ||= load_whitelist(config.whitelist) if config.whitelist
       @whitelist ||= []
     end
-
-    def whitelist?
-      whitelist.any?
-    end
-    
-    # Get only the druid from the end of the default_set string
-    # from the yml file
-    def strip_default_set_string
-      "druid:#{config.default_set.split('_').last}"
-    end
     
     def harvestdor_client
-      @harvestdor_client ||= Harvestdor::Client.new(config)
+      @harvestdor_client ||= Harvestdor::Client.new(config.harvestdor)
+    end
+
+    def dor_fetcher_client
+      @dor_fetcher_client ||= DorFetcher::Client.new(config.dor_fetcher)
     end
 
     def solr
