@@ -100,7 +100,6 @@ module Harvestdor
     # create Solr doc for the druid and add it to Solr
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
     def index resource
-      logger.fatal("You must override the index method to transform druids into Solr docs and add them to Solr")
 
       benchmark "Indexing #{resource.druid}" do
         logger.debug "About to index #{resource.druid}"
