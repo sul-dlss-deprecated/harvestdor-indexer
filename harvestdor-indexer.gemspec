@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^spec/})
   gem.require_paths = ["lib"]
-  
+
   gem.add_dependency 'rsolr'
   gem.add_dependency 'retries'
   gem.add_dependency 'harvestdor', '>=0.0.14'
@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'dor-fetcher', '=1.0.5'
   gem.add_dependency "activesupport"
   gem.add_dependency "parallel"
-  
+
   # Runtime dependencies
   gem.add_runtime_dependency 'confstruct'
 
@@ -38,8 +38,9 @@ Gem::Specification.new do |gem|
   # tests
 	gem.add_development_dependency 'rspec', "~> 3.0"
 	gem.add_development_dependency 'coveralls'
-	# gem.add_development_dependency 'ruby-debug19'
+  gem.add_development_dependency 'rubocop'
+  gem.add_development_dependency 'rubocop-rspec'
   gem.add_development_dependency 'vcr'
   gem.add_development_dependency 'webmock'
-  
+
 end
