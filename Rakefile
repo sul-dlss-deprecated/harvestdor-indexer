@@ -11,7 +11,7 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
-task :default => :ci
+task :default => [:rspec, :rubocop]
 
 desc "run continuous integration suite (tests, coverage, docs)"
 task :ci => [:rspec, :doc, :rubocop]
