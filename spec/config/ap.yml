@@ -1,34 +1,43 @@
+# Copy this file and change the following settings:
+# 1. whitelist
+# 2. dor fetcher service_url
+# 3. solr url
+# 4. harvestdor log_dir, log_nam
+
+
+# whitelist:  which objects will you index?
+# the whitelist can be
+#   1. an array of druids inline here, e.g. ['druid:oo123oo1234', 'druid:oo234oo2345']
+#   2. a filename containing a list of druids (one per line)
+# if a druid is for a collection record (per the object's identityMetadata at purl page)
+#  then we process all the item druids in that collection (as if they were included individually in the whitelist)
+# if a druid is for an item object, then we process that druid
+#whitelist: ['druid:dq441rn2614']
+#  either give absolute path or path relative to where the command will be executed
+#whitelist: config/ap_whitelist.txt
+
 dor_fetcher:
+  # the baseurl of the DOR Fetcher service from which we get the item druids (per whitelist above)
+  #  do not include 'collections' at end.
   service_url: http://127.0.0.1:3000
+  # if skip_heartbeat set to true, this will skip a check that the dorfetcher service is alive before making API calls
+  #   (useful for testing)
   skip_heartbeat: true
 
 # ----------- SOLR index (that we're writing INTO) parameters ------------
 solr:
-  url: https://sul-solr-test.stanford.edu/solr/mods_profiler
-#  url: http://localhost:8080/solr/mods_profiler
+  url: https://solr.baseurl.org
   # timeouts are in seconds;  read_timeout -> open/read, open_timeout -> connection open
-  read_timeout: 60
-  open_timeout: 60
-  max_retries: 10
-
-# ---------- White and Black list parameters -----
-
-# name of file containing druids that WILL be processed (all others will be ignored)
-#  either give absolute path or path relative to where the command will be executed
-#whitelist: config/ap_whitelist.txt
+  read_timeout: 20
+  open_timeout: 20
+  max_retries: 3
 
 harvestdor:
-  # You will want to copy this file and change the following settings:
-  # 1. log_dir, log_name
-  # 2. default_set
-  # 3. blacklist or whitelist if you are using them
-  # 4. Solr baseurl
-
-  # log_dir:  directory for log file  (default logs, relative to harvestdor gem path)
-  log_dir: spec/test_logs  
-
-  # log_name: name of log file  (default: harvestdor.log)
+  # log_name: name of log file  (default: STDERR per harvestdor-indexer)
   log_name: ap-test.log
+
+  # log_dir:  directory for log file  (suggest: logs)
+  log_dir: spec/test_logs
 
   # purl: url for the DOR purl server (used to get ContentMetadata, etc.)
   purl: http://purl.stanford.edu

@@ -26,7 +26,15 @@ You must override the index method and provide configuration options.  It is rec
 
 === Configuration / Set up
 
-Create a yml config file for your collection going to a Solr index.  
+Create a yml config file for your collection going to a Solr index.
+
+See  spec/config/ap.yml for an example.
+You will want to copy that file and change the following settings:
+
+# whitelist
+# dor fetcher service_url
+# solr url
+# harvestdor log_dir, log_nam
 
 Note: Because of an update to underlying HTTP libraries, versions of this gem > 0.0.12 require an updated syntax. Errors like "unknown method timeout" might be because you're using an older version of a config file. The new configuration looks like this:
 
@@ -38,45 +46,46 @@ Note: Because of an update to underlying HTTP libraries, versions of this gem > 
       timeout: 180
       open_timeout: 180
 
-See  spec/config/ap.yml for an example.
-You will want to copy that file and change the following settings:
-1. log_name
-2. default_set
-3. blacklist or whitelist if you are using them
 
-Update the dor-fetcher-client.yml file in the config directory with the location of the URL of the dor-fetcher-service provider.  The defaulted value is the 3000 port for a localhost - dor_fetcher_service_url: http://127.0.0.1:3000
+==== Whitelist
+
+Note: the whitelist is how you specify which objects to index.  The whitelist
+can be
+
+* an Array of druids inline in the config yml file
+* a filename containing a list of druids (one per line)
+
+If a druid, per the object's identityMetadata at purl page, is for a
+
+* collection record:  then we process all the item druids in that collection (as if they were included individually in the whitelist)
+* non-collection record: then we process the druid as an individual item
 
 === Override the Harvestdor::Indexer.index method
 
 In your code, override this method from the Harvestdor::Indexer class
 
-# create Solr doc for the druid and add it to Solr, unless it is on the blacklist.  
-#  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
-def index druid
-  if blacklist.include?(druid)
-    logger.info("Druid #{druid} is on the blacklist and will have no Solr doc created")
-  else
-    logger.error("You must override the index method to transform druids into Solr docs and add them to Solr")
-    
-    doc_hash = {}
-    doc_hash[:id] = druid
-    # doc_hash[:title_tsim] = smods_rec(druid).short_title
+    # create Solr doc for the druid and add it to Solr
+    #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
+    def index resource
 
-    # you might add things from Indexer level class here
-    #  (e.g. things that are the same across all documents in the harvest)
+      benchmark "Indexing #{resource.druid}" do
+        logger.debug "About to index #{resource.druid}"
+        doc_hash = {}
+        doc_hash[:id] = resource.druid
 
-    solr_client.add(doc_hash)
+        # you might add things from Indexer level class here
+        #  (e.g. things that are the same across all documents in the harvest)
+        solr.add doc_hash
+        # TODO: provide call to code to update DOR object's workflow datastream??
+      end
+    end
 
-    # logger.info("Just created Solr doc for #{druid}")
-    # TODO: provide call to code to update DOR object's workflow datastream??
-  end
-end
 
 === Run it
 
 (bundle install)
 
-I suggest you write a script to run the code.  Your script might look like this:
+You may want to write a script to run the code.  Your script might look like this:
 
   #!/usr/bin/env ruby
   $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..'))
@@ -93,19 +102,14 @@ I suggest you write a script to run the code.  Your script might look like this:
     puts "** You must provide the full path to a collection config yml file **"
     exit
   end
-  if client_config_path.nil?
-    puts "** You must provide the full path to dor-fetcher-client config yml file **"
-    exit
-  end
-  indexer = Harvestdor::Indexer.new(config_yml_path, client_config_path, opts)
+  indexer = Harvestdor::Indexer.new(config_yml_path, opts)
   indexer.harvest_and_index
 
 Then you run the script like so:
 
 	 ./bin/indexer config/(your coll).yml
 
-I suggest you run your code on harvestdor-dev, as it is already set up to be able to harvest from the DorFetcher
-
+Run from deployed instance, as that box is already set up to be able to talk to DOR Fetcher service and to SUL Solr indexes.
 
 == Contributing
 

@@ -1,4 +1,3 @@
-
 # external gems
 require 'confstruct'
 require 'rsolr'
@@ -37,7 +36,7 @@ module Harvestdor
     def config
       @config ||= Confstruct::Configuration.new
     end
-    
+
     def logger
       @logger ||= begin
         if config.harvestdor
@@ -48,8 +47,8 @@ module Harvestdor
         end
       end
     end
-    
-    # per this Indexer's config options 
+
+    # per this Indexer's config options
     #  harvest the druids via DorFetcher
     #   create a Solr profiling document for each druid
     #   write the result to the Solr index
@@ -79,7 +78,7 @@ module Harvestdor
           end
         end
       end
-      
+
       logger.info("Successful count: #{metrics.success_count}")
       logger.info("Error count: #{metrics.error_count}")
       logger.info("Total records processed: #{metrics.total}")
@@ -90,7 +89,7 @@ module Harvestdor
         raise e
       end
     end
-    
+
     # return Array of druids contained in the DorFetcher pulling indicated by DorFetcher params
     # @return [Array<String>] or enumeration over it, if block is given.  (strings are druids, e.g. ab123cd1234)
     def druids
@@ -112,14 +111,14 @@ module Harvestdor
         # TODO: provide call to code to update DOR object's workflow datastream??
       end
     end
-    
+
     # @return an Array of druids ('oo000oo0000') that should be processed
     def whitelist
       @whitelist ||= config.whitelist if config.whitelist.is_a? Array
       @whitelist ||= load_whitelist(config.whitelist) if config.whitelist
       @whitelist ||= []
     end
-    
+
     def harvestdor_client
       @harvestdor_client ||= Harvestdor::Client.new(config.harvestdor)
     end
@@ -133,19 +132,19 @@ module Harvestdor
     end
 
     protected #---------------------------------------------------------------------
-    
+
     # populate @whitelist as an Array of druids ('oo000oo0000') that WILL be processed
     #  by reading the File at the indicated path
     # @param [String] path - path of file containing a list of druids
-    def load_whitelist path
+    def load_whitelist(path)
       @whitelist = load_id_list path
     end
-    
+
     # return an Array of druids ('oo000oo0000')
     #   populated by reading the File at the indicated path
     # @param [String] path - path of file containing a list of druids
     # @return [Array<String>] an Array of druids
-    def load_id_list path
+    def load_id_list(path)
       list = File.open(path).each_line
               .map { |line| line.strip }
               .reject { |line| line.strip.start_with?('#') }

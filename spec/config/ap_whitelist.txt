@@ -1,5 +1,5 @@
 # whitelist containing the specific druids to be processed (all others will be ignored)
-# druids should be in the form aa111bb2222
+# druids should be in the form druid:aa111bb2222
 
 druid:yg867hg1375
 druid:jf275fd6276

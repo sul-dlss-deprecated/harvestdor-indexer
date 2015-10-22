@@ -1,0 +1,12 @@
+require: rubocop-rspec
+
+inherit_from: .rubocop_todo.yml
+
+Style/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Style/TrailingBlankLines:
+  Enabled: false
