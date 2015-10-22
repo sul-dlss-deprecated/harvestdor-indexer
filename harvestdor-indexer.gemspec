@@ -29,8 +29,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'confstruct'
 
   # Development dependencies
-  # Bundler will install these gems too if you've checked out solrmarc-wrapper source from git and run 'bundle install'
-  # It will not add these as dependencies if you require solrmarc-wrapper for other projects
   gem.add_development_dependency "rake"
   # docs
   gem.add_development_dependency "rdoc"
