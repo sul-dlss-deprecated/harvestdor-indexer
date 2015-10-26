@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://purl.stanford.edu/yg867hg1375.xml
+    uri: https://purl.stanford.edu/yg867hg1375.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -94,7 +94,7 @@ http_interactions:
             <dc:coverage>China</dc:coverage>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:39:38 GMT
 - request:
     method: get
