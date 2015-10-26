@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://purl.stanford.edu/yg867hg1375.xml
+    uri: https://purl.stanford.edu/yg867hg1375.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -94,7 +94,7 @@ http_interactions:
             <dc:coverage>China</dc:coverage>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:13 GMT
 - request:
     method: get
@@ -155,11 +155,11 @@ http_interactions:
         social customs, and people."},{"druid":"druid:jf275fd6276","latest_change":"2013-11-26T00:11:17Z","title":"Album
         A: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
         social customs, and people."}],"counts":{"collections":1,"items":5,"total_count":6}}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 - request:
     method: get
-    uri: http://purl.stanford.edu/jf275fd6276.xml
+    uri: https://purl.stanford.edu/jf275fd6276.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -853,11 +853,11 @@ http_interactions:
             <dc:relation type="collection">Francis E. Stafford photographs, 1909-1933</dc:relation>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 - request:
     method: get
-    uri: http://purl.stanford.edu/nz353cp1092.xml
+    uri: https://purl.stanford.edu/nz353cp1092.xml
     body:
       encoding: US-ASCII
       string: ''
@@ -1521,6 +1521,6 @@ http_interactions:
             <dc:relation type="collection">Francis E. Stafford photographs, 1909-1933</dc:relation>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 recorded_with: VCR 2.9.3

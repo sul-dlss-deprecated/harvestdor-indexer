@@ -40,13 +40,4 @@ harvestdor:
   log_dir: spec/test_logs
 
   # purl: url for the DOR purl server (used to get ContentMetadata, etc.)
-  purl: http://purl.stanford.edu
-
-  # Additional options to pass to Faraday http client (https://github.com/technoweenie/faraday)
-  http_options:
-    ssl:
-      verify: false
-    # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
-    request:
-      timeout: 180
-      open_timeout: 180
+  purl: https://purl.stanford.edu

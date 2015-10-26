@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = Harvestdor::Indexer::VERSION
   gem.authors       = ["Naomi Dushay", "Bess Sadler", "Laney McGlohon"]
   gem.email         = ["ndushay@stanford.edu", "bess@stanford.edu", "laneymcg@stanford.edu"]
-  gem.description   = %q{Harvest DOR object metadata via a relationship (e.g. hydra:isGovernedBy rdf:resource="info:fedora/druid:hy787xj5878") and dates, plus code framework to write Solr docs to index}
+  gem.description   = %q{Harvest DOR object metadata by the item or collection, plus code framework to write Solr docs to index}
   gem.summary       = %q{Harvest DOR object metadata and index it to Solr}
-  gem.homepage      = "https://consul.stanford.edu/display/chimera/Chimera+project"
+  gem.homepage      = "https://github.com/sul-dlss/harvestdor-indexer"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
