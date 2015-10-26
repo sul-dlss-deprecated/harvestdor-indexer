@@ -8,7 +8,7 @@ module Harvestdor
 
     # @param [Harvestdor::Indexer] indexer an instance of Harvestdor::Indexer
     # @param [String] coll_druid a collection druid of the form 'druid:oo123oo1234'
-    def initialize indexer, coll_druid, options = {}
+    def initialize(indexer, coll_druid, options = {})
       @indexer = indexer
       @druid = coll_druid
       @options = options
@@ -16,7 +16,7 @@ module Harvestdor
 
     # @return [String] string of form  oo123oo1234
     def bare_druid
-      @bare_druid ||= druid.gsub("druid:", "")
+      @bare_druid ||= druid.gsub('druid:', '')
     end
 
     ##
@@ -38,18 +38,18 @@ module Harvestdor
     ##
     # Is this resource a collection?
     def collection?
-      identity_metadata.xpath("/identityMetadata/objectType").any? { |x| x.text == "collection" }
+      identity_metadata.xpath('/identityMetadata/objectType').any? { |x| x.text == 'collection' }
     end
 
     # get the druids from isMemberOfCollection relationships in rels-ext from public_xml
     # @return [Array<String>] the druids (e.g. ww123yy1234) this object has isMemberOfColletion relationship with, or nil if none
     def collections
       @collections ||= begin
-        ns_hash = {'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'fedora' => "info:fedora/fedora-system:def/relations-external#", '' => ''}
+        ns_hash = { 'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'fedora' => 'info:fedora/fedora-system:def/relations-external#', '' => '' }
         is_member_of_nodes ||= public_xml.xpath('/publicObject/rdf:RDF/rdf:Description/fedora:isMemberOfCollection/@rdf:resource', ns_hash)
 
         is_member_of_nodes.reject { |n| n.value.empty? }.map do |n|
-          Harvestdor::Indexer::Resource.new(indexer, n.value.gsub("info:fedora/", ""))
+          Harvestdor::Indexer::Resource.new(indexer, n.value.gsub('info:fedora/', ''))
         end
       end
     end
@@ -70,13 +70,12 @@ module Harvestdor
       identity_metadata.xpath('identityMetadata/objectLabel').text
     end
 
-
     # return the MODS for the druid as a Stanford::Mods::Record object
     # @return [Stanford::Mods::Record] created from the MODS xml for the druid
     def smods_rec
       @smods_rec ||= benchmark "smods_rec(#{druid})", level: :debug do
         ng_doc = mods
-        raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+        fail "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
         mods_rec = Stanford::Mods::Record.new
         mods_rec.from_nk_node(ng_doc.root)
         mods_rec
@@ -92,8 +91,8 @@ module Harvestdor
     def public_xml
       @public_xml ||= benchmark "public_xml(#{druid})", level: :debug do
         ng_doc = harvestdor_client.public_xml bare_druid
-        raise "No public xml for #{druid}" if !ng_doc
-        raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+        fail "No public xml for #{druid}" unless ng_doc
+        fail "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
         ng_doc
       end
     end
@@ -121,7 +120,7 @@ module Harvestdor
       ng_doc = benchmark "content_metadata (#{druid})", level: :debug do
         harvestdor_client.content_metadata public_xml_or_druid
       end
-      raise "No contentMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
+      fail "No contentMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
@@ -131,7 +130,7 @@ module Harvestdor
       ng_doc = benchmark "identity_metadata (#{druid})", level: :debug do
         harvestdor_client.identity_metadata public_xml_or_druid
       end
-      raise "No identityMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
+      fail "No identityMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
@@ -141,7 +140,7 @@ module Harvestdor
       ng_doc = benchmark "rights_metadata (#{druid})", level: :debug do
         harvestdor_client.rights_metadata public_xml_or_druid
       end
-      raise "No rightsMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
+      fail "No rightsMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
@@ -151,12 +150,12 @@ module Harvestdor
       ng_doc = benchmark "rdf (#{druid})", level: :debug do
         harvestdor_client.rdf public_xml_or_druid
       end
-      raise "No RDF for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
+      fail "No RDF for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
       ng_doc
     end
 
     def eql?(other)
-      other.is_a? Harvestdor::Indexer::Resource and other.indexer == indexer and other.druid == druid
+      other.is_a?(Harvestdor::Indexer::Resource) && other.indexer == indexer && other.druid == druid
     end
 
     def hash

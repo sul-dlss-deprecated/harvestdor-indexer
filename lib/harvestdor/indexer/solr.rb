@@ -23,7 +23,7 @@ module Harvestdor
     def add(doc)
       id = doc[:id]
 
-      handler = Proc.new do |exception, attempt_number, total_delay|
+      handler = proc do |exception, attempt_number, _total_delay|
         logger.debug "#{exception.class} on attempt #{attempt_number} for #{id}"
         # logger.debug exception.backtrace
       end
