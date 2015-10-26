@@ -31,26 +31,15 @@ Create a yml config file for your collection going to a Solr index.
 See  spec/config/ap.yml for an example.
 You will want to copy that file and change the following settings:
 
-# whitelist
-# dor fetcher service_url
-# solr url
-# harvestdor log_dir, log_nam
-
-Note: Because of an update to underlying HTTP libraries, versions of this gem > 0.0.12 require an updated syntax. Errors like "unknown method timeout" might be because you're using an older version of a config file. The new configuration looks like this:
-
-  http_options:
-    ssl:
-      verify: false
-    # timeouts are in seconds;  timeout -> open/read, open_timeout -> connection open
-    request:
-      timeout: 180
-      open_timeout: 180
+* whitelist
+* dor fetcher service_url
+* solr url
+* harvestdor log_dir, log_nam
 
 
 ==== Whitelist
 
-Note: the whitelist is how you specify which objects to index.  The whitelist
-can be
+The whitelist is how you specify which objects to index.  The whitelist can be
 
 * an Array of druids inline in the config yml file
 * a filename containing a list of druids (one per line)
@@ -107,32 +96,15 @@ You may want to write a script to run the code.  Your script might look like thi
 
 Then you run the script like so:
 
-	 ./bin/indexer config/(your coll).yml
+	 $ ./bin/indexer config/(your coll).yml
 
 Run from deployed instance, as that box is already set up to be able to talk to DOR Fetcher service and to SUL Solr indexes.
 
 == Contributing
 
-# Fork it
-# Create your feature branch (`git checkout -b my-new-feature`)
-# Write code and tests.
-# Commit your changes (`git commit -am 'Added some feature'`)
-# Push to the branch (`git push origin my-new-feature`)
-# Create new Pull Request
-
-== Releases
-
-* <b>2.0.0</b> Complete refactor to update APIs, merge configuration yml files, update to rspec 3
-* <b>1.0.4</b> Set skip_heartbeat to true in the initialization of the DorFetcher::Client for ease of testing
-* <b>1.0.3</b> Implemented class level config so anything that inherits from Harvestdor::Indexer can share configuration settings
-* <b>1.0.0</b> Replaced OAI harvesting mechanism with dor-fetcher
-* <b>0.0.13</b> Upgrade to latest faraday HTTP client syntax; Use retries gem (https://github.com/ooyala/retries) to make retrying of index process more robust
-* <b>0.0.12</b> fix total_object nil error
-* <b>0.0.11</b> fix error_count and success_count, allow setting of max-tries (retry solr add if error)
-* <b>0.0.7</b> adding additional logging of error, success counts, and time to index and harvest
-* <b>0.0.6</b> tweak error handling for public xml pieces
-* <b>0.0.5</b> make rake release a no-op
-* <b>0.0.4</b> add confstruct runtime dependency
-* <b>0.0.3</b> add methods for public_xml, content_metadata, identity_metadata ...
-* <b>0.0.2</b> better model code for index method (thanks, Bess!)
-* <b>0.0.1</b> initial commit
+* Fork it (https://help.github.com/articles/fork-a-repo/)
+* Create your feature branch (`git checkout -b my-new-feature`)
+* Write code and tests.
+* Commit your changes (`git commit -am 'Added some feature'`)
+* Push to the branch (`git push origin my-new-feature`)
+* Create new Pull Request (https://help.github.com/articles/creating-a-pull-request/)
