@@ -13,21 +13,21 @@ require 'dor-fetcher'
 # stdlib
 require 'logger'
 
-require "harvestdor/indexer/version"
+require 'harvestdor/indexer/version'
 
 require 'active_support/benchmarkable'
 module Harvestdor
   # Base class to harvest from DOR via harvestdor gem and then index
   class Indexer
-    require "harvestdor/indexer/metrics"
-    require "harvestdor/indexer/resource"
-    require "harvestdor/indexer/solr"
+    require 'harvestdor/indexer/metrics'
+    require 'harvestdor/indexer/resource'
+    require 'harvestdor/indexer/solr'
 
     include ActiveSupport::Benchmarkable
 
     attr_accessor :metrics, :logger
 
-    def initialize options = {}
+    def initialize(options = {})
       config.configure(options)
       yield(config) if block_given?
       @metrics = Harvestdor::Indexer::Metrics.new logger: logger
@@ -52,8 +52,8 @@ module Harvestdor
     #  harvest the druids via DorFetcher
     #   create a Solr profiling document for each druid
     #   write the result to the Solr index
-    def harvest_and_index each_options = {in_threads: 4}
-      benchmark "Harvest and Indexing" do
+    def harvest_and_index(each_options = { in_threads: 4 })
+      benchmark 'Harvest and Indexing' do
         each_resource(each_options) do |resource|
           index resource
         end
@@ -70,8 +70,8 @@ module Harvestdor
       end.flatten.uniq.compact
     end
 
-    def each_resource options = {}, &block
-      benchmark "" do
+    def each_resource(options = {}, &_block)
+      benchmark '' do
         Parallel.each(resources, options) do |resource|
           metrics.tally on_error: method(:resource_error) do
             yield resource
@@ -84,9 +84,9 @@ module Harvestdor
       logger.info("Total records processed: #{metrics.total}")
     end
 
-    def resource_error e
-      if e.instance_of? Parallel::Break or e.instance_of? Parallel::Kill
-        raise e
+    def resource_error(e)
+      if e.instance_of?(Parallel::Break) || e.instance_of?(Parallel::Kill)
+        fail e
       end
     end
 
@@ -98,8 +98,7 @@ module Harvestdor
 
     # create Solr doc for the druid and add it to Solr
     #  NOTE: don't forget to send commit to Solr, either once at end (already in harvest_and_index), or for each add, or ...
-    def index resource
-
+    def index(resource)
       benchmark "Indexing #{resource.druid}" do
         logger.debug "About to index #{resource.druid}"
         doc_hash = {}
@@ -145,12 +144,9 @@ module Harvestdor
     # @param [String] path - path of file containing a list of druids
     # @return [Array<String>] an Array of druids
     def load_id_list(path)
-      list = File.open(path).each_line
-              .map { |line| line.strip }
-              .reject { |line| line.strip.start_with?('#') }
-              .reject { |line| line.empty? }
+      list = File.open(path).each_line.map(&:strip).reject { |line| line.strip.start_with?('#') }.reject(&:empty?)
     rescue
-      msg = "Unable to find list of druids at " + path
+      msg = 'Unable to find list of druids at ' + path
       logger.fatal msg
       raise msg
     end
