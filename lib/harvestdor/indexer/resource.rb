@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 require 'active_support/benchmarkable'
 
 module Harvestdor
@@ -7,10 +8,10 @@ module Harvestdor
     attr_reader :indexer, :druid, :options
 
     # @param [Harvestdor::Indexer] indexer an instance of Harvestdor::Indexer
-    # @param [String] coll_druid a collection druid of the form 'druid:oo123oo1234'
-    def initialize(indexer, coll_druid, options = {})
+    # @param [String] druid a druid of the form 'druid:oo123oo1234'
+    def initialize(indexer, druid, options = {})
       @indexer = indexer
-      @druid = coll_druid
+      @druid = druid
       @options = options
     end
 
@@ -57,10 +58,16 @@ module Harvestdor
     ##
     # Return the items in this collection
     def items
-      @items ||= begin
-        druids = dor_fetcher_client.druid_array(dor_fetcher_client.get_collection(bare_druid, {}))
-        druids.map { |x| Harvestdor::Indexer::Resource.new(indexer, x) }
+      return [] unless collection?
+      return to_enum(:items) unless block_given?
+
+      items_druids.each do |x|
+        yield Harvestdor::Indexer::Resource.new(indexer, x)
       end
+    end
+
+    def items_druids
+      @items_druids ||= dor_fetcher_client.druid_array(dor_fetcher_client.get_collection(bare_druid, {}))
     end
 
     # given a druid, get its objectLabel from its purl page identityMetadata
