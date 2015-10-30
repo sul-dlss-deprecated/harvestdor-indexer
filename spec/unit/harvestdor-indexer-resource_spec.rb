@@ -19,6 +19,34 @@ describe Harvestdor::Indexer::Resource do
     described_class.new(@indexer, @fake_druid)
   end
 
+  subject { resource }
+
+  describe '#items' do
+    context 'for a regular item' do
+      before do
+        allow(subject).to receive(:collection?).and_return(false)
+      end
+
+      it 'is empty if it is not a collection' do
+        expect(subject.items).to be_empty
+      end
+    end
+
+    context 'for a collection' do
+      before do
+        allow(subject).to receive(:collection?).and_return(true)
+        allow(subject).to receive(:items_druids).and_return %w(oo000oo0001 oo000oo0002)
+      end
+
+      it 'enumerates the items in the collection' do
+        expect(subject.items.count).to eq 2
+
+        child = subject.items.first
+        expect(child.druid).to eq 'oo000oo0001'
+      end
+    end
+  end
+
   context 'smods_rec method' do
     before(:all) do
       @ns_decl = "xmlns='#{Mods::MODS_NS}'"

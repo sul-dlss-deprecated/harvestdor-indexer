@@ -38,6 +38,20 @@ describe Harvestdor::Indexer do
     expect(@hdor_client.config.default_set).to eq(@config['harvestdor']['default_set'])
   end
 
+  describe '#resources' do
+    it 'does not persist resources across calls' do
+      VCR.use_cassette('single_rsolr_connection_call') do
+        hdor_client = @indexer.send(:harvestdor_client)
+        allow(@indexer.dor_fetcher_client).to receive(:druid_array).and_return(['druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534'])
+
+        a = @indexer.resources.first
+        b = @indexer.resources.first
+
+        expect(a).to_not eq b
+      end
+    end
+  end
+
   context 'harvest_and_index' do
     before(:all) do
       @doc_hash = {
@@ -57,7 +71,7 @@ describe Harvestdor::Indexer do
       VCR.use_cassette('single_rsolr_connection_call') do
         hdor_client = @indexer.send(:harvestdor_client)
         expect(@indexer.dor_fetcher_client).to receive(:druid_array).and_return(['druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534'])
-        expect(@indexer.solr).to receive(:add).exactly(6).times
+        expect(@indexer.solr).to receive(:add).at_least(6).times
         expect(@indexer.solr).to receive(:commit!).once
         @indexer.harvest_and_index
       end
@@ -73,7 +87,7 @@ describe Harvestdor::Indexer do
         }
         expect(indexer.solr).to receive(:commit!)
         indexer.harvest_and_index
-        expect(added).to match_array ['druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534', 'druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092']
+        expect(added).to include 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534', 'druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092'
       end
     end
   end # harvest_and_index
@@ -86,7 +100,7 @@ describe Harvestdor::Indexer do
 
     it 'druids method calls druid_array and get_collection methods on fetcher_client' do
       VCR.use_cassette('get_collection_druids_call') do
-        expect(@indexer.resources.map(&:druid)).to match_array ['druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534']
+        expect(@indexer.resources.map(&:druid)).to include 'druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534'
       end
     end
 

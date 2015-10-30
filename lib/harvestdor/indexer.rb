@@ -62,12 +62,30 @@ module Harvestdor
       end
     end
 
+    ##
+    # Collect all the explicitly identified resources (e.g. from the whitelist), and all
+    # members of any collections in that list, and offer them as an Enumerator.
+    #
+    # Using enumerators allows us to lazy-fetch and correctly garbage collect resources after
+    # a downstream consumer is finished processing them. If a consumer needs to use this resource
+    # list multiple times (and is confident all the resources will fit in available memory!), they
+    # could memoize the result of e.g. `#to_a` for their own use.
+    #
+    # @return [Enumerator] an enumerator of Harvestdor::Indexer::Resources for the druid whitelist,
+    #   and all the items belonging to each collection id in druids.
     def resources
-      druids.map do |x|
-        Harvestdor::Indexer::Resource.new(self, x)
-      end.map do |x|
-        [x, (x.items if x.collection?)]
-      end.flatten.uniq.compact
+      return to_enum(:resources) unless block_given?
+
+      druids.each do |x|
+        # Include the named resource in the enumerable
+        resource = Harvestdor::Indexer::Resource.new(self, x)
+        yield resource
+
+        # And also yield any members of that resources
+        resource.items.each do |coll_member|
+          yield coll_member
+        end
+      end
     end
 
     def each_resource(options = {}, &_block)
