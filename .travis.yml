@@ -2,14 +2,10 @@ language: ruby
 sudo: false
 script: rake
 rvm:
-  - 2.2.0
-  - 2.1.5
-  - 2.0.0
-  - 1.9.3
-  - jruby-1.7.9-d19 # fails after 1.7.10 for some reason
-#  - jruby-19mode # JRuby in 1.9 mode
+  - 2.2.3
+  
 notifications:
   email:
     - ndushay@stanford.edu
     - laneymcg@stanford.edu
-    - cbeer@stanford.edu
+    - cabeer@stanford.edu
