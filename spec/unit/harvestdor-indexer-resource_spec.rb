@@ -44,6 +44,11 @@ describe Harvestdor::Indexer::Resource do
         child = subject.items.first
         expect(child.druid).to eq 'oo000oo0001'
       end
+
+      it 'estimates the size of the enumerator without instantiating objects' do
+        expect(described_class).not_to receive(:new)
+        expect(subject.items.size).to eq 2
+      end
     end
   end
 

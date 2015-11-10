@@ -59,7 +59,9 @@ module Harvestdor
     # Return the items in this collection
     def items
       return [] unless collection?
-      return to_enum(:items) unless block_given?
+
+      # return an enumerator, with an estimated size of the collection
+      return to_enum(:items) { items_druids.length } unless block_given?
 
       items_druids.each do |x|
         yield Harvestdor::Indexer::Resource.new(indexer, x)
