@@ -1,12 +1,10 @@
-= Harvestdor::Indexer
-{<img src="https://travis-ci.org/sul-dlss/harvestdor-indexer.svg" alt="Build Status" />}[https://travis-ci.org/sul-dlss/harvestdor-indexer]
-{<img src="https://coveralls.io/repos/sul-dlss/harvestdor-indexer/badge.png" alt="Coverage Status" />}[https://coveralls.io/r/sul-dlss/harvestdor-indexer]
-{<img src="https://gemnasium.com/sul-dlss/harvestdor-indexer.svg" alt="Dependency Status" />}[https://gemnasium.com/sul-dlss/harvestdor-indexer]
-{<img src="https://badge.fury.io/rb/harvestdor-indexer.svg" alt="Gem Version" />}[http://badge.fury.io/rb/harvestdor-indexer]
+# Harvestdor::Indexer
+[![Build Status](https://travis-ci.org/sul-dlss/harvestdor-indexer.png?branch=master)](https://travis-ci.org/sul-dlss/harvestdor-indexer) | [![Coverage Status](https://coveralls.io/repos/sul-dlss/harvestdor-indexer/badge.png?branch=master)](https://coveralls.io/r/sul-dlss/harvestdor-indexer) | [![Gem Version](https://badge.fury.io/rb/blacklight-harvestdor-indexer.png)](http://badge.fury.io/rb/blacklight-harvestdor-indexer) | [![Dependency Status](https://gemnasium.com/sul-dlss/harvestdor-indexer.svg)](https://gemnasium.com/sul-dlss/harvestdor-indexer)
+
 
 A Gem to harvest meta/data from DOR and the skeleton code to index it and write to Solr.
 
-== Installation
+## Installation
 
 Add this line to your application's Gemfile:
 
@@ -20,11 +18,11 @@ Or install it yourself as:
 
     $ gem install harvestdor-indexer
 
-== Usage
+## Usage
 
 You must override the index method and provide configuration options.  It is recommended to write a script to run it, too - example below.
 
-=== Configuration / Set up
+### Configuration / Set up
 
 Create a yml config file for your collection going to a Solr index.
 
@@ -37,7 +35,7 @@ You will want to copy that file and change the following settings:
 * harvestdor log_dir, log_nam
 
 
-==== Whitelist
+#### Whitelist
 
 The whitelist is how you specify which objects to index.  The whitelist can be
 
@@ -49,7 +47,7 @@ If a druid, per the object's identityMetadata at purl page, is for a
 * collection record:  then we process all the item druids in that collection (as if they were included individually in the whitelist)
 * non-collection record: then we process the druid as an individual item
 
-=== Override the Harvestdor::Indexer.index method
+### Override the Harvestdor::Indexer.index method
 
 In your code, override this method from the Harvestdor::Indexer class
 
@@ -70,7 +68,7 @@ In your code, override this method from the Harvestdor::Indexer class
     end
 
 
-=== Run it
+### Run it
 
 (bundle install)
 
@@ -100,7 +98,7 @@ Then you run the script like so:
 
 Run from deployed instance, as that box is already set up to be able to talk to DOR Fetcher service and to SUL Solr indexes.
 
-== Contributing
+## Contributing
 
 * Fork it (https://help.github.com/articles/fork-a-repo/)
 * Create your feature branch (`git checkout -b my-new-feature`)
