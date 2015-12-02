@@ -20,7 +20,9 @@ module Harvestdor
     # Add the document to solr, retry if an error occurs.
     # See https://github.com/ooyala/retries for docs on with_retries.
     # @param [Hash] doc a Hash representation of the solr document
-    def add(doc)
+    # @param [String] coll_size the size of the collection
+    # @param [String] index the index of this document (nth to be indexed)
+    def add(doc, coll_size = '?', index = '?')
       id = doc[:id]
 
       handler = proc do |exception, attempt_number, _total_delay|
@@ -31,7 +33,7 @@ module Harvestdor
       with_retries(max_tries: config.max_retries, handler: handler, base_sleep_seconds: 1, max_sleep_seconds: 5) do |attempt|
         logger.debug "Attempt #{attempt} for #{id}"
         client.add(doc)
-        logger.info "Successfully indexed #{id} on attempt #{attempt}"
+        logger.info "Successfully indexed #{id} (#{index}/#{coll_size}) on attempt #{attempt}"
       end
     end
   end
