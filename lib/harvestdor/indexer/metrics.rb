@@ -20,8 +20,8 @@ module Harvestdor
     #
     # @param [Hash] options
     # @option options [#call] Callback that will receive any exception thrown by the block
-    def tally(options = {}, &block)
-      block.call
+    def tally(options = {})
+      yield
       success!
     rescue => e
       error!

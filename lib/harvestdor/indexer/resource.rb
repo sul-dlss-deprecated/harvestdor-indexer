@@ -84,7 +84,7 @@ module Harvestdor
     def smods_rec
       @smods_rec ||= benchmark "smods_rec(#{druid})", level: :debug do
         ng_doc = mods
-        fail "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+        raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
         mods_rec = Stanford::Mods::Record.new
         mods_rec.from_nk_node(ng_doc.root)
         mods_rec
@@ -100,8 +100,8 @@ module Harvestdor
     def public_xml
       @public_xml ||= benchmark "public_xml(#{druid})", level: :debug do
         ng_doc = harvestdor_client.public_xml bare_druid
-        fail "No public xml for #{druid}" unless ng_doc
-        fail "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+        raise "No public xml for #{druid}" unless ng_doc
+        raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
         ng_doc
       end
     end
@@ -126,41 +126,41 @@ module Harvestdor
     # the contentMetadata for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
     def content_metadata
-      ng_doc = benchmark "content_metadata (#{druid})", level: :debug do
+      @content_metadata ||= benchmark "content_metadata (#{druid})", level: :debug do
         harvestdor_client.content_metadata public_xml_or_druid
       end
-      fail "No contentMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
-      ng_doc
+      raise "No contentMetadata for \"#{druid}\"" if !@content_metadata || @content_metadata.children.empty?
+      @content_metadata
     end
 
     # the identityMetadata for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
     def identity_metadata
-      ng_doc = benchmark "identity_metadata (#{druid})", level: :debug do
+      @identity_metadata ||= benchmark "identity_metadata (#{druid})", level: :debug do
         harvestdor_client.identity_metadata public_xml_or_druid
       end
-      fail "No identityMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
-      ng_doc
+      raise "No identityMetadata for \"#{druid}\"" if !@identity_metadata || @identity_metadata.children.empty?
+      @identity_metadata
     end
 
     # the rightsMetadata for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
     def rights_metadata
-      ng_doc = benchmark "rights_metadata (#{druid})", level: :debug do
+      @rights_metadata ||= benchmark "rights_metadata (#{druid})", level: :debug do
         harvestdor_client.rights_metadata public_xml_or_druid
       end
-      fail "No rightsMetadata for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
-      ng_doc
+      raise "No rightsMetadata for \"#{druid}\"" if !@rights_metadata || @rights_metadata.children.empty?
+      @rights_metadata
     end
 
     # the RDF for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the RDF for the DOR object
     def rdf
-      ng_doc = benchmark "rdf (#{druid})", level: :debug do
+      @rdf ||= benchmark "rdf (#{druid})", level: :debug do
         harvestdor_client.rdf public_xml_or_druid
       end
-      fail "No RDF for \"#{druid}\"" if !ng_doc || ng_doc.children.empty?
-      ng_doc
+      raise "No RDF for \"#{druid}\"" if !@rdf || @rdf.children.empty?
+      @rdf
     end
 
     def eql?(other)

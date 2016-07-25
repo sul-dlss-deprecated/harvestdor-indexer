@@ -81,7 +81,7 @@ describe Harvestdor::Indexer::Resource do
     before(:all) do
       @id_md_xml = "<identityMetadata><objectId>druid:#{@fake_druid}</objectId></identityMetadata>"
       @cntnt_md_xml = "<contentMetadata type='image' objectId='#{@fake_druid}'>foo</contentMetadata>"
-      @rights_md_xml = "<rightsMetadata><access type=\"discover\"><machine><world>bar</world></machine></access></rightsMetadata>"
+      @rights_md_xml = '<rightsMetadata><access type="discover"><machine><world>bar</world></machine></access></rightsMetadata>'
       @rdf_xml = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Description rdf:about=\"info:fedora/druid:#{@fake_druid}\">relationship!</rdf:Description></rdf:RDF>"
       @pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}#{@cntnt_md_xml}#{@rights_md_xml}#{@rdf_xml}</publicObject>"
       @ng_pub_xml = Nokogiri::XML(@pub_xml)
@@ -186,7 +186,7 @@ describe Harvestdor::Indexer::Resource do
 
     describe '#collections' do
       it 'extracts the collection this resource is a member of and return Resource objects for those collections' do
-        allow(resource).to receive(:public_xml).and_return(Nokogiri::XML <<-EOF
+        allow(resource).to receive(:public_xml).and_return(Nokogiri::XML(<<-EOF)
 <publicObject>
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
     <rdf:Description>

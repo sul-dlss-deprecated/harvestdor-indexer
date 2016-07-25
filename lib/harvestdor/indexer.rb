@@ -103,9 +103,7 @@ module Harvestdor
     end
 
     def resource_error(e)
-      if e.instance_of?(Parallel::Break) || e.instance_of?(Parallel::Kill)
-        fail e
-      end
+      raise e if e.instance_of?(Parallel::Break) || e.instance_of?(Parallel::Kill)
     end
 
     # return Array of druids contained in the DorFetcher pulling indicated by DorFetcher params
