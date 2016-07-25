@@ -84,7 +84,7 @@ module Harvestdor
     def smods_rec
       @smods_rec ||= benchmark "smods_rec(#{druid})", level: :debug do
         ng_doc = mods
-        fail "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+        raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
         mods_rec = Stanford::Mods::Record.new
         mods_rec.from_nk_node(ng_doc.root)
         mods_rec
@@ -100,8 +100,8 @@ module Harvestdor
     def public_xml
       @public_xml ||= benchmark "public_xml(#{druid})", level: :debug do
         ng_doc = harvestdor_client.public_xml bare_druid
-        fail "No public xml for #{druid}" unless ng_doc
-        fail "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+        raise "No public xml for #{druid}" unless ng_doc
+        raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
         ng_doc
       end
     end

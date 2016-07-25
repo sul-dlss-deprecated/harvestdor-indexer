@@ -47,7 +47,7 @@ describe Harvestdor::Indexer do
         a = @indexer.resources.first
         b = @indexer.resources.first
 
-        expect(a).to_not eq b
+        expect(a).not_to eq b
       end
     end
   end

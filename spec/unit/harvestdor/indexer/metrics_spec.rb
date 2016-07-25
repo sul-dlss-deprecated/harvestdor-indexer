@@ -30,7 +30,7 @@ describe Harvestdor::Indexer::Metrics do
     it 'records an error if the block fails' do
       expect do
         subject.tally do
-          fail 'Broken'
+          raise 'Broken'
         end
       end.to change { subject.error_count }.from(0).to(1)
     end
@@ -39,7 +39,7 @@ describe Harvestdor::Indexer::Metrics do
       x = double
       expect(x).to receive(:call).with(kind_of(RuntimeError))
       subject.tally(on_error: x) do
-        fail 'Broken'
+        raise 'Broken'
       end
     end
   end
