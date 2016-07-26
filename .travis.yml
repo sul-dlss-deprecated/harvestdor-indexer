@@ -3,9 +3,8 @@ sudo: false
 script: rake
 rvm:
   - 2.2.3
-  
+
 notifications:
   email:
-    - ndushay@stanford.edu
     - laneymcg@stanford.edu
     - cabeer@stanford.edu
