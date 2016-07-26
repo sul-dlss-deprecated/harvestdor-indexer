@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 require 'active_support/benchmarkable'
 
 module Harvestdor
@@ -99,15 +98,13 @@ module Harvestdor
     # @return [Nokogiri::XML::Document] the public xml for the DOR object
     def public_xml
       @public_xml ||= benchmark "public_xml(#{druid})", level: :debug do
-        ng_doc = harvestdor_client.public_xml bare_druid
-        raise "No public xml for #{druid}" unless ng_doc
-        raise "Empty public xml for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
-        ng_doc
+        harvestdor_client.public_xml bare_druid
       end
     end
 
     ##
     # Has the public_xml been previously retrieved?
+    # @deprecated
     def public_xml?
       !!@public_xml
     end
@@ -115,6 +112,7 @@ module Harvestdor
     ##
     # Get the public_xml, if retrieved, or the druid. This is used to short-circuit
     # retrieving metadata out of the public xml.
+    # @deprecated
     def public_xml_or_druid
       if public_xml?
         public_xml
@@ -127,40 +125,32 @@ module Harvestdor
     # @return [Nokogiri::XML::Document] the contentMetadata for the DOR object
     def content_metadata
       @content_metadata ||= benchmark "content_metadata (#{druid})", level: :debug do
-        harvestdor_client.content_metadata public_xml_or_druid
+        harvestdor_client.content_metadata public_xml
       end
-      raise "No contentMetadata for \"#{druid}\"" if !@content_metadata || @content_metadata.children.empty?
-      @content_metadata
     end
 
     # the identityMetadata for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the identityMetadata for the DOR object
     def identity_metadata
       @identity_metadata ||= benchmark "identity_metadata (#{druid})", level: :debug do
-        harvestdor_client.identity_metadata public_xml_or_druid
+        harvestdor_client.identity_metadata public_xml
       end
-      raise "No identityMetadata for \"#{druid}\"" if !@identity_metadata || @identity_metadata.children.empty?
-      @identity_metadata
     end
 
     # the rightsMetadata for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the rightsMetadata for the DOR object
     def rights_metadata
       @rights_metadata ||= benchmark "rights_metadata (#{druid})", level: :debug do
-        harvestdor_client.rights_metadata public_xml_or_druid
+        harvestdor_client.rights_metadata public_xml
       end
-      raise "No rightsMetadata for \"#{druid}\"" if !@rights_metadata || @rights_metadata.children.empty?
-      @rights_metadata
     end
 
     # the RDF for this DOR object, ultimately from the purl public xml
     # @return [Nokogiri::XML::Document] the RDF for the DOR object
     def rdf
       @rdf ||= benchmark "rdf (#{druid})", level: :debug do
-        harvestdor_client.rdf public_xml_or_druid
+        harvestdor_client.rdf public_xml
       end
-      raise "No RDF for \"#{druid}\"" if !@rdf || @rdf.children.empty?
-      @rdf
     end
 
     def eql?(other)
