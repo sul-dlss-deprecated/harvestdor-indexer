@@ -19,6 +19,8 @@ describe Harvestdor::Indexer::Resource do
     described_class.new(@indexer, @fake_druid)
   end
 
+  let(:blank_public_xml) { Nokogiri::XML::Document.new }
+
   subject { resource }
 
   describe '#items' do
@@ -118,7 +120,7 @@ describe Harvestdor::Indexer::Resource do
         expect(cm.root.text.strip).to eq('foo')
       end
       it 'raises RuntimeError if nil is returned by Harvestdor::Client.contentMetadata for the druid' do
-        expect(@hdor_client).to receive(:content_metadata).with(@fake_druid).and_return(nil)
+        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
         expect { resource.content_metadata }.to raise_error(RuntimeError, "No contentMetadata for \"#{@fake_druid}\"")
       end
     end
@@ -132,7 +134,7 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root.text.strip).to eq("druid:#{@fake_druid}")
       end
       it 'raises RuntimeError if nil is returned by Harvestdor::Client.identityMetadata for the druid' do
-        expect(@hdor_client).to receive(:identity_metadata).with(@fake_druid).and_return(nil)
+        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
         expect { resource.identity_metadata }.to raise_error(RuntimeError, "No identityMetadata for \"#{@fake_druid}\"")
       end
     end
@@ -146,7 +148,7 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root.text.strip).to eq('bar')
       end
       it 'raises RuntimeError if nil is returned by Harvestdor::Client.rightsMetadata for the druid' do
-        expect(@hdor_client).to receive(:rights_metadata).with(@fake_druid).and_return(nil)
+        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
         expect { resource.rights_metadata }.to raise_error(RuntimeError, "No rightsMetadata for \"#{@fake_druid}\"")
       end
     end
@@ -160,7 +162,7 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root.text.strip).to eq('relationship!')
       end
       it 'raises RuntimeError if nil is returned by Harvestdor::Client.rdf for the druid' do
-        expect(@hdor_client).to receive(:rdf).with(@fake_druid).and_return(nil)
+        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
         expect { resource.rdf }.to raise_error(RuntimeError, "No RDF for \"#{@fake_druid}\"")
       end
     end
