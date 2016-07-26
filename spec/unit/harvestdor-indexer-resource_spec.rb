@@ -100,14 +100,6 @@ describe Harvestdor::Indexer::Resource do
         expect(px.root.name).to eq('publicObject')
         expect(px.root.attributes['id'].text).to eq("druid:#{@fake_druid}")
       end
-      it 'raises exception if public xml for the druid is empty' do
-        expect(@hdor_client).to receive(:public_xml).with(@fake_druid).and_return(Nokogiri::XML('<publicObject/>'))
-        expect { resource.public_xml }.to raise_error(RuntimeError, Regexp.new("^Empty public xml for #{@fake_druid}: <"))
-      end
-      it 'raises error if there is no public_xml page for the druid' do
-        expect(@hdor_client).to receive(:public_xml).with(@fake_druid).and_return(nil)
-        expect { resource.public_xml }.to raise_error(RuntimeError, "No public xml for #{@fake_druid}")
-      end
     end
     context '#content_metadata' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
@@ -119,10 +111,6 @@ describe Harvestdor::Indexer::Resource do
         expect(cm.root.attributes['objectId'].text).to eq(@fake_druid)
         expect(cm.root.text.strip).to eq('foo')
       end
-      it 'raises RuntimeError if nil is returned by Harvestdor::Client.contentMetadata for the druid' do
-        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
-        expect { resource.content_metadata }.to raise_error(RuntimeError, "No contentMetadata for \"#{@fake_druid}\"")
-      end
     end
     context '#identity_metadata' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
@@ -132,10 +120,6 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root).not_to eq(nil)
         expect(im.root.name).to eq('identityMetadata')
         expect(im.root.text.strip).to eq("druid:#{@fake_druid}")
-      end
-      it 'raises RuntimeError if nil is returned by Harvestdor::Client.identityMetadata for the druid' do
-        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
-        expect { resource.identity_metadata }.to raise_error(RuntimeError, "No identityMetadata for \"#{@fake_druid}\"")
       end
     end
     context '#rights_metadata' do
@@ -147,10 +131,6 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root.name).to eq('rightsMetadata')
         expect(im.root.text.strip).to eq('bar')
       end
-      it 'raises RuntimeError if nil is returned by Harvestdor::Client.rightsMetadata for the druid' do
-        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
-        expect { resource.rights_metadata }.to raise_error(RuntimeError, "No rightsMetadata for \"#{@fake_druid}\"")
-      end
     end
     context '#rdf' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
@@ -160,10 +140,6 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root).not_to eq(nil)
         expect(im.root.name).to eq('RDF')
         expect(im.root.text.strip).to eq('relationship!')
-      end
-      it 'raises RuntimeError if nil is returned by Harvestdor::Client.rdf for the druid' do
-        expect(resource).to receive(:public_xml).and_return(blank_public_xml)
-        expect { resource.rdf }.to raise_error(RuntimeError, "No RDF for \"#{@fake_druid}\"")
       end
     end
 
