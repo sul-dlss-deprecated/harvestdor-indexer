@@ -16,7 +16,13 @@ Lint/UselessAssignment:
 Metrics/AbcSize:
   Max: 20
 
-# Offense count: 107
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/harvestdor/indexer/resource.rb'
+
+# Offense count: 92
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
 Metrics/LineLength:
