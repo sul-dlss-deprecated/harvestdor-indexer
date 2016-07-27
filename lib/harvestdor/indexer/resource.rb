@@ -35,6 +35,12 @@ module Harvestdor
       options[:logger] || (indexer.logger if indexer.respond_to? :logger) || Logger.new(STDERR)
     end
 
+    def exists?
+      public_xml
+    rescue Harvestdor::Errors::MissingPublicXml, Harvestdor::Errors::MissingPurlPage
+      false
+    end
+
     ##
     # Is this resource a collection?
     def collection?

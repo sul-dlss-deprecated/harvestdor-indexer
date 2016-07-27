@@ -23,6 +23,23 @@ describe Harvestdor::Indexer::Resource do
 
   subject { resource }
 
+  describe '#exists?' do
+    it 'exists if the public xml is present and available' do
+      allow(subject).to receive(:public_xml).and_return(blank_public_xml)
+      expect(subject).to exist
+    end
+
+    it 'does not exist if the public xml is empty' do
+      allow(subject).to receive(:public_xml).and_raise Harvestdor::Errors::MissingPurlPage
+      expect(subject).not_to exist
+    end
+
+    it 'does not exist if the purl is missing' do
+      allow(subject).to receive(:public_xml).and_raise Harvestdor::Errors::MissingPurlPage
+      expect(subject).not_to exist
+    end
+  end
+
   describe '#items' do
     context 'for a regular item' do
       before do
