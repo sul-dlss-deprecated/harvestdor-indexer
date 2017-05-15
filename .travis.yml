@@ -2,9 +2,4 @@ language: ruby
 sudo: false
 script: rake
 rvm:
-  - 2.3.1
-
-notifications:
-  email:
-    - laneymcg@stanford.edu
-    - cabeer@stanford.edu
+  - 2.3.4
