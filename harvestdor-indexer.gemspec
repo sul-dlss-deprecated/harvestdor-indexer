@@ -36,8 +36,8 @@ Gem::Specification.new do |gem|
   # tests
   gem.add_development_dependency 'rspec', '~> 3.0'
   gem.add_development_dependency 'coveralls'
-  gem.add_development_dependency 'rubocop'
-  gem.add_development_dependency 'rubocop-rspec'
+  gem.add_development_dependency 'rubocop', '0.42.0'
+  gem.add_development_dependency 'rubocop-rspec', '1.5.1'
   gem.add_development_dependency 'vcr'
   gem.add_development_dependency 'webmock'
 
