@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'dor-fetcher', '=1.0.5'
   gem.add_dependency 'activesupport'
   gem.add_dependency 'parallel'
+  gem.add_dependency 'net-http-persistent', '~> 2.0'
 
   # Runtime dependencies
   gem.add_runtime_dependency 'confstruct'
