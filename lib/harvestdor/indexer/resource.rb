@@ -14,6 +14,14 @@ module Harvestdor
       @options = options
     end
 
+    def namespaced_druid
+      if druid =~ /^druid:/
+        druid
+      else
+        "druid:#{druid}"
+      end
+    end
+
     # @return [String] string of form  oo123oo1234
     def bare_druid
       @bare_druid ||= druid.gsub('druid:', '')
@@ -27,6 +35,10 @@ module Harvestdor
 
     def dor_fetcher_client
       indexer.dor_fetcher_client
+    end
+
+    def purl_fetcher_client
+      indexer.purl_fetcher_client
     end
 
     ##
@@ -66,7 +78,7 @@ module Harvestdor
       return [] unless collection?
 
       # return an enumerator, with an estimated size of the collection
-      return to_enum(:items) { items_druids.length } unless block_given?
+      return to_enum(:items) { items_druids.count } unless block_given?
 
       items_druids.each do |x|
         yield Harvestdor::Indexer::Resource.new(indexer, x)
@@ -74,7 +86,12 @@ module Harvestdor
     end
 
     def items_druids
-      @items_druids ||= dor_fetcher_client.druid_array(dor_fetcher_client.get_collection(bare_druid, {}))
+      if purl_fetcher_client
+        # we don't need to memoize purl_fetcher_client, since it natively uses enumerables
+        purl_fetcher_client.druids_from_collection(namespaced_druid)
+      else
+        @items_druids ||= dor_fetcher_client.druid_array(dor_fetcher_client.get_collection(bare_druid, {}))
+      end
     end
 
     # given a druid, get its objectLabel from its purl page identityMetadata

@@ -20,6 +20,7 @@ module Harvestdor
   # Base class to harvest from DOR via harvestdor gem and then index
   class Indexer
     require 'harvestdor/indexer/metrics'
+    require 'harvestdor/indexer/purl_fetcher'
     require 'harvestdor/indexer/resource'
     require 'harvestdor/indexer/solr'
 
@@ -140,6 +141,12 @@ module Harvestdor
 
     def dor_fetcher_client
       @dor_fetcher_client ||= DorFetcher::Client.new(config.dor_fetcher)
+    end
+
+    def purl_fetcher_client
+      return unless config.purl_fetcher
+
+      @purl_fetcher_client ||= Harvestdor::Indexer::PurlFetcher.new(config.purl_fetcher)
     end
 
     def solr
