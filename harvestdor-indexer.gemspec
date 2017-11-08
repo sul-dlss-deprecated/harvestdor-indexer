@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'dor-fetcher', '=1.0.5'
   gem.add_dependency 'activesupport'
   gem.add_dependency 'parallel'
+  gem.add_dependency 'faraday'
 
   # Runtime dependencies
   gem.add_runtime_dependency 'confstruct'
@@ -36,8 +37,8 @@ Gem::Specification.new do |gem|
   # tests
   gem.add_development_dependency 'rspec', '~> 3.0'
   gem.add_development_dependency 'coveralls'
-  gem.add_development_dependency 'rubocop'
-  gem.add_development_dependency 'rubocop-rspec'
+  gem.add_development_dependency 'rubocop', '0.42.0'
+  gem.add_development_dependency 'rubocop-rspec', '1.5.1'
   gem.add_development_dependency 'vcr'
   gem.add_development_dependency 'webmock'
 
