@@ -1,6 +1,5 @@
 # Harvestdor::Indexer
-[![Build Status](https://travis-ci.org/sul-dlss/harvestdor-indexer.png?branch=master)](https://travis-ci.org/sul-dlss/harvestdor-indexer) | [![Coverage Status](https://coveralls.io/repos/sul-dlss/harvestdor-indexer/badge.png?branch=master)](https://coveralls.io/r/sul-dlss/harvestdor-indexer) | [![Gem Version](https://badge.fury.io/rb/blacklight-harvestdor-indexer.png)](http://badge.fury.io/rb/blacklight-harvestdor-indexer) | [![Dependency Status](https://gemnasium.com/sul-dlss/harvestdor-indexer.svg)](https://gemnasium.com/sul-dlss/harvestdor-indexer)
-
+[![Build Status](https://travis-ci.org/sul-dlss/harvestdor-indexer.png?branch=master)](https://travis-ci.org/sul-dlss/harvestdor-indexer) | [![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/harvestdor-indexer/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/harvestdor-indexer/coverage) | [![Gem Version](https://badge.fury.io/rb/blacklight-harvestdor-indexer.png)](http://badge.fury.io/rb/blacklight-harvestdor-indexer) 
 
 A Gem to harvest meta/data from DOR and the skeleton code to index it and write to Solr.
 

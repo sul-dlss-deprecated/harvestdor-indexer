@@ -1,10 +1,19 @@
 language: ruby
-sudo: false
 script: rake
+
 rvm:
-  - 2.4.3
-  - 2.3.1
+  - 2.5.3
 
 notifications:
-  email:
-    - cabeer@stanford.edu
+  email: false
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=315fbe02aea8b432e2e75da0c2d6c6382bf769edc08843359b2b5fcf088c8f3f
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
