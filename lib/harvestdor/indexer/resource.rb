@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/benchmarkable'
 
 module Harvestdor
@@ -107,6 +109,7 @@ module Harvestdor
       @smods_rec ||= benchmark "smods_rec(#{druid})", level: :debug do
         ng_doc = mods
         raise "Empty MODS metadata for #{druid}: #{ng_doc.to_xml}" if ng_doc.root.xpath('//text()').empty?
+
         mods_rec = Stanford::Mods::Record.new
         mods_rec.from_nk_node(ng_doc.root)
         mods_rec

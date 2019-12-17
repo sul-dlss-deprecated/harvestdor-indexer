@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/gem_tasks'
 
 require 'rake'
@@ -6,15 +8,15 @@ require 'bundler'
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts 'Run `bundle install` to install missing gems'
+  warn e.message
+  warn 'Run `bundle install` to install missing gems'
   exit e.status_code
 end
 
-task default: [:rspec, :rubocop]
+task default: %i[rspec rubocop]
 
 desc 'run continuous integration suite (tests, coverage, docs)'
-task ci: [:rspec, :doc, :rubocop]
+task ci: %i[rspec doc rubocop]
 
 require 'rspec/core/rake_task'
 
@@ -36,7 +38,7 @@ RuboCop::RakeTask.new(:rubocop)
 require 'yard'
 require 'yard/rake/yardoc_task'
 begin
-  project_root = File.expand_path(File.dirname(__FILE__))
+  project_root = __dir__
   doc_dest_dir = File.join(project_root, 'doc')
 
   YARD::Rake::YardocTask.new(:doc) do |yt|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Harvestdor
   ##
   # Harvest metrics tracker
@@ -23,10 +25,10 @@ module Harvestdor
     def tally(options = {})
       yield
       success!
-    rescue => e
+    rescue StandardError => e
       error!
       logger.error "Failed to process: #{e.message}"
-      options[:on_error].call e if options[:on_error]
+      options[:on_error]&.call e
     end
 
     ##

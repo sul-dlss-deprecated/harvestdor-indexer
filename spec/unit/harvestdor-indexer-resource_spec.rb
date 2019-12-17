@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Harvestdor::Indexer::Resource do
+
+  subject { resource }
 
   before(:all) do
     VCR.use_cassette('before_all_call') do
@@ -20,8 +24,6 @@ describe Harvestdor::Indexer::Resource do
   end
 
   let(:blank_public_xml) { Nokogiri::XML::Document.new }
-
-  subject { resource }
 
   describe '#exists?' do
     it 'exists if the public xml is present and available' do
@@ -54,7 +56,7 @@ describe Harvestdor::Indexer::Resource do
     context 'for a collection' do
       before do
         allow(subject).to receive(:collection?).and_return(true)
-        allow(subject).to receive(:items_druids).and_return %w(oo000oo0001 oo000oo0002)
+        allow(subject).to receive(:items_druids).and_return %w[oo000oo0001 oo000oo0002]
       end
 
       it 'enumerates the items in the collection' do
@@ -77,18 +79,22 @@ describe Harvestdor::Indexer::Resource do
       @mods_xml = "<mods #{@ns_decl}><note>hi</note></mods>"
       @ng_mods_xml = Nokogiri::XML(@mods_xml)
     end
+
     it 'calls mods method on harvestdor_client' do
       expect(@hdor_client).to receive(:mods).with(@fake_druid).and_return(@ng_mods_xml)
       resource.smods_rec
     end
+
     it 'returns Stanford::Mods::Record object' do
       expect(@hdor_client).to receive(:mods).with(@fake_druid).and_return(@ng_mods_xml)
       expect(resource.smods_rec).to be_an_instance_of(Stanford::Mods::Record)
     end
+
     it 'raises exception if MODS xml for the druid is empty' do
       allow(@hdor_client).to receive(:mods).with(@fake_druid).and_return(Nokogiri::XML("<mods #{@ns_decl}/>"))
       expect { resource.smods_rec }.to raise_error(RuntimeError, Regexp.new("^Empty MODS metadata for #{@fake_druid}: <"))
     end
+
     it 'raises exception if there is no MODS xml for the druid' do
       VCR.use_cassette('exception_no_MODS_call') do
         expect { resource.smods_rec }.to raise_error(Harvestdor::Errors::MissingMods)
@@ -105,11 +111,13 @@ describe Harvestdor::Indexer::Resource do
       @pub_xml = "<publicObject id='druid:#{@fake_druid}'>#{@id_md_xml}#{@cntnt_md_xml}#{@rights_md_xml}#{@rdf_xml}</publicObject>"
       @ng_pub_xml = Nokogiri::XML(@pub_xml)
     end
-    context '#public_xml' do
+
+    describe '#public_xml' do
       it 'calls public_xml method on harvestdor_client' do
         expect(@hdor_client).to receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
         resource.public_xml
       end
+
       it 'retrieves entire public xml as a Nokogiri::XML::Document' do
         expect(@hdor_client).to receive(:public_xml).with(@fake_druid).and_return(@ng_pub_xml)
         px = resource.public_xml
@@ -118,7 +126,8 @@ describe Harvestdor::Indexer::Resource do
         expect(px.root.attributes['id'].text).to eq("druid:#{@fake_druid}")
       end
     end
-    context '#content_metadata' do
+
+    describe '#content_metadata' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
         allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         cm = resource.content_metadata
@@ -129,7 +138,8 @@ describe Harvestdor::Indexer::Resource do
         expect(cm.root.text.strip).to eq('foo')
       end
     end
-    context '#identity_metadata' do
+
+    describe '#identity_metadata' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
         allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         im = resource.identity_metadata
@@ -139,7 +149,8 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root.text.strip).to eq("druid:#{@fake_druid}")
       end
     end
-    context '#rights_metadata' do
+
+    describe '#rights_metadata' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
         allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         im = resource.rights_metadata
@@ -149,7 +160,8 @@ describe Harvestdor::Indexer::Resource do
         expect(im.root.text.strip).to eq('bar')
       end
     end
-    context '#rdf' do
+
+    describe '#rdf' do
       it 'returns a Nokogiri::XML::Document derived from the public xml if a druid is passed' do
         allow(Harvestdor).to receive(:public_xml).with(@fake_druid, @indexer.config.harvestdor.purl).and_return(@ng_pub_xml)
         im = resource.rdf
@@ -166,6 +178,7 @@ describe Harvestdor::Indexer::Resource do
         allow(resource).to receive(:public_xml).and_return(double)
         expect(resource.public_xml_or_druid).to eq resource.public_xml
       end
+
       it 'returns the druid, if the public_xml has not been loaded' do
         allow(resource).to receive(:public_xml?).and_return(false)
         expect(resource.public_xml_or_druid).to eq @fake_druid
@@ -181,15 +194,15 @@ describe Harvestdor::Indexer::Resource do
 
     describe '#collections' do
       it 'extracts the collection this resource is a member of and return Resource objects for those collections' do
-        allow(resource).to receive(:public_xml).and_return(Nokogiri::XML(<<-EOF)
-<publicObject>
-  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
-    <rdf:Description>
-      <fedora:isMemberOfCollection rdf:resource="some:druid" />
-    </rdf:Description>
-  </rdf:RDF>
-</publicObject>
-EOF
+        allow(resource).to receive(:public_xml).and_return(Nokogiri::XML(<<~EOF)
+          <publicObject>
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:fedora="info:fedora/fedora-system:def/relations-external#">
+              <rdf:Description>
+                <fedora:isMemberOfCollection rdf:resource="some:druid" />
+              </rdf:Description>
+            </rdf:RDF>
+          </publicObject>
+        EOF
                                                           )
 
         expect(resource.collections.length).to eq 1

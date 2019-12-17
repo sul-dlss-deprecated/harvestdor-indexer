@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Harvestdor::Indexer do
@@ -21,6 +23,7 @@ describe Harvestdor::Indexer do
     it 'initializes success count' do
       expect(@indexer.metrics.success_count).to eq(0)
     end
+
     it 'initializes error count' do
       expect(@indexer.metrics.error_count).to eq(0)
     end
@@ -119,11 +122,13 @@ describe Harvestdor::Indexer do
         }
       end
     end
+
     it 'is an Array with an entry for each non-empty line in the file' do
       @indexer.send(:load_whitelist, @whitelist_path)
       expect(@indexer.send(:whitelist)).to be_an_instance_of(Array)
       expect(@indexer.send(:whitelist).size).to eq(3)
     end
+
     it 'is empty Array if there was no whitelist config setting' do
       VCR.use_cassette('empty_array_no_whitelist_config_call') do
         lambda {
@@ -132,6 +137,7 @@ describe Harvestdor::Indexer do
         }
       end
     end
+
     context 'load_whitelist' do
       it 'is not called if there was no whitelist config setting' do
         VCR.use_cassette('no_whitelist_config_call') do
@@ -148,6 +154,7 @@ describe Harvestdor::Indexer do
           }
         end
       end
+
       it 'only try to load a whitelist once' do
         VCR.use_cassette('load_whitelist_once_call') do
           indexer = described_class.new({ whitelist: @whitelist_path })
@@ -156,6 +163,7 @@ describe Harvestdor::Indexer do
           indexer.send(:whitelist)
         end
       end
+
       it "log an error message and throw RuntimeError if it can't find the indicated whitelist file" do
         VCR.use_cassette('cant_find_whitelist_call') do
           exp_msg = 'Unable to find list of druids at bad_path'

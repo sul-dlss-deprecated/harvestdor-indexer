@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Harvestdor
   class Indexer::Solr
     attr_accessor :client, :indexer, :config
