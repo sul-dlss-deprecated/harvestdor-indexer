@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Harvestdor::Indexer::Metrics do
   it 'records successes' do
-    expect { subject.success! }.to change { subject.success_count }.from(0).to(1)
+    expect { subject.success! }.to change(subject, :success_count).from(0).to(1)
   end
 
   it 'records errors' do
-    expect { subject.error! }.to change { subject.error_count }.from(0).to(1)
+    expect { subject.error! }.to change(subject, :error_count).from(0).to(1)
   end
 
   describe '#total' do
@@ -14,7 +16,7 @@ describe Harvestdor::Indexer::Metrics do
       expect do
         subject.error!
         subject.success!
-      end.to change { subject.total }.from(0).to(2)
+      end.to change(subject, :total).from(0).to(2)
     end
   end
 
@@ -24,7 +26,7 @@ describe Harvestdor::Indexer::Metrics do
         subject.tally do
           # noop
         end
-      end.to change { subject.success_count }.from(0).to(1)
+      end.to change(subject, :success_count).from(0).to(1)
     end
 
     it 'records an error if the block fails' do
@@ -32,7 +34,7 @@ describe Harvestdor::Indexer::Metrics do
         subject.tally do
           raise 'Broken'
         end
-      end.to change { subject.error_count }.from(0).to(1)
+      end.to change(subject, :error_count).from(0).to(1)
     end
 
     it 'allows an error handler to be provided' do

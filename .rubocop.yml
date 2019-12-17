@@ -2,16 +2,13 @@ require: rubocop-rspec
 
 inherit_from: .rubocop_todo.yml
 
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
-Style/EmptyLinesAroundClassBody:
+Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
 # shut hound up
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes
-
-Style/TrailingBlankLines:
-  Enabled: false

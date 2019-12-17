@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Harvestdor::Indexer::PurlFetcher do
@@ -19,7 +21,7 @@ describe Harvestdor::Indexer::PurlFetcher do
     it 'returns an enumerable of druids from a collection' do
       results = subject.druids_from_collection('druid:oo000oo0000')
 
-      expect(results.to_a).to match_array %w(druid:oo000oo0001 druid:oo000oo0002 druid:oo000oo0003)
+      expect(results.to_a).to match_array %w[druid:oo000oo0001 druid:oo000oo0002 druid:oo000oo0003]
     end
   end
 end

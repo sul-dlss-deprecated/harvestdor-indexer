@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # external gems
 require 'confstruct'
 require 'rsolr'
@@ -168,7 +170,7 @@ module Harvestdor
     # @return [Array<String>] an Array of druids
     def load_id_list(path)
       list = File.open(path).each_line.map(&:strip).reject { |line| line.strip.start_with?('#') }.reject(&:empty?)
-    rescue
+    rescue StandardError
       msg = 'Unable to find list of druids at ' + path
       logger.fatal msg
       raise msg

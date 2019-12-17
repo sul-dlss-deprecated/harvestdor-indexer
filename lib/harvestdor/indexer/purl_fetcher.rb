@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Harvestdor
   class Indexer
     # Client for working with the PURL Fetcher API
