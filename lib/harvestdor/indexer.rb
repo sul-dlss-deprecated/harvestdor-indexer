@@ -10,7 +10,7 @@ require 'json'
 # sul-dlss gems
 require 'harvestdor'
 require 'stanford-mods'
-require 'dor-fetcher'
+require 'dor/services/client'
 
 # stdlib
 require 'logger'
@@ -141,8 +141,9 @@ module Harvestdor
       @harvestdor_client ||= Harvestdor::Client.new(config.harvestdor)
     end
 
-    def dor_fetcher_client
-      @dor_fetcher_client ||= DorFetcher::Client.new(config.dor_fetcher)
+    def dor_services_client
+      @dor_services_client ||= Dor::Services::Client.configure(url: config.dor_services.url,
+                                                               token: config.dor_services.token)
     end
 
     def purl_fetcher_client

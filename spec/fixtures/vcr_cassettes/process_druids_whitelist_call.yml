@@ -94,69 +94,8 @@ http_interactions:
             <dc:coverage>China</dc:coverage>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:13 GMT
-- request:
-    method: get
-    uri: http://127.0.0.1:3000/collections/yg867hg1375
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-      Host:
-      - 127.0.0.1:3000
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 17 Dec 2014 19:44:13 GMT
-      Server:
-      - Apache/2.2.15 (Red Hat)
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Content-Type-Options:
-      - nosniff
-      Etag:
-      - '"a2dbdae1877cffb1ed626587e91dbced"'
-      Cache-Control:
-      - max-age=0, private, must-revalidate
-      X-Request-Id:
-      - 5c1e15b4-ea83-4ae0-bc5a-624b6a298441
-      X-Runtime:
-      - '0.546275'
-      X-Powered-By:
-      - Phusion Passenger 4.0.49
-      Status:
-      - 200 OK
-      Transfer-Encoding:
-      - chunked
-      Content-Type:
-      - application/json; charset=utf-8
-    body:
-      encoding: UTF-8
-      string: '{"collections":[{"druid":"druid:yg867hg1375","latest_change":"2013-11-11T23:34:33Z","title":"Francis
-        E. Stafford photographs, 1909-1933"}],"items":[{"druid":"druid:nz353cp1092","latest_change":"2013-11-27T08:34:02Z","title":"Album
-        E: Photographs of the Seventh Day Adventist Church missionaries in China"},{"druid":"druid:th998nk0722","latest_change":"2013-12-04T10:26:34Z","title":"Album
-        C: Photographs of the Chinese Revolution of 1911 and the Shanghai Commercial
-        Press"},{"druid":"druid:ww689vs6534","latest_change":"2013-11-30T20:51:35Z","title":"Album
-        B: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
-        social customs, and people."},{"druid":"druid:tc552kq0798","latest_change":"2013-11-28T14:15:09Z","title":"Album
-        D: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
-        social customs, and people."},{"druid":"druid:jf275fd6276","latest_change":"2013-11-26T00:11:17Z","title":"Album
-        A: Photographs of China''s natural landscapes, urban scenes, cultural landmarks,
-        social customs, and people."}],"counts":{"collections":1,"items":5,"total_count":6}}'
-    http_version: 
-  recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 - request:
     method: get
     uri: https://purl.stanford.edu/jf275fd6276.xml
@@ -853,7 +792,7 @@ http_interactions:
             <dc:relation type="collection">Francis E. Stafford photographs, 1909-1933</dc:relation>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 - request:
     method: get
@@ -1521,7 +1460,7 @@ http_interactions:
             <dc:relation type="collection">Francis E. Stafford photographs, 1909-1933</dc:relation>
           </oai_dc:dc>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Wed, 17 Dec 2014 19:44:14 GMT
 - request:
     method: get
@@ -1630,6 +1569,6 @@ http_interactions:
             <release to="Searchworks">true</release>
           </releaseData>
         </publicObject>
-    http_version: 
+    http_version:
   recorded_at: Fri, 30 Oct 2015 14:50:39 GMT
 recorded_with: VCR 2.9.3

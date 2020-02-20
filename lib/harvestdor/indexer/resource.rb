@@ -35,8 +35,8 @@ module Harvestdor
       indexer.harvestdor_client
     end
 
-    def dor_fetcher_client
-      indexer.dor_fetcher_client
+    def dor_services_client
+      indexer.dor_services_client
     end
 
     def purl_fetcher_client
@@ -92,7 +92,7 @@ module Harvestdor
         # we don't need to memoize purl_fetcher_client, since it natively uses enumerables
         purl_fetcher_client.druids_from_collection(namespaced_druid)
       else
-        @items_druids ||= dor_fetcher_client.druid_array(dor_fetcher_client.get_collection(bare_druid, {}))
+        @items_druids ||= dor_services_client.object(druid).members.map(&:externalIdentifier)
       end
     end
 

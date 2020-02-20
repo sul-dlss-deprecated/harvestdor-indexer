@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_dependency 'activesupport'
-  gem.add_dependency 'dor-fetcher', '=1.0.5'
+  gem.add_dependency 'dor-services-client', '~> 4.14'
   gem.add_dependency 'faraday'
   gem.add_dependency 'harvestdor', '>=0.0.14'
   gem.add_dependency 'parallel'
