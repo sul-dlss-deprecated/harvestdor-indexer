@@ -8,7 +8,14 @@ Layout/EmptyLinesAroundBlockBody:
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
 # shut hound up
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes
+
+RSpec/MessageSpies:
+  Enabled: false
