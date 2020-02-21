@@ -5,18 +5,16 @@ require 'spec_helper'
 RSpec.describe Harvestdor::Indexer do
 
   before(:all) do
-    VCR.use_cassette('before_all_call') do
-      @config_yml_path = File.join(File.dirname(__FILE__), '..', 'config', 'ap.yml')
-      require 'yaml'
-      @config = YAML.load_file(@config_yml_path)
+    @config_yml_path = File.join(File.dirname(__FILE__), '..', 'config', 'ap.yml')
+    require 'yaml'
+    @config = YAML.load_file(@config_yml_path)
 
-      @indexer = described_class.new(@config) do |config|
-        config.whitelist = ['druid:yg867hg1375']
-      end
-      @hdor_client = @indexer.send(:harvestdor_client)
-      @fake_druid = 'druid:oo000oo0000'
-      @whitelist_path = File.join(File.dirname(__FILE__), '../config/ap_whitelist.txt')
+    @indexer = described_class.new(@config) do |config|
+      config.whitelist = ['druid:yg867hg1375']
     end
+    @hdor_client = @indexer.send(:harvestdor_client)
+    @fake_druid = 'druid:oo000oo0000'
+    @whitelist_path = File.join(File.dirname(__FILE__), '../config/ap_whitelist.txt')
   end
 
   describe 'access methods' do
@@ -41,20 +39,6 @@ RSpec.describe Harvestdor::Indexer do
     expect(@hdor_client.config.default_set).to eq(@config['harvestdor']['default_set'])
   end
 
-  describe '#resources' do
-    it 'does not persist resources across calls' do
-      VCR.use_cassette('single_rsolr_connection_call') do
-        hdor_client = @indexer.send(:harvestdor_client)
-        allow(@indexer.dor_services_client).to receive(:druid_array).and_return(['druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534'])
-
-        a = @indexer.resources.first
-        b = @indexer.resources.first
-
-        expect(a).not_to eq b
-      end
-    end
-  end
-
   context 'harvest_and_index' do
     before(:all) do
       @doc_hash = {
@@ -69,90 +53,7 @@ RSpec.describe Harvestdor::Indexer do
       expect(@indexer.solr).to receive(:commit!)
       @indexer.harvest_and_index
     end
-
-    context 'when it calls members' do
-      let(:object_client) { instance_double(Dor::Services::Client::Object, members: members) }
-      let(:druids) do
-        ['druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534']
-      end
-      let(:members) do
-        druids.map do |druid|
-          Dor::Services::Client::Members::Member.new(externalIdentifier: druid, type: 'item')
-        end
-      end
-
-      before do
-        allow(@indexer.dor_services_client).to receive(:object).and_return(object_client)
-      end
-
-      it 'only calls :commit on rsolr connection once' do
-        VCR.use_cassette('single_rsolr_connection_call') do
-          hdor_client = @indexer.send(:harvestdor_client)
-          expect(@indexer.solr).to receive(:add).at_least(6).times
-          expect(@indexer.solr).to receive(:commit!).once
-          @indexer.harvest_and_index
-          expect(object_client).to have_received(:members)
-        end
-      end
-    end
-
-    context 'when a whitelist exists' do
-      let(:object_client) { instance_double(Dor::Services::Client::Object, members: members) }
-      let(:druids) do
-        ['druid:nz353cp1092', 'druid:th998nk0722', 'druid:ww689vs6534', 'druid:tc552kq0798', 'druid:jf275fd6276']
-      end
-      let(:members) do
-        druids.map do |druid|
-          Dor::Services::Client::Members::Member.new(externalIdentifier: druid, type: 'item')
-        end
-      end
-
-      before do
-        allow(@indexer.dor_services_client).to receive(:object).and_return(object_client)
-      end
-
-      it 'only processes druids in whitelist if it exists' do
-        VCR.use_cassette('process_druids_whitelist_call') do
-          indexer = described_class.new(@config.merge(whitelist: @whitelist_path))
-          hdor_client = indexer.send(:harvestdor_client)
-          added = []
-          allow(indexer.solr).to receive(:add) { |hash|
-            added << hash[:id]
-          }
-          expect(indexer.solr).to receive(:commit!)
-          indexer.harvest_and_index
-          expect(added).to include 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534', 'druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092'
-        end
-      end
-    end
   end # harvest_and_index
-
-  # Check for replacement of oai harvesting with dor-services-client
-  context 'replacing OAI harvesting with dor-services-client' do
-    it 'has a dor-fetcher client' do
-      expect(@indexer.dor_services_client.instance).to be_an_instance_of(Dor::Services::Client)
-    end
-
-    describe '#resources' do
-      let(:object_client) { instance_double(Dor::Services::Client::Object, members: members) }
-      let(:druids) do
-        ['druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534']
-      end
-      let(:members) do
-        druids.map do |druid|
-          Dor::Services::Client::Members::Member.new(externalIdentifier: druid, type: 'item')
-        end
-      end
-
-      before do
-        allow(@indexer.dor_services_client).to receive(:object).and_return(object_client)
-      end
-
-      it 'calls dor-services-app' do
-        expect(@indexer.resources.map(&:druid)).to include 'druid:yg867hg1375', 'druid:jf275fd6276', 'druid:nz353cp1092', 'druid:tc552kq0798', 'druid:th998nk0722', 'druid:ww689vs6534'
-      end
-    end
-  end # ending replacing OAI context
 
   context 'whitelist' do
     it 'knows what is in the whitelist' do

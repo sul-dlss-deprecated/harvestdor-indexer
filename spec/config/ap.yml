@@ -16,11 +16,6 @@
 #  either give absolute path or path relative to where the command will be executed
 #whitelist: config/ap_whitelist.txt
 
-dor_services:
-  # the baseurl of the dor-services-app from which we get the item druids (per whitelist above)
-  url: https://dor-services-stage.stanford.edu
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U
-
 # ----------- SOLR index (that we're writing INTO) parameters ------------
 solr:
   url: https://solr.baseurl.org

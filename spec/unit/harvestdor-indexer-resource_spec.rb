@@ -7,16 +7,14 @@ describe Harvestdor::Indexer::Resource do
   subject { resource }
 
   before(:all) do
-    VCR.use_cassette('before_all_call') do
-      @config_yml_path = File.join(File.dirname(__FILE__), '..', 'config', 'ap.yml')
-      require 'yaml'
-      @config = YAML.load_file(@config_yml_path)
-      @fake_druid = 'oo000oo0000'
+    @config_yml_path = File.join(File.dirname(__FILE__), '..', 'config', 'ap.yml')
+    require 'yaml'
+    @config = YAML.load_file(@config_yml_path)
+    @fake_druid = 'oo000oo0000'
 
-      @indexer = Harvestdor::Indexer.new(@config)
-      @hdor_client = @indexer.send(:harvestdor_client)
-      @whitelist_path = File.join(File.dirname(__FILE__), '../config/ap_whitelist.txt')
-    end
+    @indexer = Harvestdor::Indexer.new(@config)
+    @hdor_client = @indexer.send(:harvestdor_client)
+    @whitelist_path = File.join(File.dirname(__FILE__), '../config/ap_whitelist.txt')
   end
 
   let :resource do
